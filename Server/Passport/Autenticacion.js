@@ -1,60 +1,84 @@
-import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import Empresa from '../Modelos/empresa.js'; // Adjusted path to the model
+import { llamardb, enlace } from '../conexiondb.js';
+import { ObjectId } from 'mongodb';
 
-// Define the strategyInit function
-function strategyInit(passport) {
-    console.log('Initializing passport strategy...'); // Log when initializing strategy
+import express from 'express';
 
-    passport.use('local-empresa', new LocalStrategy({
-        usernameField: 'Email',
-        passwordField: 'Contraseña'
-      }, (Email, Contraseña, done) => {
-        console.log('Inside local-empresa strategy callback'); // Log when entering the strategy callback
-        Empresa.findOne({ Email: Email }).then(empresa => {
-          console.log('Query executed'); // Log when the query is executed
-          if (!empresa) {
-            console.log('Empresa not found'); // Log if empresa is not found
-            return done(null, false, { error: 'Empresa desconocida' });
-          }
-          // Assuming verifyPassword is a method defined on the Empresa model
-          empresa.verifyPassword(String(Contraseña), (err, contraseñaEsCorrecta) => {
-            if (err) {
-              console.error('Error verifying password:', err); // Log any errors during password verification
-              return done(err);
-            }
-            if (!contraseñaEsCorrecta) {
-              console.log('Incorrect password'); // Log if password is incorrect
-              return done(null, false);
-            }
-            console.log('Authentication successful'); // Log if authentication is successful
-            return done(null, empresa);
-          });
-        }).catch(err => {
-          console.error('Error finding empresa:', err); // Log any errors during Empresa findOne operation
-          done(err);
-        });
-    }));
-    
+const app = express();
+app.use(express.json())
 
-    passport.serializeUser((empresa, done) => {
-        console.log('Serializing user:', empresa.id); // Log when serializing user
-        done(null, empresa.id);
+let db;
+
+enlace((error) => {
+  if (!error) {
+    db = llamardb();
+  }
+});
+
+export const strategyInit = passport => {
+  passport.use('local-usuario', new LocalStrategy({
+    usernameField: 'EmailUsuario',
+    passwordField: 'Contraseña'
+  }, (EmailUsuario, Contraseña, done) => {
+    const usuarioQuery = db.collection('Users');
+    usuarioQuery.findOne({ EmailUsuario: EmailUsuario }, { projection: { EmailUsuario: 1, Contraseña: 1 } }).then(usuario => {
+      if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
+      if (usuario.Contraseña !== Contraseña) {
+        return done(null, false, { error: 'Contraseña incorrecta' });
+      }
+      return done(null, usuario);
+    }).catch(err => {
+      done(err);
     });
+  }));
 
-    passport.deserializeUser((id, done) => {
-        console.log('Deserializing user:', id); // Log when deserializing user
-        Empresa.findById(id, (err, empresa) => {
-            if (err) {
-              console.error('Error deserializing user:', err); // Log any errors during deserialization
-              return done(err);
-            }
-            done(null, empresa);
-        });
+  passport.use('local-empresa', new LocalStrategy({
+    usernameField: 'EmailEmpresa',
+    passwordField: 'Contraseña'
+  }, (EmailEmpresa, Contraseña, done) => {
+    const empresaQuery = db.collection('Empresas');
+    empresaQuery.findOne({ EmailEmpresa: EmailEmpresa }, { projection: { EmailEmpresa: 1, Contraseña: 1 } }).then(empresa => {
+      if (!empresa) return done(null, false, { error: 'Usuario desconocido' });
+      if (empresa.Contraseña !== Contraseña) {
+        return done(null, false, { error: 'Contraseña incorrecta' });
+      }
+      return done(null, empresa);
+    }).catch(err => {
+      done(err);
     });
+  }));
 
-    console.log('Passport strategy initialized successfully'); // Log when strategy initialization completes
-}
+  passport.use('local-admin', new LocalStrategy({
+    usernameField: 'EmailAdmin',
+    passwordField: 'Contraseña'
+  }, (EmailAdmin, Contraseña, done) => {
+    const adminQuery = db.collection('Admin');
+    adminQuery.findOne({ EmailAdmin: EmailAdmin }, { projection: { EmailAdmin: 1, Contraseña: 1 } }).then(admin => {
+      if (!admin) return done(null, false, { error: 'Usuario desconocido' });
+      if (admin.Contraseña !== Contraseña) {
+        return done(null, false, { error: 'Contraseña incorrecta' });
+      }
+      return done(null, admin);
+    }).catch(err => {
+      done(err);
+    });
+  }));
 
-// Export the strategyInit function
-export { strategyInit };
+
+  
+
+  passport.serializeUser((user, done) => {
+    const userId = user._id.toString(); // Convertir ObjectId a cadena de texto
+    done(null, userId);
+  });
+  
+  
+  passport.deserializeUser((id, done) => {
+    const userId = new ObjectId(id); // Convertir cadena de texto a ObjectId
+    // Realizar la lógica para buscar al usuario en la base de datos utilizando el userId
+  });
+  
+  
+};
+
+export default strategyInit;
