@@ -117,9 +117,7 @@ app.post('/registrarUsuario', async (req, res) => {
 app.post('/crearOfertas', async (req, res) => {
   const oferta = req.body;
 
-  db.collection('Ofertas')
-    .insertOne(oferta)
-    .then(respuesta => {
+  db.collection('Ofertas').insertOne(oferta).then(respuesta => {
       res.status(201).json(respuesta)
     })
     .catch(error => {
@@ -130,9 +128,7 @@ app.post('/crearOfertas', async (req, res) => {
 app.post('/crearSolicitudes', async (req, res) => {
   const oferta = req.body;
 
-  db.collection('Ofertas')
-    .insertOne(oferta)
-    .then(respuesta => {
+  db.collection('Ofertas').insertOne(oferta).then(respuesta => {
       res.status(201).json(respuesta)
     })
     .catch(error => {
