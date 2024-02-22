@@ -68,14 +68,13 @@ export const strategyInit = passport => {
   
 
   passport.serializeUser((user, done) => {
-    const userId = user._id.toString(); // Convertir ObjectId a cadena de texto
+    const userId = user._id.toString();
     done(null, userId);
   });
   
   
   passport.deserializeUser((id, done) => {
-    const userId = new ObjectId(id); // Convertir cadena de texto a ObjectId
-    // Realizar la lógica para buscar al usuario en la base de datos utilizando el userId
+    const userId = new ObjectId(id); //Esquema
   });
   
   
