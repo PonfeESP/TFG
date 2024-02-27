@@ -55,17 +55,50 @@ app.get('/mostrarOfertas', async (req, res) => {
   }
 });
 
+app.get('/mostrarOfertas/empresa', async (req, res) => {
+  try {
+    const ofertas = db.collection('Ofertas');
+    const idempresa = new ObjectId('65d5ea83ba8482276f009d80');//req.user.id;
+    const ofertasData = await ofertas.find({ Disponible: { $ne: false, } }, { _id: idempresa }).toArray();
+    res.json(ofertasData);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
 app.get('/mostrarSolicitudes', async (req, res) => {
   try {
     const solicitudes = db.collection('Solicitudes');
-    const excludedId = new ObjectId('65d5ea83ba8482276f009d80'); //PROTOTIPO, asi es como tendre en cuenta los ID cuando tenga que hacer aparecer solicitueds en empresas y usuarios
-    const solicitudesData = await solicitudes.find({ _id: { $ne: excludedId } }).toArray();
+    const solicitudesData = await solicitudes.find().toArray();
     res.json(solicitudesData);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
 });
 
+app.get('/mostrarSolicitudes/empresa', async (req, res) => { //revisar dependencias de la query
+  try {
+    const solicitudes = db.collection('Solicitudes');
+    const idempresa = new ObjectId('65d5ea83ba8482276f009d80');//req.user.id;
+    console.log(`Sasdad`, idempresa);
+    const solicitudesData = await solicitudes.find({ _id: idempresa }).toArray();
+    res.json(solicitudesData);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
+app.get('/mostrarSolicitudes/usuario', async (req, res) => {
+  try {
+    const solicitudes = db.collection('Solicitudes');
+    const idusuario = new ObjectId('65d3660de3c807a31324a64e');//req.user.id;
+    console.log(`Sasdad`, idusuario);
+    const solicitudesData = await solicitudes.find({ Users: idusuario }).toArray();
+    res.json(solicitudesData);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
 
 app.get('/mostrarUsers', async (req, res) => {
   try {
@@ -140,16 +173,29 @@ app.post('/crearSolicitudes', async (req, res) => {
 
 app.post("/loginEmpresa", passport.authenticate('local-empresa'), (req, res) => {
   if (!!req.user) {
-    res.status(200).json({ status: 'OK' })
+    res.status(200).json({ status: 'OK' });
+  } else {
+    res.status(500).json({ status: "Sesión no iniciada" });
   }
-  else res.status(500).json({ status: "Sesión no iniciada" });
 });
+
 
 app.post("/loginUsuario", passport.authenticate('local-usuario'), (req, res) => {
   if (!!req.user) {
     res.status(200).json({ status: 'OK' })
   }
   else res.status(500).json({ status: "Sesión no iniciada" });
+});
+
+app.post("/logout", (req, res) => {
+  req.logout(err => {
+    if (!!err) res.status(500).json({ error: "No se ha podido cerrar sesión." });
+    else {
+      delete req.user; 
+      req.session.destroy(); 
+      res.status(200).clearCookie('SessionCookie.SID', { path: "/" }).json({ status: "Ok" });
+    }
+  })
 });
 
 
