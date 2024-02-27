@@ -1,0 +1,66 @@
+[{
+  "_id": {
+    "$oid": "65d3660de3c807a31324a64e"
+  },
+  "Nombre": "NormalUser1",
+  "Contraseña": "NormalPassword1",
+  "Edad": 21,
+  "Experiencia_Laboral": "Ninguna",
+  "Estudios": "Ingenieria Informatica",
+  "Tags": [
+    "Java",
+    "C",
+    "Python",
+    "Salesforce"
+  ],
+  "EmailUsuario": "somethps@gmail.com"
+},
+{
+  "_id": {
+    "$oid": "65d3660de3c807a31324a64f"
+  },
+  "Nombre": "NormalUser2",
+  "Contraseña": "NormalPassword2",
+  "Edad": 21,
+  "Experiencia_Laboral": "Si",
+  "Estudios": "Ingenieria Informatica",
+  "Tags": [
+    "Java",
+    "C",
+    "Python"
+  ],
+  "EmailUsuario": "soeos@soso"
+},
+{
+  "_id": {
+    "$oid": "65d3660de3c807a31324a650"
+  },
+  "Nombre": "NormalUser3",
+  "Contraseña": "NormalPassword3",
+  "Edad": 21,
+  "Experiencia_Laboral": "Ninguna",
+  "Estudios": "Grado Superior",
+  "Tags": [
+    "Java",
+    "C",
+    "Python"
+  ],
+  "EmailUsuario": "spep@gmas"
+},
+{
+  "_id": {
+    "$oid": "65d765f1cf1ba9f5d8aa7a02"
+  },
+  "Nombre": "NormalUser11",
+  "Contraseña": "NormalPassword11",
+  "Edad": 21,
+  "Experiencia_Laboral": "Ninguna",
+  "Estudios": "Ingenieria Informatica",
+  "Tags": [
+    "Java",
+    "C",
+    "Python",
+    "Salesforce"
+  ],
+  "EmailUsuario": "culebra@gmail.com"
+}]
