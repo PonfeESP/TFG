@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 
 import express from 'express';
 
-const app = express();
+/*const app = express();
 app.use(express.json())
 
 let db;
@@ -67,64 +67,126 @@ export const strategyInit = passport => {
     }).catch(err => {
       done(err);
     });
+  }));*/
+
+import User from '../Modelos/Usuario.model.js';
+console.log(User);
+
+const app = express();
+app.use(express.json())
+
+let db;
+
+enlace((error) => {
+  if (!error) {
+    db = llamardb();
+  }
+});
+
+let query;
+
+export const strategyInit = passport => {
+  passport.use('local-usuario', new LocalStrategy({
+    usernameField: 'Email',
+    passwordField: 'Contraseña'
+  }, (Email, Contraseña, done) => {
+    query = db.collection('Usuario');
+    //User.findOne({ Email: Email }, { projection: { Email: 1, Contraseña: 1 } }).then(usuario => { //no funciona aqui por algun motivo
+    query.findOne({ Email: Email }, { projection: { Email: 1, Contraseña: 1 } }).then(usuario => {
+      if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
+      if (usuario.Contraseña !== Contraseña) {
+        return done(null, false, { error: 'Contraseña incorrecta' });
+      }
+      return done(null, usuario);
+    }).catch(err => {
+      done(err);
+    });
   }));
 
 
-
-
   passport.serializeUser((user, done) => {
-    let userType;
-    if (user.EmailUsuario !== undefined) {
-      userType = 'cliente';
-    } else if (user.EmailEmpresa !== undefined) {
-      userType = 'empresa';
-    } else if (user.EmailAdmin !== undefined) {
-      userType = 'admin';
-    }
+    const userType = user.Rol
 
     console.log("User logged in. Type:", userType); // Simple log statement
+    console.log("User logged in. Type:", user.Rol); // Simple log statement
 
 
     if (userType) {
       done(null, {
         id: user._id.toString(),
         userType
-        
       });
     } else {
       done(new Error('Invalido'));
     }
   });
 
-  passport.deserializeUser((user, done) => {
-    const userId = new ObjectId(user.id); // Deserialize user ID
-    const userType = user.userType; // Retrieve user type
+  passport.deserializeUser((user, done) => { // REVISAR
 
-    console.log("User logged iasdsadan. Type:", userType, userId); // Simple log statement
+    usuario.findOne({ _id: user.id }, (err, usuario) => {
+      if (err) {
+        return done(err);
+      }
+      done(null, usuario);
+    });
 
-    let userCollection;
-    if (userType === 'cliente') {
-      userCollection = db.collection('Users');
-    } else if (userType === 'empresa') {
-      userCollection = db.collection('Empresas');
-    } else if (userType === 'admin') {
-      userCollection = db.collection('Admin');
-    }
-
-    if (userCollection) {
-      userCollection.findOne({ _id: userId }, (err, usuario) => {
-        if (err) {
-          return done(err);
-        }
-        done(null, usuario);
-      });
-    } else {
-      done(new Error('Ivalido'));
-    }
   });
-
-
-
 };
+
+
+/*passport.serializeUser((user, done) => {
+  let userType;
+  if (user.EmailUsuario !== undefined) {
+    userType = 'cliente';
+  } else if (user.EmailEmpresa !== undefined) {
+    userType = 'empresa';
+  } else if (user.EmailAdmin !== undefined) {
+    userType = 'admin';
+  }
+
+  console.log("User logged in. Type:", userType); // Simple log statement
+
+
+  if (userType) {
+    done(null, {
+      id: user._id.toString(),
+      userType
+      
+    });
+  } else {
+    done(new Error('Invalido'));
+  }
+});
+
+passport.deserializeUser((user, done) => {
+  const userId = new ObjectId(user.id); // Deserialize user ID
+  const userType = user.userType; // Retrieve user type
+
+  console.log("User logged iasdsadan. Type:", userType, userId); // Simple log statement
+
+  let userCollection;
+  if (userType === 'cliente') {
+    userCollection = db.collection('Users');
+  } else if (userType === 'empresa') {
+    userCollection = db.collection('Empresas');
+  } else if (userType === 'admin') {
+    userCollection = db.collection('Admin');
+  }
+
+  if (userCollection) {
+    userCollection.findOne({ _id: userId }, (err, usuario) => {
+      if (err) {
+        return done(err);
+      }
+      done(null, usuario);
+    });
+  } else {
+    done(new Error('Ivalido'));
+  }
+});
+
+
+
+};*/
 
 export default strategyInit;

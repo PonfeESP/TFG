@@ -1,15 +1,16 @@
 import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
 let conexiondb;
 
 const enlace = (resultado) => {
-    MongoClient.connect('mongodb://127.0.0.1:27017/ITJobFinder')
-        .then((client) => {
-            conexiondb = client.db();
+    mongoose.connect('mongodb://127.0.0.1:27017/ITJobFinder')
+        .then(() => {
+            conexiondb = mongoose.connection;
             return resultado();
         })
         .catch(err => {
-            console.log(err);
+            console.log('Fallo al conectar con la base de datos', err);
             return resultado(err);
         });
 };
