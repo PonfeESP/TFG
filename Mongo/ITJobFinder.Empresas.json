@@ -1,0 +1,46 @@
+[{
+  "_id": {
+    "$oid": "65d36ce2e3c807a31324a657"
+  },
+  "Nombre": "Empresa1",
+  "Contraseña": "Contraseña1",
+  "Descripcion": "Empresa relacionada con la utilizacion de componentes software para el desarrollo de aplicaciones web",
+  "Ofertas": [
+    {
+      "$oid": "65d5e4aeba8482276f009d70"
+    },
+    {
+      "$oid": "65d5e4aeba8482276f009d71"
+    }
+  ],
+  "EmailEmpresa": "somethinmg@gmail.com",
+  "Admin": false
+},
+{
+  "_id": {
+    "$oid": "65d36ce2e3c807a31324a658"
+  },
+  "Nombre": "Empresa2",
+  "Contraseña": "Contraseña2",
+  "Descripcion": "Empresa relacionada con la utilizacion de componentes software para el desarrollo de aplicaciones web",
+  "EmailEmpresa": "somethingff@gmail.com",
+  "Admin": false
+},
+{
+  "_id": {
+    "$oid": "65d60b685a8029f2838d9369"
+  },
+  "Nombre": "ddd",
+  "Contraseña": "ddd",
+  "Descripcion": "jdkjadd",
+  "EmailEmpresa": "ddd@gmail.com",
+  "Admin": false
+},
+{
+  "_id": {
+    "$oid": "65d781af0e655f814419d0d0"
+  },
+  "EmailEmpresa": "ppppppppppp",
+  "Contraseña": "ddd",
+  "Admin": true
+}]
