@@ -3,6 +3,7 @@ import { enlace, llamardb } from './conexiondb.js';
 import { ObjectId } from 'mongodb';
 import session from 'express-session';
 import passport from 'passport';
+import cors from 'cors';
 
 import { strategyInit } from './Passport/Autenticacion.js';
 import User from './Modelos/Usuario.model.js';
@@ -11,6 +12,8 @@ import Oferta from './Modelos/Ofertas.model.js';
 
 const app = express();
 app.use(express.json())
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+
 
 let db;
 
@@ -67,10 +70,41 @@ app.get('/Mostrar/Ofertas', async (req, res) => {
   }
 });
 
+app.get('/Mostrar/Ofertas/Ordenadas', async (req, res) => {
+  try {
+    const usuarioTags = [
+      { Lenguaje: "C", Puntuacion: 5 },
+      { Lenguaje: "Java", Puntuacion: 3 },
+      { Lenguaje: "Python", Puntuacion: 4 }
+    ];
+    const ofertas = await Oferta.find({ Disponible: true });
+    ofertas.sort((a, b) => {
+      console.log(`Sasdad`, a.Tags);
+      const porcentajeA = calcularPorcentajeConcordancia(usuarioTags, a.Tags);
+      console.log(`Sasdad`, porcentajeA);
+      const porcentajeB = calcularPorcentajeConcordancia(usuarioTags, b.Tags);
+      console.log(`Sasdad`, porcentajeB);
+      return porcentajeB - porcentajeA;
+    });
+
+    const ofertasConPorcentaje = ofertas.map(oferta => {
+      const porcentaje = calcularPorcentajeConcordancia(usuarioTags, oferta.Tags);
+      return {
+        ...oferta._doc,
+        PorcentajeConcordancia: porcentaje.toFixed(2)
+      };
+    });
+
+    res.json(ofertasConPorcentaje);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
 app.get('/Mostrar/Ofertas/Empresa', async (req, res) => {
   try {
-    const idempresa = new ObjectId('65d5ea83ba8482276f009d80');//req.user.id;
-    const ofertas = await Oferta.find({ Disponible: true }, { _id: idempresa });
+    const idempresa = new ObjectId('65d36ce2e3c807a31324a657');//req.user.id;
+    const ofertas = await Oferta.find({ Empresa: idempresa });
     res.json(ofertas);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
@@ -115,6 +149,7 @@ app.get('/mostrarSolicitudes/usuario', async (req, res) => { //Version antigua, 
 
 app.post('/Registro/Usuario', async (req, res) => {
   const usuario = req.body;
+  console.log('XD', req.body);
 
   try {
     const usuarioExistente = await User.findOne({ Email: usuario.Email });
@@ -127,13 +162,13 @@ app.post('/Registro/Usuario', async (req, res) => {
         Contraseña: usuario.Contraseña,
         Rol: usuario.Rol,
         Descripcion: usuario.Descripcion,
-        Edad: usuario.Edad,
-        Experiencia_Laboral: usuario.Experiencia_Laboral,
+        Edad: parseInt(usuario.Edad),
+        Experiencia_Laboral: parseInt(usuario.Experiencia_Laboral),
         Estudios: usuario.Estudios,
         Tags: usuario.Tags
       });
       const respuesta = await nuevoUsuario.save();
-      res.status(201).json(respuesta);
+      res.status(201).json({ status: 'OK', user: respuesta });
     }
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
@@ -160,37 +195,62 @@ app.post('/Registro/Evento', async (req, res) => {
 });
 
 app.post('/Registro/Ofertas', async (req, res) => {
-  const oferta = req.body;
+  try {
+    const oferta = req.body;
 
-  db.collection('Ofertas').insertOne(oferta).then(respuesta => {
-    res.status(201).json(respuesta)
-  })
-    .catch(error => {
-      res.status(500).json({ error: 'Fallo' })
-    })
+    if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || !oferta.Disponible || !oferta.Empresa) {
+      return res.status(400).json({ error: "Mo se han rellenado los campos correctamente" });
+    }
+
+    const nuevaOferta = new Oferta({
+      Nombre: oferta.Nombre,
+      Descripcion: oferta.Descripcion,
+      Tags: oferta.Tags,
+      Disponible: oferta.Disponible,
+      Empresa: oferta.Empresa,
+      Interesados: oferta.Interesados
+    });
+
+    const respuesta = await nuevaOferta.save();
+    res.status(201).json(respuesta);
+  } catch (error) {
+    console.error("Error al crear la Oferta:", error);
+    res.status(500).json({ error: "Error de servidor" });
+  }
 });
 
 app.post('/Registro/Solicitudes', async (req, res) => { //Version antigua, no valido por ahora
-  const oferta = req.body;
+  try {
+    const solicitud = req.body;
+    const ofertaId = solicitud.ofertaId;
 
-  db.collection('Ofertas').insertOne(oferta).then(respuesta => {
-    res.status(201).json(respuesta)
-  })
-    .catch(error => {
-      res.status(500).json({ error: 'Fallo' })
-    })
+    const ofertaExistente = await Oferta.findById(ofertaId);
+
+    if (!ofertaExistente) {
+      return res.status(404).json({ error: "Error en la Oferta" });
+    }
+
+    ofertaExistente.Interesados.push(...solicitud.Interesados);
+
+    const ofertaActualizada = await ofertaExistente.save();
+
+    res.status(200).json(ofertaActualizada);
+  } catch (error) {
+    console.error("No se ha podido realizar la solicitud", error);
+    res.status(500).json({ error: "Error de servidor" });
+  }
 });
 
 // LOGIN POSTS
 
-app.post("/Login/Usuario", passport.authenticate('local-usuario'), (req, res) => { //fallo en el Autenticacion.js
+app.post("/Login/Usuario", passport.authenticate('local-usuario'), (req, res) => {  
   if (!!req.user) {
-    res.status(200).json({ status: 'OK' })
+    res.status(200).json({ status: 'OK', Rol: req.user.Rol })
   }
   else res.status(500).json({ status: "Sesión no iniciada" });
 });
 
-app.post("/logout", (req, res) => {
+app.post("/logout", (req, res) => { //Ni idea de si funciona
   req.logout(err => {
     if (!!err) res.status(500).json({ error: "No se ha podido cerrar sesión." });
     else {
@@ -200,6 +260,45 @@ app.post("/logout", (req, res) => {
     }
   })
 });
+
+
+//Funciones
+
+function calcularPorcentajeConcordancia(usuarioTags, ofertaTags) {
+  let sumaPuntuacionesCoincidentes = 0;
+  let puntuacionTotalOferta = 0;
+
+  const TagsOferta = {};
+  ofertaTags.forEach(tag => {
+    TagsOferta[tag.Lenguaje] = tag.Puntuacion;
+      puntuacionTotalOferta += tag.Puntuacion;
+  });
+
+  usuarioTags.forEach(tag => {
+      const puntuacionOferta = TagsOferta[tag.Lenguaje];
+      if (puntuacionOferta !== undefined) {
+          sumaPuntuacionesCoincidentes += Math.min(tag.Puntuacion, puntuacionOferta);
+      }
+  });
+
+  const porcentajeConcordancia = (sumaPuntuacionesCoincidentes / puntuacionTotalOferta) * 100;
+
+  return porcentajeConcordancia;
+}
+
+const usuarioTags = [
+  { Lenguaje: "C", Puntuacion: 5 },
+  { Lenguaje: "Java", Puntuacion: 3 },
+  { Lenguaje: "Python", Puntuacion: 4 }
+];
+
+const ofertaTags = [
+  { Lenguaje: "C", Puntuacion: 3 },
+  { Lenguaje: "Java", Puntuacion: 5 }
+];
+
+const porcentajeConcordancia = calcularPorcentajeConcordancia(usuarioTags, ofertaTags);
+console.log("Porcentaje de concordancia:", porcentajeConcordancia);
 
 
 export default app;

@@ -1,5 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 
+const TagsSchema = new Schema({
+    Lenguaje: String,
+    Puntuacion: Number
+}, { _id: false });
+
 const userSchema = new Schema({
     Nombre: {
         type: String,
@@ -30,7 +35,7 @@ const userSchema = new Schema({
         }
     },
     Experiencia_Laboral: {
-        type: String,
+        type: Number,
         required: function () {
             return this.Rol === 'Desempleado';
         }
@@ -42,7 +47,7 @@ const userSchema = new Schema({
         }
     },
     Tags: {
-        type: [[String]],
+        type: [TagsSchema],
         required: function () {
             return this.Rol === 'Desempleado';
         }

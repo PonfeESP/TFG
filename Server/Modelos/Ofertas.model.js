@@ -1,6 +1,11 @@
 import { ObjectId } from 'mongodb';
 import mongoose, { Schema } from 'mongoose';
 
+const TagsSchema = new Schema({
+    Lenguaje: String,
+    Puntuacion: Number
+}, { _id: false });
+
 const ofertaSchema = new Schema({
     Nombre: {
         type: String,
@@ -11,9 +16,10 @@ const ofertaSchema = new Schema({
         required: true
     },
     Tags: {
-        type: [[String]],
+        type: [TagsSchema],
         required: true
     },
+    
     Disponible: {
         type: Boolean,
         required: true
