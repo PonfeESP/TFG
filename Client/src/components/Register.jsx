@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import { useNavigate } from 'react-router-dom';
 
-
 export const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -58,7 +57,7 @@ export const Register = () => {
 
     const performRegister = (event) => {
         event.preventDefault();
-
+    
         setUserError(false);
         setEmailError(false);
         setPasswordError(false);
@@ -69,20 +68,25 @@ export const Register = () => {
         setExperienciaError(false);
         setEstudiosError(false);
         setTagsError(false);
-
+    
         if (email === '') setUserError(true);
         if (password === '') setPasswordError(true);
         if (confirmPassword === '') setConfirmPasswordError(true);
         if (rol === '') setRolError(true);
         if (nombre === '') setNombreError(true);
-        if (descripcion === '') setDescripcionError(true);
-        if (edad === '') setEdadError(true);
-        if (experiencia_Laboral === '') setExperienciaError(true);
-        if (estudios === '') setEstudiosError(true);
-        if (tags.length === 0) setTagsError(true);
-
+    
+        if (rol === 'Empresa') {
+            if (descripcion === '') setDescripcionError(true);
+        } else if (rol === 'Desempleado') {
+            if (descripcion === '') setDescripcionError(true);
+            if (edad === '') setEdadError(true);
+            if (experiencia_Laboral === '') setExperienciaError(true);
+            if (estudios === '') setEstudiosError(true);
+            if (tags.length === 0) setTagsError(true);
+        }
+    
         if (!!nombre && !!email && !!password && !!confirmPassword && !!rol && tags.length > 0) {
-
+    
             if (password !== confirmPassword) {
                 setRegistroError('Las contraseñas son distintas. Pruébelo de nuevo.');
             } else {
@@ -90,38 +94,62 @@ export const Register = () => {
                     tag: tag.value,
                     experience: tagsExperience[tag.value] || 0
                 }));
-
+    
+                const userDesempleadoData = {
+                    Nombre: nombre,
+                    Email: email,
+                    Contraseña: password,
+                    Rol: rol,
+                    Descripcion: descripcion,
+                    Edad: parseInt(edad),
+                    Experiencia_Laboral: parseInt(experiencia_Laboral),
+                    Estudios: estudios,
+                    Tags: tagsWithExperience.map(tag => ({ Lenguaje: tag.tag, Puntuacion: tag.experience }))
+                };
+    
+                const userEmpresaData = {
+                    Nombre: nombre,
+                    Email: email,
+                    Contraseña: password,
+                    Rol: rol,
+                    Descripcion: descripcion
+                };
+    
+                const userData = rol === 'Desempleado' ? {
+                    ...userDesempleadoData
+                } : {
+                    ...userEmpresaData
+                };
+    
+                const url = rol === 'Empresa' ? 'http://localhost:8000/Registro/Usuario/Empresa' : 'http://localhost:8000/Registro/Usuario/Desempleado';
+    
                 axios({
-                    url: 'http://localhost:8000/Registro/Usuario',
+                    url: url,
                     method: 'POST',
                     withCredentials: true,
-                    data: {
-                        Nombre: nombre,
-                        Email: email,
-                        Contraseña: password,
-                        Rol: rol,
-                        Descripcion: descripcion,
-                        Edad: parseInt(edad),
-                        Experiencia_Laboral: parseInt(experiencia_Laboral),
-                        Estudios: estudios,
-                        Tags: tagsWithExperience.map(tag => ({ Lenguaje: tag.tag, Puntuacion: tag.experience }))
-                    },
+                    data: userData,
                 })
-                .then((response) => {
-                    console.log('Request data:', response.data);
-                    if (response.data.status === 'OK') {
-                        setRegistroError('El usuario se ha registrado como Cliente.');
-                    } else {
-                        setRegistroError('Error en el registro');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error en la solicitud:', error);
-                    setRegistroError('Error en el registro. Inténtalo de nuevo, por favor.');
-                });
+                    .then((response) => {
+                        console.log('Registro exitoso:', response.data);
+                        if (response.data.status === 'OK') {
+                            setRegistroError('El usuario se ha registrado exitosamente.');
+                        } else {
+                            setRegistroError('Error en el registro');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error en el registro:', error);
+                        if (error.response && error.response.status === 400 && error.response.data.error === 'Este Email ya está registrado') {
+                            setEmailError(true);
+                            setRegistroError('El correo electrónico ya está registrado.');
+                        } else {
+                            setRegistroError('Error en el registro. Inténtalo de nuevo, por favor.');
+                        }
+                    });
             }
         }
     };
+    
 
     return (
         <div>
@@ -129,7 +157,6 @@ export const Register = () => {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Registrarse</DialogTitle>
                 <DialogContent>
-
                     <DialogContentText>
                         Por favor, complete el formulario de registro.
                     </DialogContentText>
@@ -198,7 +225,6 @@ export const Register = () => {
                                 label="Descripcion"
                                 fullWidth
                                 variant="standard"
-
                             />
                             <TextField
                                 required
@@ -211,7 +237,6 @@ export const Register = () => {
                                 inputProps={{ maxLength: 2 }}
                                 error={edadError}
                                 helperText={edadError && 'Indique su edad, por favor.'}
-
                             />
                             <TextField
                                 required

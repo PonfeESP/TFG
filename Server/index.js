@@ -44,7 +44,7 @@ strategyInit(passport);
 
 app.get('/Mostrar/Usuarios', async (req, res) => {
   try {
-    const usuarios = await User.find({ Rol: 'Empresa' });
+    const usuarios = await User.find({ Rol: 'Desempleado' });
     res.json(usuarios);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
@@ -61,6 +61,22 @@ app.get('/Mostrar/Empresas', async (req, res) => {
   }
 });
 
+app.get('/Mostrar/Oferta/Unica', async (req, res) => {
+  try {
+    const idOferta = req.query.idOferta;
+    const oferta = await Oferta.findById(idOferta);
+    console.log(' AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ', idOferta);
+
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+    res.json(oferta);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
+
 app.get('/Mostrar/Ofertas', async (req, res) => {
   try {
     const ofertas = await Oferta.find({ Disponible: true });
@@ -73,9 +89,11 @@ app.get('/Mostrar/Ofertas', async (req, res) => {
 app.get('/Mostrar/Ofertas/Ordenadas', async (req, res) => {
   try {
     const usuarioTags = [
-      { Lenguaje: "C", Puntuacion: 5 },
-      { Lenguaje: "Java", Puntuacion: 3 },
-      { Lenguaje: "Python", Puntuacion: 4 }
+      { Lenguaje: "C", Puntuacion: 3 },
+      { Lenguaje: "Java", Puntuacion: 5 },
+      { Lenguaje: "JavaScript", Puntuacion: 1 },
+      { Lenguaje: "Python", Puntuacion: 5 }
+
     ];
     const ofertas = await Oferta.find({ Disponible: true });
     ofertas.sort((a, b) => {
@@ -111,8 +129,9 @@ app.get('/Mostrar/Ofertas/Empresa', async (req, res) => {
   }
 });
 
-app.get('/mostrarSolicitudes', async (req, res) => { //Version antigua, no es valido por ahora
+app.get('/Mostrar/Solicitudes', async (req, res) => { //Version antigua, no es valido por ahora
   try {
+    console.log("data", req.isAuthenticated());
     const solicitudes = db.collection('Solicitudes');
     const solicitudesData = await solicitudes.find().toArray();
     res.json(solicitudesData);
@@ -121,7 +140,7 @@ app.get('/mostrarSolicitudes', async (req, res) => { //Version antigua, no es va
   }
 });
 
-app.get('/mostrarSolicitudes/empresa', async (req, res) => { //Version antigua, no es valido por ahora
+app.get('/Mostrar/Solicitudes/Empresa', async (req, res) => { //Version antigua, no es valido por ahora
   try {
     const solicitudes = db.collection('Solicitudes');
     const idempresa = new ObjectId('65d5ea83ba8482276f009d80');//req.user.id;
@@ -147,12 +166,13 @@ app.get('/mostrarSolicitudes/usuario', async (req, res) => { //Version antigua, 
 
 //POSTS
 
-app.post('/Registro/Usuario', async (req, res) => {
+app.post('/Registro/Usuario/Desempleado', async (req, res) => {
   const usuario = req.body;
   console.log('XD', req.body);
 
   try {
     const usuarioExistente = await User.findOne({ Email: usuario.Email });
+
     if (usuarioExistente) {
       return res.status(400).json({ error: 'Este Email ya está registrado' });
     } else {
@@ -174,6 +194,32 @@ app.post('/Registro/Usuario', async (req, res) => {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
+app.post('/Registro/Usuario/Empresa', async (req, res) => {
+  const usuario = req.body;
+  console.log('XD', req.body);
+
+  try {
+    const usuarioExistente = await User.findOne({ Email: usuario.Email });
+
+    if (usuarioExistente) {
+      return res.status(400).json({ error: 'Este Email ya está registrado' });
+    } else {
+      const nuevoUsuario = new User({
+        Nombre: usuario.Nombre,
+        Email: usuario.Email,
+        Contraseña: usuario.Contraseña,
+        Rol: usuario.Rol,
+        Descripcion: usuario.Descripcion
+      });
+      const respuesta = await nuevoUsuario.save();
+      res.status(201).json({ status: 'OK', user: respuesta });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
 
 app.post('/Registro/Evento', async (req, res) => {
   const evento = req.body;
@@ -261,6 +307,7 @@ app.post("/logout", (req, res) => { //Ni idea de si funciona
   })
 });
 
+app.get("/user", (req, res) => !!req.isAuthenticated() ? res.status(200).send(req.session.passport.user) : res.status(401).send('Sesión no iniciada!'));
 
 //Funciones
 

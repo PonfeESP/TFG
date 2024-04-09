@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CssBaseline, Paper } from '@mui/material';
 import { Header } from './Header.component';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { teal, pink, red } from '@mui/material/colors'; // Cambiamos el color principal a teal y el secundario a pink
@@ -12,38 +12,24 @@ import { Home } from '../pages/Home/Home.page';
 import { Admin } from '../pages/Admin/Admin.page';
 import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
+import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
 
 
-import Logo from '../Imagenes/LogoTransparente.png';
 import Fondo from '../Imagenes/fondo.png';
 
 const App = () => {
-    // Preferencia por el modo oscuro
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)'); // Leer el modo del sistema
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-    // Tema personalizado con color principal naranja
     const theme = React.useMemo(() => createTheme({
         palette: {
             primary: {
-                main: red[500], // Cambiamos el color principal a teal
-            },
-            secondary: {
-                main: pink[500], // Cambiamos el color secundario a pink
+                main: "rgb(0, 0, 0)", // RGB format
             },
         },
         typography: {
-            fontFamily: 'Roboto, sans-serif', // Cambiamos la fuente a Roboto
+            fontFamily: 'Roboto, sans-serif',
         },
     }));
-
-    //CSS por el momento aqui
-
-    const containerStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-    };
 
     const paperStyle = {
         padding: '20px',
@@ -59,24 +45,24 @@ const App = () => {
         left: 0,
         width: '100%',
         height: '100%',
+        backgroundSize: 'cover', // or 'contain' based on your preference
+        backgroundRepeat: 'no-repeat',
         zIndex: -1,
     };
-
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Router>
-                <Header />
-                <div style={backgroundStyle}></div>
-                <div style={containerStyle}>
+            <div style={backgroundStyle}></div>
+                <div>
                     <Paper style={paperStyle}>
-                        <img src={Logo} alt="Logo" />
                         <Routes>
                             <Route exact path="/" element={<Home />} />
                             <Route path="/admin" element={<Admin />} />
                             <Route path="/desempleado" element={<Desempleado />} />
                             <Route path="/empresa" element={<Empresa />} />
+                            <Route path="/oferta/:idOferta" element={<OfertaUnica />} />
                         </Routes>
                     </Paper>
                 </div>

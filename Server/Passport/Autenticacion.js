@@ -20,40 +20,44 @@ export const strategyInit = passport => {
   passport.use('local-usuario', new LocalStrategy({
     usernameField: 'Email',
     passwordField: 'Contraseña'
-  }, (Email, Contraseña, done) => {
-    query = db.collection('Usuario'); //Si intento hacerlo con User.findOne no va
-    query.findOne({ Email: Email }, { projection: { Email: 1, Contraseña: 1, Rol: 1 } }).then(usuario => {
-      if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
-      if (usuario.Contraseña !== Contraseña) {
-        return done(null, false, { error: 'Contraseña incorrecta' });
-      }
-      return done(null, usuario);
-    }).catch(err => {
-      done(err);
-    });
+  }, (Email, Contraseña, done) => { 
+    User.findOne({ Email: Email })
+      .then(usuario => {
+        if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
+        if (usuario.Contraseña !== Contraseña) {
+          return done(null, false, { error: 'Contraseña incorrecta' });
+        }
+        return done(null, usuario);
+      })
+      .catch(err => {
+        done(err);
+      });
   }));
+
 
   passport.serializeUser((user, done) => {
     const userType = user.Rol;
-
     if (userType) {
       done(null, {
         id: user._id.toString(),
         userType
       });
+      console.log("asdjadj", userType);
+
     } else {
       done(new Error('Tipo de usuario inválido'));
     }
   });
 
   passport.deserializeUser((user, done) => {
-    query.findOne({ _id: user.id }, (err, usuario) => {
-      if (err) {
-        return done(err);
-      }
-      done(null, usuario);
-    });
+    User.findById(user.id).exec()
+      .then(usuario => {
+        done(null, usuario);
+      })
+      .catch(err => {
+        done(err);
+      });
   });
-};
+};  
 
 export default strategyInit;
