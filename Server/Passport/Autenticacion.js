@@ -21,8 +21,14 @@ export const strategyInit = passport => {
     usernameField: 'Email',
     passwordField: 'Contraseña'
   }, (Email, Contraseña, done) => { 
-    User.findOne({ Email: Email })
-      .then(usuario => {
+    User.findOne(
+      { Email: Email }, 
+      {projection: {
+        Email: 1, 
+        Rol: 2
+        }
+      }
+    ).then(usuario => {
         if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
         if (usuario.Contraseña !== Contraseña) {
           return done(null, false, { error: 'Contraseña incorrecta' });
