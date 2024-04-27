@@ -25,7 +25,8 @@ const ofertaSchema = new Schema({
         required: true
     },
     Empresa: {
-        type: ObjectId,
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
         required: true
     },
     Interesados: {

@@ -17,7 +17,7 @@ export const PaginaDesempleadoOrdenada = () => {
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: 'http://localhost:8000/Mostrar/Ofertas/Ordenadas',
+            url: 'http://localhost:8000/ofertas_ordenadas',
             method: 'GET'
         })
             .then(res => {

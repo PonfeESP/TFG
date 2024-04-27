@@ -11,21 +11,23 @@ const styles = `
     }
 `;
 
-export const PaginaDesempleado = () => {
+export const PaginaEmpresa = ({ userId }) => { // Corregido: Asegúrate de recibir userId como prop
+
+    console.log("KKKKKKK", userId)
 
     const [ofertas, setOfertas] = useState([]);
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: 'http://localhost:8000/ofertas',
+            url: `http://localhost:8000/ofertas_empresa/${userId}`,
             method: 'GET'
         })
             .then(res => {
-                setOfertas(res.data);
+                setOfertas(res.data); // Corregido: Cambiado de seteventos a setOfertas
             })
             .catch(err => console.log(err))
-    }, []);
+    }, [userId]); // Corregido: Agregado userId como dependencia del efecto
 
     return (
         <div style={{ backgroundColor: 'transparent' }}>
@@ -36,7 +38,6 @@ export const PaginaDesempleado = () => {
                         <TableRow>
                             <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>OFERTA</Typography></TableCell>
                             <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>DESCRIPCION</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EMPRESA</Typography></TableCell>
                             <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>TAGs</Typography></TableCell>
                         </TableRow>
                     </TableHead>
@@ -49,7 +50,6 @@ export const PaginaDesempleado = () => {
                                     </Link>
                                 </TableCell>                                
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{oferta.Descripcion}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{oferta.Empresa.Nombre}</Typography></TableCell>
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
                                     {oferta.Tags && oferta.Tags.map((tag, tagIndex) => (
                                         <Typography key={tagIndex} sx={{ fontWeight: 'bold', color: 'white' }}>{tag.Lenguaje}: {tag.Puntuacion}</Typography>
@@ -64,4 +64,4 @@ export const PaginaDesempleado = () => {
     );
 }
 
-export default PaginaDesempleado;
+export default PaginaEmpresa;

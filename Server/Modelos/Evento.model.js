@@ -10,6 +10,10 @@ const eventoSchema = new Schema({
         type: Date,
         required: true
     },
+    Hora: {
+        type: String,
+        required: true
+    },
     Descripcion: {
         type: String,
         required: true
@@ -19,7 +23,8 @@ const eventoSchema = new Schema({
         required: true
     },
     Empresa: {
-        type: ObjectId,
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
         required: true
     },
     Interesados: {

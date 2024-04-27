@@ -13,6 +13,8 @@ import { Admin } from '../pages/Admin/Admin.page';
 import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
 import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
+import { EventoUnico } from '../pages/Evento/EventoUnico.page';
+
 
 
 import Fondo from '../Imagenes/fondo.png';
@@ -63,6 +65,7 @@ const App = () => {
                             <Route path="/desempleado" element={<Desempleado />} />
                             <Route path="/empresa" element={<Empresa />} />
                             <Route path="/oferta/:idOferta" element={<OfertaUnica />} />
+                            <Route path="/evento/:idEvento" element={<EventoUnico />} />
                         </Routes>
                     </Paper>
                 </div>

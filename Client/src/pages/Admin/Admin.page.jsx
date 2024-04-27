@@ -1,16 +1,10 @@
-// Importaciones de React
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// Importación de Axios
 import axios from 'axios';
-
-// Importaciones de Material UI
-import { Paper, Typography, Button, Alert, Snackbar } from '@mui/material';
-// Importaciones de Componentes
+import { Paper, Typography, Alert, Snackbar } from '@mui/material';
 import { PaginaAdmin } from './Componentes/PaginaAdmin';
+import { PaginaTags } from './Componentes/PaginaTags';
 import Header from '../../components/Header.component';
-
 import { axiosConfig } from '../../constant/axiosConfig.constant';
 
 const headerStyle = {
@@ -24,12 +18,12 @@ export const Admin = () => {
   const [logoutError, setLogoutError] = useState();
   const [userData, setUserData] = useState({});
   const [finishLoading, setFinishLoading] = useState(null);
+  const [mostrarTags, setMostrarTags] = useState(false); // Nuevo estado
+  const [mostrarEmpresas, setMostrarEmpresas] = useState(true); // Nuevo estado
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
-
     document.title = "ADMINISTRADOR";
     axios({
       ...axiosConfig,
@@ -40,23 +34,35 @@ export const Admin = () => {
         setUserData(res.data);
         setFinishLoading(!!res.data && !!res.data.userType && res.data.userType === 'Admin');
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   }, []);
 
   return (
-    !!finishLoading ?
-    <><div>
-    <Header style={headerStyle} />
-    <div>
-      <PaginaAdmin />
-    </div>
-    </div>
-    </> :       
+    !!finishLoading ? (
+      <div>
+        <Header
+          onMostrarEmpresas={() => {
+            setMostrarEmpresas(true);
+            setMostrarTags(false);
+          }}
+          onMostrarTags={() => {
+            setMostrarEmpresas(false);
+            setMostrarTags(true);
+          }}
+        />
+        <div>
+          {mostrarEmpresas ? <PaginaAdmin /> : <PaginaTags />}
+        </div>
+      </div>
+    ) : (
       <Snackbar
-      open={!finishLoading}
-      autoHideDuration={2000}
-      anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-      onClose={() => !!userData ? userData.userType === 'empresa' ? navigate('/empresa') : userData.userType === 'desempleado' ? navigate('/desempleado') : navigate('/') : navigate('/')}>
-      <Alert severity="error">No tienes permiso para acceder a esta página</Alert></Snackbar>
+        open={!finishLoading}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={() => !!userData ? userData.userType === 'empresa' ? navigate('/empresa') : userData.userType === 'desempleado' ? navigate('/desempleado') : navigate('/') : navigate('/')}
+      >
+        <Alert severity="error">No tienes permiso para acceder a esta página</Alert>
+      </Snackbar>
+    )
   );
 };

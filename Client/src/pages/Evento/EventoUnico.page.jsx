@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Paper, Typography, Snackbar, Alert } from '@mui/material'; 
-import { PaginaOfertaDesempleado } from './Componentes/PaginaOfertaDesempleado';
-import { PaginaOfertaEmpresa } from './Componentes/PaginaOfertaEmpresa'; // Importa la página de oferta para empresas
+import { Paper, Typography, Snackbar, Alert } from '@mui/material';
+import { PaginaEventoDesempleado } from './Componentes/PaginaEventoDesempleado';
+import { PaginaEventoEmpresa } from './Componentes/PaginaEventoEmpresa'; // Importa la página de Evento para empresas
 import { axiosConfig } from '../../constant/axiosConfig.constant';
 import Header from '../../components/Header.component';
+
 import { PaginaEmpresa } from '../Empresa/Componentes/PaginaEmpresa';
 import { PaginaEmpresaModificacion } from '../Empresa/Componentes/PaginaEmpresaModificacion';
 import { PaginaEmpresaUsuario } from '../Empresa/Componentes/PaginaEmpresaUsuario';
@@ -16,22 +17,22 @@ import { PaginaDesempleadoEmpresa } from '../Desempleado/Componentes/PaginaDesem
 import { PaginaDesempleadoEvento } from '../Desempleado/Componentes/PaginaDesempleadoEvento';
 import { PaginaDesempleadoModificacion } from '../Desempleado/Componentes/PaginaDesempleadoModificacion';
 
-export const OfertaUnica = () => {
+export const EventoUnico = () => {
   const [logoutError, setLogoutError] = useState('');
   const [userData, setUserData] = useState({});
   const [finishLoading, setFinishLoading] = useState(null);
   const [mostrarUsuario, setMostrarUsuario] = useState(false);
   const [mostrarEvento, setMostrarEvento] = useState(false); 
   const [mostrarModificacion, setMostrarModificacion] = useState(false); 
-  const [mostrarOfertas, setMostrarOfertas] = useState(false);
+  const [mostrarOfertas, setMostrarOfertas] = useState(false); 
   const [mostrarOrdenada, setMostrarOrdenada] = useState(false);
   const [mostrarEmpresa, setMostrarEmpresa] = useState(false);
-  
+
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Oferta Única";
+    document.title = "Evento Única";
     axios({
       ...axiosConfig,
       url: 'http://localhost:8000/user',
@@ -88,7 +89,7 @@ export const OfertaUnica = () => {
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
               <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
-              {mostrarOrdenada ? <PaginaDesempleadoOrdenada /> : mostrarEmpresa ? <PaginaDesempleadoEmpresa /> : mostrarEvento ? <PaginaDesempleadoEvento /> : mostrarModificacion ? <PaginaDesempleadoModificacion userId={userData.id}/> : <PaginaOfertaDesempleado />}
+              {mostrarOrdenada ? <PaginaDesempleadoOrdenada /> : mostrarEmpresa ? <PaginaDesempleadoEmpresa /> : mostrarEvento ? <PaginaDesempleadoEvento /> : mostrarModificacion ? <PaginaDesempleadoModificacion userId={userData.id}/> : <PaginaEventoDesempleado />}
             </Paper>
           </div>
         </>
@@ -134,7 +135,7 @@ export const OfertaUnica = () => {
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
               <Typography variant="h4" color="primary">EMPRESA</Typography>
-              {mostrarEvento ? <PaginaEmpresaEvento userId={userData.id}/> : mostrarModificacion ? <PaginaEmpresaModificacion userId={userData.id}/> : mostrarUsuario ? <PaginaEmpresaUsuario/> : <PaginaOfertaEmpresa/>}
+              {mostrarEvento ? <PaginaEmpresaEvento userId={userData.id}/> : mostrarModificacion ? <PaginaEmpresaModificacion userId={userData.id}/> : mostrarUsuario ? <PaginaEmpresaUsuario/> : <PaginaEventoEmpresa/>}
             </Paper>
           </div>
         </>
@@ -151,4 +152,4 @@ export const OfertaUnica = () => {
   );
 };
 
-export default OfertaUnica;
+export default EventoUnico;

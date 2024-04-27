@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Paper, Typography, Button, Alert, Snackbar } from '@mui/material';
+import { Paper, Typography, Snackbar, Alert } from '@mui/material'; 
 import { PaginaDesempleado } from './Componentes/PaginaDesempleado';
 import { PaginaDesempleadoOrdenada } from './Componentes/PaginaDesempleadoOrdenada';
+import { PaginaDesempleadoEmpresa } from './Componentes/PaginaDesempleadoEmpresa';
+import { PaginaDesempleadoEvento } from './Componentes/PaginaDesempleadoEvento';
+import { PaginaDesempleadoModificacion } from './Componentes/PaginaDesempleadoModificacion';
 import { axiosConfig } from '../../constant/axiosConfig.constant';
+import Header from '../../components/Header.component';
 
 export const Desempleado = () => {
-  const [logoutError, setLogoutError] = useState();
+  const [logoutError, setLogoutError] = useState('');
   const [userData, setUserData] = useState({});
   const [finishLoading, setFinishLoading] = useState(null);
-  const [mostrarOrdenada, setMostrarOrdenada] = useState(false); // Nuevo estado para controlar la visualización de la página ordenada
+  const [mostrarOrdenada, setMostrarOrdenada] = useState(false);
+  const [mostrarEmpresa, setMostrarEmpresa] = useState(false);
+  const [mostrarEvento, setMostrarEvento] = useState(false); 
+  const [mostrarModificacion, setMostrarModificacion] = useState(false); 
 
   const navigate = useNavigate();
 
@@ -28,27 +35,58 @@ export const Desempleado = () => {
       .catch(err => console.log(err))
   }, []);
 
-  const handleToggleMostrarOrdenada = () => {
-    setMostrarOrdenada(prevState => !prevState); // Cambiar el estado para mostrar u ocultar la página ordenada
-  };
-
   return (
     !!finishLoading ?
-      <div>
-        <Paper>
-          <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
-          <Button onClick={handleToggleMostrarOrdenada}>Mostrar Ordenada</Button> {/* Botón para mostrar u ocultar la página ordenada */}
-          {!!logoutError && <Typography>{logoutError}</Typography>}
-        </Paper>
-
-        {mostrarOrdenada ? <PaginaDesempleadoOrdenada /> : <PaginaDesempleado />} {/* Mostrar la página correspondiente según el estado de mostrarOrdenada */}
-
-      </div> :
+      <>
+        <div style={{ position: 'relative' }}>
+          <Header 
+            onMostrarOrdenada={() => {
+              setMostrarOrdenada(true);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+            }}
+            onMostrar={() => {
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+            }}
+            onMostrarEmpresa={() => {
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(true);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+            }}
+            onMostrarEvento={() => {
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(true);
+              setMostrarModificacion(false);
+            }}
+            onModificarUsuario={() => {
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(true);
+            }}
+          />
+        </div>
+        <div style={{ marginTop: '70px', padding: '20px' }}>
+          <Paper>
+            <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
+            {mostrarOrdenada ? <PaginaDesempleadoOrdenada /> : mostrarEmpresa ? <PaginaDesempleadoEmpresa /> : mostrarEvento ? <PaginaDesempleadoEvento /> : mostrarModificacion ? <PaginaDesempleadoModificacion userId={userData.id}/> : <PaginaDesempleado />}
+          </Paper>
+        </div>
+      </> :
       <Snackbar
         open={!finishLoading}
         autoHideDuration={2000}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        onClose={() => !!userData ? userData.userType === 'empresa' ? navigate('/empresa') : userData.userType === 'desempleado' ? navigate('/desempleado') : navigate('/') : navigate('/')}>
-        <Alert severity="error">No tienes permiso para acceder a esta página</Alert></Snackbar>
+        onClose={() => !!userData ? userData.userType === 'Empresa' ? navigate('/empresa') : userData.userType === 'Admin' ? navigate('/admin') : navigate('/') : navigate('/')}>
+        <Alert severity="error">No tienes permiso para acceder a esta página</Alert>
+      </Snackbar>
   );
 };
+
+export default Desempleado;

@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, Button, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
+import { Link } from 'react-router-dom';
+
 
 const styles = `
     .degradado-invertido {
@@ -10,9 +12,9 @@ const styles = `
     }
 `;
 
-export const PaginaAdmin = () => {
+export const PaginaDesempleadoEmpresa = () => {
 
-    const [empresas, setEmpresas] = useState([]);
+    const [empresas, setempresas] = useState([]);
 
     useEffect(() => {
         axios({
@@ -21,7 +23,7 @@ export const PaginaAdmin = () => {
             method: 'GET'
         })
             .then(res => {
-                setEmpresas(res.data);
+                setempresas(res.data);
             })
             .catch(err => console.log(err))
     }, []);
@@ -34,15 +36,17 @@ export const PaginaAdmin = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EMPRESA</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EMAIL</Typography></TableCell>
                             <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>DESCRIPCION</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {empresas.map((empresa, index) => (
                             <TableRow key={empresa._id}>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{empresa.Nombre}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{empresa.Email}</Typography></TableCell>
+                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
+                                    <Link to={`/empresa/${empresa._id}`}>
+                                        <Typography sx={{ fontWeight: 'bold', color: 'white' }}>{empresa.Nombre}</Typography>
+                                    </Link>
+                                </TableCell>
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{empresa.Descripcion}</Typography></TableCell>
                             </TableRow>
                         ))}
@@ -51,7 +55,6 @@ export const PaginaAdmin = () => {
             )}
         </div>
     );
-
 }
 
-export default PaginaAdmin;
+export default PaginaDesempleadoEmpresa;

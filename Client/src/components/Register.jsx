@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import { useNavigate } from 'react-router-dom';
+import { axiosConfig } from '../constant/axiosConfig.constant';
 
 export const Register = () => {
     const [email, setEmail] = useState("");
@@ -31,13 +32,19 @@ export const Register = () => {
     const [tagsError, setTagsError] = useState(false);
     const [registroError, setRegistroError] = useState("");
     const [open, setOpen] = useState(false);
+    const [programmingLanguages, setProgrammingLanguages] = useState([]);
 
-    const programmingLanguages = [
-        { label: 'JavaScript', value: 'javascript' },
-        { label: 'Python', value: 'python' },
-        { label: 'Java', value: 'java' },
-        // Add more programming languages as needed
-    ];
+    useEffect(() => {
+        axios({
+            ...axiosConfig,
+            url: 'http://localhost:8000/tags',
+            method: 'GET'
+        })
+            .then(res => {
+                setProgrammingLanguages(res.data);
+            })
+            .catch(err => console.log(err));
+    }, []);
 
     const handleTagsChange = (event, value) => {
         setTags(value);
@@ -57,7 +64,7 @@ export const Register = () => {
 
     const performRegister = (event) => {
         event.preventDefault();
-    
+
         setUserError(false);
         setEmailError(false);
         setPasswordError(false);
@@ -68,15 +75,16 @@ export const Register = () => {
         setExperienciaError(false);
         setEstudiosError(false);
         setTagsError(false);
-    
+
         if (email === '') setUserError(true);
         if (password === '') setPasswordError(true);
         if (confirmPassword === '') setConfirmPasswordError(true);
         if (rol === '') setRolError(true);
         if (nombre === '') setNombreError(true);
-    
+
         if (rol === 'Empresa') {
             if (descripcion === '') setDescripcionError(true);
+            tags.length = 1;
         } else if (rol === 'Desempleado') {
             if (descripcion === '') setDescripcionError(true);
             if (edad === '') setEdadError(true);
@@ -84,17 +92,19 @@ export const Register = () => {
             if (estudios === '') setEstudiosError(true);
             if (tags.length === 0) setTagsError(true);
         }
-    
+
+        console.log("Jaas", nombre, email, password, confirmPassword, rol, tags.length)
+
         if (!!nombre && !!email && !!password && !!confirmPassword && !!rol && tags.length > 0) {
-    
+
             if (password !== confirmPassword) {
                 setRegistroError('Las contraseñas son distintas. Pruébelo de nuevo.');
             } else {
                 const tagsWithExperience = tags.map(tag => ({
-                    tag: tag.value,
-                    experience: tagsExperience[tag.value] || 0
+                    Lenguaje: tag.label,  // Corregido: Se pasa el nombre del lenguaje como "Lenguaje"
+                    Puntuacion: tagsExperience[tag.value] || 0  // Se pasa la puntuación correspondiente
                 }));
-    
+
                 const userDesempleadoData = {
                     Nombre: nombre,
                     Email: email,
@@ -106,7 +116,7 @@ export const Register = () => {
                     Estudios: estudios,
                     Tags: tagsWithExperience.map(tag => ({ Lenguaje: tag.tag, Puntuacion: tag.experience }))
                 };
-    
+
                 const userEmpresaData = {
                     Nombre: nombre,
                     Email: email,
@@ -114,15 +124,16 @@ export const Register = () => {
                     Rol: rol,
                     Descripcion: descripcion
                 };
-    
+
                 const userData = rol === 'Desempleado' ? {
-                    ...userDesempleadoData
+                    ...userDesempleadoData,
+                    Tags: tagsWithExperience
                 } : {
                     ...userEmpresaData
                 };
-    
+
                 const url = rol === 'Empresa' ? 'http://localhost:8000/Registro/Usuario/Empresa' : 'http://localhost:8000/Registro/Usuario/Desempleado';
-    
+
                 axios({
                     url: url,
                     method: 'POST',
@@ -149,8 +160,6 @@ export const Register = () => {
             }
         }
     };
-    
-
     return (
         <div>
             <Button onClick={handleClickOpen}>Registrarse</Button>
@@ -262,11 +271,11 @@ export const Register = () => {
                             />
                             <Autocomplete
                                 multiple
-                                options={programmingLanguages}
-                                getOptionLabel={(option) => option.label}
+                                options={programmingLanguages.map(language => ({ label: language.Nombre, value: language._id }))}
+                                getOptionLabel={option => option.label}
                                 value={tags}
                                 onChange={handleTagsChange}
-                                renderInput={(params) => (
+                                renderInput={params => (
                                     <TextField
                                         {...params}
                                         variant="standard"
@@ -277,7 +286,7 @@ export const Register = () => {
                                     />
                                 )}
                             />
-                            {tags.map((tag) => (
+                            {tags.map(tag => (
                                 <Box key={tag.value}>
                                     <span>{tag.label}</span>
                                     <Rating
