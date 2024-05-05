@@ -88,7 +88,7 @@ app.get('/eventos', async (req, res) => {
 
     const eventosFuturos = await Evento.find({
       Fecha: { $gte: fechaActual }
-    });
+    }).populate('Empresa', 'Nombre');
 
     res.json(eventosFuturos);
   } catch (error) {
@@ -98,7 +98,7 @@ app.get('/eventos', async (req, res) => {
 
 app.get('/eventos/:id', async (req, res) => {
   try {
-    const evento = await Evento.findById(req.params.id)
+    const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
     res.json(evento);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
@@ -107,7 +107,6 @@ app.get('/eventos/:id', async (req, res) => {
 
 app.get('/eventos_empresa/:id', async (req, res) => {
   try {
-    console.log(req.params.id)
     const eventos = await Evento.find({
       Empresa: req.params.id 
     });
@@ -118,17 +117,52 @@ app.get('/eventos_empresa/:id', async (req, res) => {
   }
 });
 
-app.get('/ofertas/:id', async (req, res) => {
+app.get('/empresa_unica/:id', async (req, res) => {
   try {
-    const oferta = await Oferta.findById(req.params.id);
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
-    }
-    res.json(oferta);
+    const empresa = await User.findById(req.params.id);
+    res.json(empresa);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
+app.get('/usuario_unico/:id', async (req, res) => {
+  try {
+    const usuario = await User.findById(req.params.id);
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
+app.get('/ofertas/:id', async (req, res) => {
+  try {
+    const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
+    
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    console.log("sas", oferta)
+
+    const empresa = await User.findById(oferta.Empresa);
+
+    if (!empresa) {
+      return res.status(404).json({ error: 'Empresa no encontrada' });
+    }
+
+    const ofertaConEmpresa = {
+      ...oferta.toObject(),
+      Nombre_Empresa: empresa.Nombre
+    };
+
+    res.json(ofertaConEmpresa);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
 
 app.get('/ofertas_empresa/:id', async (req, res) => {
   try {
@@ -148,7 +182,6 @@ app.get('/ofertas_empresa/:id', async (req, res) => {
 app.get('/ofertas', async (req, res) => {
   try {
     const ofertas = await Oferta.find({ Disponible: true }).populate('Empresa', 'Nombre');
-    console.log("JSJA", ofertas)
     res.json(ofertas);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
@@ -156,24 +189,21 @@ app.get('/ofertas', async (req, res) => {
 });
 
 
-app.get('/ofertas_ordenadas', async (req, res) => {  
-  console.log("heofjaifm");
-
+app.get('/ofertas_ordenadas/:id', async (req, res) => {
+  console.log("asasa", req.params.id)
   try {
-    const usuarioTags = [
-      { Lenguaje: "C", Puntuacion: 3 },
-      { Lenguaje: "Java", Puntuacion: 5 },
-      { Lenguaje: "JavaScript", Puntuacion: 1 },
-      { Lenguaje: "Python", Puntuacion: 5 }
+    const usuario = await User.findById(req.params.id);
 
-    ];
-    const ofertas = await Oferta.find({ Disponible: true });
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const usuarioTags = usuario.Tags;
+
+    const ofertas = await Oferta.find({ Disponible: true }).populate('Empresa', 'Nombre');
     ofertas.sort((a, b) => {
-      console.log(`Sasdad`, a.Tags);
       const porcentajeA = calcularPorcentajeConcordancia(usuarioTags, a.Tags);
-      console.log(`Sasdad`, porcentajeA);
       const porcentajeB = calcularPorcentajeConcordancia(usuarioTags, b.Tags);
-      console.log(`Sasdad`, porcentajeB);
       return porcentajeB - porcentajeA;
     });
 
@@ -190,6 +220,7 @@ app.get('/ofertas_ordenadas', async (req, res) => {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
 
 app.get('/ofertas/empresa', async (req, res) => {
   try {
@@ -319,6 +350,7 @@ app.post('/registro_evento/:id', async (req, res) => {
       Hora: hora,
       Descripcion: evento.Descripcion,
       Aforo: evento.Aforo,
+      Localizacion: evento.Localizacion,
       Empresa: idEmpresa
     });
 
@@ -332,20 +364,23 @@ app.post('/registro_evento/:id', async (req, res) => {
 
 
 
-app.post('/registro/ofertas', async (req, res) => {
+app.post('/registro_oferta/:id', async (req, res) => {
   try {
+    const idEmpresa = req.params.id;
     const oferta = req.body;
 
     if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || !oferta.Disponible || !oferta.Empresa) {
       return res.status(400).json({ error: "Mo se han rellenado los campos correctamente" });
     }
 
+    console.log("aaa", oferta)
+
     const nuevaOferta = new Oferta({
       Nombre: oferta.Nombre,
       Descripcion: oferta.Descripcion,
       Tags: oferta.Tags,
       Disponible: oferta.Disponible,
-      Empresa: oferta.Empresa,
+      Empresa: idEmpresa,
       Interesados: oferta.Interesados
     });
 
@@ -419,6 +454,7 @@ app.put('/usuarios/:id', async (req, res) => {
 });
 
 app.put('/oferta/:id', async (req, res) => {
+  console.log("saas", req.body)
   const ofertaId = req.params.id;
   const newData = req.body;
 

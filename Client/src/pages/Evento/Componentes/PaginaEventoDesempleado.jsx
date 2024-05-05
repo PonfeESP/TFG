@@ -78,7 +78,7 @@ export const PaginaEventoDesempleado = () => {
                     <Typography variant="body1">Fecha: {new Date(evento.Fecha).toLocaleDateString()}</Typography>
                     <Typography variant="body1">Hora: {evento.Hora}</Typography>
                     <Typography variant="body1">Aforo: {evento.Aforo}</Typography>
-                    <Typography variant="body1">Empresa: {evento.Empresa}</Typography>
+                    <Typography variant="body1">Empresa: {evento.Empresa.Nombre}</Typography>
                     <Button
                         variant="contained"
                         color="primary"

@@ -22,6 +22,10 @@ const eventoSchema = new Schema({
         type: Number,
         required: true
     },
+    Localizacion: {
+        type: String,
+        required: true
+    },
     Empresa: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario',

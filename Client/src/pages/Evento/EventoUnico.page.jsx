@@ -50,8 +50,8 @@ export const EventoUnico = () => {
       userData.userType === 'Desempleado' ? (
         <>
           <div style={{ position: 'relative' }}>
-            <Header onMostrarOrdenada={() => {
-              navigate('/desempleado'); // Navega a la ruta '/empresa'
+          <Header onMostrarOrdenada={() => {
+              navigate('/desempleado/ordenada'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(true);
               setMostrarEmpresa(false);
               setMostrarEvento(false);
@@ -65,21 +65,21 @@ export const EventoUnico = () => {
               setMostrarModificacion(false);
             }}
             onMostrarEmpresa={() => {
-              navigate('/desempleado'); // Navega a la ruta '/empresa'
+              navigate('/desempleado/empresas'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(false);
               setMostrarEmpresa(true);
               setMostrarEvento(false);
               setMostrarModificacion(false);
             }}
             onMostrarEvento={() => {
-              navigate('/desempleado'); // Navega a la ruta '/empresa'
+              navigate('/desempleado/eventos'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(false);
               setMostrarEmpresa(false);
               setMostrarEvento(true);
               setMostrarModificacion(false);
             }}
             onModificarUsuario={() => {
-              navigate('/desempleado'); // Navega a la ruta '/empresa'
+              navigate('/desempleado/modificacion'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(false);
               setMostrarEmpresa(false);
               setMostrarEvento(false);
@@ -89,53 +89,46 @@ export const EventoUnico = () => {
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
               <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
-              {mostrarOrdenada ? <PaginaDesempleadoOrdenada /> : mostrarEmpresa ? <PaginaDesempleadoEmpresa /> : mostrarEvento ? <PaginaDesempleadoEvento /> : mostrarModificacion ? <PaginaDesempleadoModificacion userId={userData.id}/> : <PaginaEventoDesempleado />}
+              <PaginaEventoDesempleado />
             </Paper>
           </div>
         </>
       ) : userData.userType === 'Empresa' ? (
         <>
           <div style={{ position: 'relative' }}>
-            <Header onMostrarUsuario={() => {
+          <Header onMostrarUsuario={() => {
+              navigate('/empresa/usuarios'); 
               setMostrarUsuario(true);
               setMostrarOfertas(false);
               setMostrarEvento(false);
               setMostrarModificacion(false);
-              navigate('/empresa'); // Navega a la ruta '/empresa'
             }}
-              onMostrar={() => {
-                setMostrarUsuario(false);
-                setMostrarOfertas(false);
-                setMostrarEvento(false);
-                setMostrarModificacion(false);
-                navigate('/empresa'); // Navega a la ruta '/empresa'
-              }}
               onMostrarOfertas={() => {
+                navigate('/empresa'); 
                 setMostrarUsuario(false);
                 setMostrarOfertas(true);
                 setMostrarEvento(false);
                 setMostrarModificacion(false);
-                navigate('/empresa'); // Navega a la ruta '/empresa'
               }}
               onMostrarEvento={() => {
+                navigate('/empresa/eventos'); 
                 setMostrarUsuario(false);
                 setMostrarOfertas(false);
                 setMostrarEvento(true);
                 setMostrarModificacion(false);
-                navigate('/empresa'); // Navega a la ruta '/empresa'
               }}
               onModificarUsuario={() => {
+                navigate('/empresa/modificacion'); 
                 setMostrarUsuario(false);
                 setMostrarOfertas(false);
                 setMostrarEvento(false);
                 setMostrarModificacion(true);
-                navigate('/empresa'); // Navega a la ruta '/empresa'
               }} />
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
               <Typography variant="h4" color="primary">EMPRESA</Typography>
-              {mostrarEvento ? <PaginaEmpresaEvento userId={userData.id}/> : mostrarModificacion ? <PaginaEmpresaModificacion userId={userData.id}/> : mostrarUsuario ? <PaginaEmpresaUsuario/> : <PaginaEventoEmpresa/>}
+             <PaginaEventoEmpresa/>
             </Paper>
           </div>
         </>

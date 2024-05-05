@@ -47,7 +47,7 @@ export const Login = () => {
 
         if (!!email && !!password) {
             axios({
-                url: 'http://localhost:8000/Login/Usuario',
+                url: 'http://localhost:8000/login/usuario',
                 method: 'POST',
                 withCredentials: true,
                 data: {

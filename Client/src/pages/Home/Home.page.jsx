@@ -1,36 +1,39 @@
-// Importaciones de React
 import React, { useEffect, useState } from 'react';
+import { Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-// Importaciones de Material UI
-import { Paper, Alert, Snackbar, Typography } from '@mui/material';
-
-// Importación de Axios
 import axios from 'axios';
-
-// Importa el componente de encabezado
 import Header from '../../components/Header.component';
 import Logo from '../../Imagenes/LogoTransparente.png';
-
+import Fond from '../../Imagenes/fond.jpg';
 import { axiosConfig } from '../../constant/axiosConfig.constant';
-
-// CSS
-const body1 = {
-  height: '100vh',
-  width: '70%',
-  margin: '0 auto',
-  overflowX: 'hidden', 
-  fontSize: '21px',
-  textAlign: 'center',
-  position: 'center'
-};
 
 const headerStyle = {
   position: 'absolute',
   top: 0,
   left: 0,
   width: '100%',
-  zIndex: 1000, // Asegúrate de que el encabezado esté en la parte superior
+  zIndex: 1000,
+};
+
+const paperStyle = {
+  padding: '20px',
+  minHeight: '500px', // Altura mínima de cada sección
+  height: '100%', // El papel ocupa toda la altura de su contenedor
+  backgroundColor: '#333', // Fondo negro
+  color: 'white', // Texto blanco
+};
+
+
+const paperStyle2 = {
+  padding: '20px',
+  minHeight: '500px', // Altura mínima de cada sección
+  height: '100%', // El papel ocupa toda la altura de su contenedor
+};
+
+const paperStyle3 = {
+  padding: '20px',
+  minHeight: '500px', // Altura mínima de cada sección
+  height: '100%', // El papel ocupa toda la altura de su contenedor
 };
 
 export const Home = () => {
@@ -46,7 +49,6 @@ export const Home = () => {
       method: 'GET'
     })
       .then(res => {
-        console.log("llll", res.data)
         setUserData(res.data);
         setFinishLoading(!!res.data && !!res.data.userType);
       })
@@ -57,12 +59,19 @@ export const Home = () => {
     <>
       <Header style={headerStyle} />
       <img src={Logo} alt="Logo" />
-
-      <div style={body1}>
-        Bienvenido a ITJobFinder<br />
-        ¿En qué nos especializamos?<br />
-        Te presentamos una aplicación interactiva desarrollada por y para ingenieros del software, habilitando una serie de tags que te permitirán describir tu experiencia y ayudarte a encontrar oportunidades de trabajo que se adecuen a tus preferencias.
-      </div>
+      <div >
+          <Paper style={paperStyle}>
+            <Typography>Bienvenido a ITJobFinder</Typography> 
+            <Typography>ITJobFinder es una aplicacion web de busqueda de empleo desarrollada por y para ingenieros informaticos</Typography> 
+            <Typography>Contamos con la colaboracion de multiples empresas</Typography> 
+          </Paper>
+          <Paper style={paperStyle2}>
+            {/* Contenido de la segunda sección */}
+          </Paper>
+          <Paper style={paperStyle3}>
+            {/* Contenido de la tercera sección */}
+          </Paper>
+        </div>
     </>
   );
 };

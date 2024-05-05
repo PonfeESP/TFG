@@ -23,11 +23,6 @@ export const strategyInit = passport => {
   }, (Email, Contraseña, done) => { 
     User.findOne(
       { Email: Email }, 
-      {projection: {
-        Email: 1, 
-        Rol: 2
-        }
-      }
     ).then(usuario => {
         if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
         if (usuario.Contraseña !== Contraseña) {
@@ -48,8 +43,6 @@ export const strategyInit = passport => {
         id: user._id.toString(),
         userType
       });
-      console.log("asdjadj", userType);
-
     } else {
       done(new Error('Tipo de usuario inválido'));
     }

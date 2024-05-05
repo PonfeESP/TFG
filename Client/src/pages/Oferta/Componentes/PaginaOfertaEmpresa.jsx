@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, Button, Modal, Box, TextField, Chip, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Typography, Button, TextField, Chip, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
 
@@ -14,12 +14,12 @@ const styles = `
 export const PaginaOfertaEmpresa = () => {
     const { idOferta } = useParams();
     const [oferta, setOferta] = useState(null);
-    const [confirmOpen, setConfirmOpen] = useState(false);
     const [userData, setUserData] = useState({});
     const [finishLoading, setFinishLoading] = useState(null);
     const [nuevoTag, setNuevoTag] = useState('');
     const [tags, setTags] = useState([]);
-    const [tagSeleccionado, setTagSeleccionado] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [disponible, setDisponible] = useState(false);
 
     useEffect(() => {
         axios({
@@ -42,7 +42,13 @@ export const PaginaOfertaEmpresa = () => {
         })
             .then(res => {
                 setOferta(res.data);
-                setTags(res.data.Tags.map(tag => tag.Lenguaje));
+                const formattedTags = res.data.Tags.map(tag => ({
+                    nombre: tag.Lenguaje,
+                    puntuacion: tag.Puntuacion
+                }));
+                setTags(formattedTags);
+                setDescripcion(res.data.Descripcion);
+                setDisponible(res.data.Disponible);
             })
             .catch(err => console.log(err));
     }, []);
@@ -52,7 +58,11 @@ export const PaginaOfertaEmpresa = () => {
             ...axiosConfig,
             url: `http://localhost:8000/oferta/${idOferta}`,
             method: 'PUT',
-            data: { /* Aquí pasa los datos actualizados de la oferta */ }
+            data: { 
+                Descripcion: descripcion,
+                Disponible: disponible,
+                Tags: tags.map(tag => ({ Lenguaje: tag.nombre, Puntuacion: tag.puntuacion }))
+            }
         })
             .then(res => {
                 console.log('Oferta modificada con éxito:', res.data);
@@ -61,12 +71,18 @@ export const PaginaOfertaEmpresa = () => {
     };
 
     const handleNuevoTag = () => {
-        setTags([...tags, nuevoTag]);
+        setTags([...tags, { nombre: nuevoTag, puntuacion: 0 }]);
         setNuevoTag('');
     };
 
     const handleEliminarTag = (tag) => {
-        setTags(tags.filter(t => t !== tag));
+        setTags(tags.filter(t => t.nombre !== tag.nombre));
+    };
+
+    const handleModificarPuntuacion = (index, nuevaPuntuacion) => {
+        const newTags = [...tags];
+        newTags[index].puntuacion = nuevaPuntuacion;
+        setTags(newTags);
     };
 
     return (
@@ -75,19 +91,39 @@ export const PaginaOfertaEmpresa = () => {
             {oferta && (
                 <>
                     <Typography variant="h4">{oferta.Nombre}</Typography>
-                    <Typography variant="body1">Descripción: {oferta.Descripcion}</Typography>
-                    <Typography variant="body1">Empresa: {oferta.Empresa}</Typography>
-                    <Typography variant="body1">Disponible: {oferta.Disponible ? 'Sí' : 'No'}</Typography>
+                    <Typography variant="body1">Descripción: 
+                        <TextField
+                            multiline
+                            variant="outlined"
+                            fullWidth
+                            value={descripcion}
+                            onChange={(e) => setDescripcion(e.target.value)}
+                        />
+                    </Typography>
+                    <Typography variant="body1">Empresa: {oferta.Nombre_Empresa}</Typography>
+                    <Typography variant="body1">Disponible: 
+                        <input
+                            type="checkbox"
+                            checked={disponible}
+                            onChange={(e) => setDisponible(e.target.checked)}
+                        />
+                    </Typography>
                     <Typography variant="h5">Tags:</Typography>
-                    <div>
+                    <Box display="flex" flexDirection="column">
                         {tags.map((tag, index) => (
-                            <Chip
-                                key={index}
-                                label={tag}
-                                onDelete={() => handleEliminarTag(tag)}
-                            />
+                            <Box key={index} display="flex" alignItems="center" mb={1}>
+                                <Chip label={`${tag.nombre} (${tag.puntuacion})`} onDelete={() => handleEliminarTag(tag)} />
+                                <TextField
+                                    label="Puntuación"
+                                    variant="outlined"
+                                    type="number"
+                                    value={tag.puntuacion}
+                                    onChange={(e) => handleModificarPuntuacion(index, e.target.value)}
+                                    style={{ marginLeft: '10px' }}
+                                />
+                            </Box>
                         ))}
-                    </div>
+                    </Box>
                     <div>
                         <TextField
                             label="Nuevo Tag"

@@ -80,7 +80,7 @@ export const PaginaOfertaDesempleado = () => {
                 <>
                     <Typography variant="h4">{oferta.Nombre}</Typography>
                     <Typography variant="body1">Descripción: {oferta.Descripcion}</Typography>
-                    <Typography variant="body1">Empresa: {oferta.Empresa}</Typography>
+                    <Typography variant="body1">Empresa: {oferta.Empresa.Nombre}</Typography>
                     <Typography variant="body1">Disponible: {oferta.Disponible ? 'Sí' : 'No'}</Typography>
                     <Typography variant="h5">Tags:</Typography>
                     <ul>

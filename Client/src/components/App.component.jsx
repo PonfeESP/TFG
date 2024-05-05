@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CssBaseline, Paper } from '@mui/material';
 import { Header } from './Header.component';
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { teal, pink, red } from '@mui/material/colors'; // Cambiamos el color principal a teal y el secundario a pink
@@ -14,6 +14,15 @@ import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
 import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
 import { EventoUnico } from '../pages/Evento/EventoUnico.page';
+import { PaginaDesempleadoOrdenada } from '../pages/Desempleado/Componentes/PaginaDesempleadoOrdenada';
+import { PaginaDesempleadoEmpresa } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresa';
+import { PaginaDesempleadoEvento } from '../pages/Desempleado/Componentes/PaginaDesempleadoEvento';
+import { PaginaDesempleadoModificacion } from '../pages/Desempleado/Componentes/PaginaDesempleadoModificacion';
+import { PaginaDesempleadoEmpresaUnica } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresaUnica';
+import { PaginaEmpresaUsuario } from '../pages/Empresa/Componentes/PaginaEmpresaUsuario';
+import { PaginaEmpresaUsuarioUnico } from '../pages/Empresa/Componentes/PaginaEmpresaUsuarioUnico';
+import { PaginaEmpresaEvento } from '../pages/Empresa/Componentes/PaginaEmpresaEvento';
+import { PaginaEmpresaModificacion } from '../pages/Empresa/Componentes/PaginaEmpresaModificacion';
 
 
 
@@ -33,13 +42,6 @@ const App = () => {
         },
     }));
 
-    const paperStyle = {
-        padding: '20px',
-        textAlign: 'center',
-        backgroundColor: 'transparent',
-        height: '100%',
-    };
-
     const backgroundStyle = {
         backgroundImage: `url(${Fondo})`,
         position: 'fixed',
@@ -56,20 +58,29 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Router>
-            <div style={backgroundStyle}></div>
-                <div>
-                    <Paper style={paperStyle}>
-                        <Routes>
-                            <Route exact path="/" element={<Home />} />
-                            <Route path="/admin" element={<Admin />} />
-                            <Route path="/desempleado" element={<Desempleado />} />
-                            <Route path="/empresa" element={<Empresa />} />
-                            <Route path="/oferta/:idOferta" element={<OfertaUnica />} />
-                            <Route path="/evento/:idEvento" element={<EventoUnico />} />
-                        </Routes>
-                    </Paper>
-                </div>
+                <Routes>
+                    <Route exact path="/" element={<Home />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/desempleado" element={<Desempleado />}>
+                        <Route path="ofertas" element={<PaginaDesempleadoOrdenada />} />
+                        <Route path="ordenada" element={<PaginaDesempleadoOrdenada />} />
+                        <Route path="empresas" element={<PaginaDesempleadoEmpresa />} />
+                        <Route path="empresas/:idEmpresa" element={<PaginaDesempleadoEmpresaUnica />} />
+                        <Route path="eventos" element={<PaginaDesempleadoEvento />} />
+                        <Route path="modificacion" element={<PaginaDesempleadoModificacion />} />
+                    </Route>
+                    <Route path="/empresa" element={<Empresa />} >
+                        <Route path="usuarios" element={<PaginaEmpresaUsuario />} />
+                        <Route path="usuarios/:idUsuario" element={<PaginaEmpresaUsuarioUnico />} />
+                        <Route path="eventos" element={<PaginaEmpresaEvento />} />
+                        <Route path="modificacion" element={<PaginaEmpresaModificacion />} />
+                    </Route>
+                    <Route path="/oferta/:idOferta" element={<OfertaUnica />} />
+                    <Route path="/evento/:idEvento" element={<EventoUnico />} />
+                </Routes>
             </Router>
-        </ThemeProvider>);
+        </ThemeProvider>
+    );
 }
+
 export default App;

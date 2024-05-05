@@ -51,7 +51,7 @@ export const PaginaDesempleadoEvento = () => {
                                     </Link>
                                 </TableCell>                                
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Descripcion}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Empresa}</Typography></TableCell>
+                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Empresa.Nombre}</Typography></TableCell>
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Fecha}</Typography></TableCell>
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Aforo}</Typography></TableCell>
                             </TableRow>

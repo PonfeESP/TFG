@@ -1,64 +1,121 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, Button, TableHead, TableRow, Typography } from '@mui/material';
+import { Paper, Typography, TableContainer, Table, TableHead, TableBody, TableCell, TableRow } from '@mui/material';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
+import './PaginaDesempleadoOrdenada.css';
+import Ranking from '../../../Imagenes/Ranking.png';
+import Uno from '../../../Imagenes/uno.png';
+import Dos from '../../../Imagenes/dos.png';
+import Tres from '../../../Imagenes/tres.png';
+import { Link } from 'react-router-dom'; // Import the Link component
 
-const styles = `
-    .degradado-invertido {
-        border: solid ;  
-    }
-`;
-
-export const PaginaDesempleadoOrdenada = () => {
-
+export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
     const [ofertas, setOfertas] = useState([]);
+    const [selectedOferta, setSelectedOferta] = useState(null);
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: 'http://localhost:8000/ofertas_ordenadas',
+            url: `http://localhost:8000/ofertas_ordenadas/${userId}`,
             method: 'GET'
         })
             .then(res => {
-                setOfertas(res.data);
+                const data = maxOfertas ? res.data.slice(0, maxOfertas) : res.data;
+                setOfertas(data);
             })
-            .catch(err => console.log(err))
+            .catch(err => console.error("Error fetching data:", err))
     }, []);
 
+    const handleOfertaClick = (oferta) => {
+        setSelectedOferta(oferta);
+    };
+
+    const renderOfertas = () => {
+        const podioOfertas = ofertas.slice(0, 3);
+
+        return (
+            <div className="ofertas-wrapper">
+                <div className="ofertas-left">
+                    <Paper className="details-paper">
+                        {selectedOferta ? (
+                            <div className="details" style={{ maxWidth: '40%' }}>
+                                <Link to={`/oferta/${selectedOferta._id}`} style={{ textDecoration: 'none' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
+                                        {selectedOferta.Nombre}
+                                    </Typography>
+                                </Link>
+                                <Typography>{selectedOferta.Descripcion}</Typography>
+                                <Typography>Empresa: {selectedOferta.Empresa.Nombre}</Typography>
+                                <Typography>Porcentaje: {selectedOferta.PorcentajeConcordancia}</Typography>
+                            </div>
+                        ) : (
+                            <Typography variant="h6">Select an oferta from the podium</Typography>
+                        )}
+                    </Paper>
+                </div>
+                <div className="ofertas-right">
+                    <Paper className="podium-paper" style={{ backgroundImage: `url(${Ranking})`, backgroundSize: 'cover' }}>
+                        <div className="ofertas-container" style={{ marginTop: "120px" }}>
+                            {podioOfertas.map((oferta, index) => (
+                                <div key={index} className={`box box-${5 - index}`} style={{ backgroundImage: `url(${index === 0 ? Uno : index === 1 ? Dos : Tres})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', bottom: `${index * 25}%` }} onClick={() => handleOfertaClick(oferta)}>
+                                    <div style={{ marginTop: "170px" }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
+                                            {oferta.Nombre}
+                                        </Typography>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>Porcentaje: {oferta.PorcentajeConcordancia} %</Typography>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Paper>
+                </div>
+            </div>
+
+        );
+    };
+
+
+
+    const restantes = ofertas.slice(3);
+    const mostrarTabla = restantes.length > 0;
+
+    const getColor = (index) => {
+        const colors = ['#ff5733', '#33ff57', '#5733ff', '#ff5733', '#33ff57'];
+        return colors[index];
+    };
+
     return (
-        <div style={{ backgroundColor: 'transparent' }}>
-            <style>{styles}</style>
-            {ofertas.length > 0 && !!ofertas[0]._id && (
-                <Table aria-label="collapsible table" style={{ borderCollapse: 'collapse', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, red 0%, blue 100%)', backgroundOrigin: 'border-box', borderSpacing: '5px', border: '5px solid transparent' }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>OFERTA</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>DESCRIPCION</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EMPRESA</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>TAGs</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>PORCENTAJE</Typography></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {ofertas.map((oferta, index) => (
-                            <TableRow key={oferta._id}>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{oferta.Nombre}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{oferta.Descripcion}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{oferta.Empresa}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
-                                    {oferta.Tags && oferta.Tags.map((tag, tagIndex) => (
-                                        <Typography key={tagIndex} sx={{ fontWeight: 'bold', color: 'white' }}>{tag.Lenguaje}: {tag.Puntuacion}</Typography>
-                                    ))}
-                                </TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{oferta.PorcentajeConcordancia}</Typography></TableCell>
+        <div>
+            <div className="papers-container">
+                {renderOfertas()}
+            </div>
+            {mostrarTabla && (
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>Descripción</TableCell>
+                                <TableCell>Empresa</TableCell>
+                                <TableCell>Porcentaje</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {restantes.map((oferta, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{oferta.Nombre}</TableCell>
+                                    <TableCell>{oferta.Descripcion}</TableCell>
+                                    <TableCell>{oferta.Empresa.Nombre}</TableCell>
+                                    <TableCell>{oferta.PorcentajeConcordancia}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             )}
         </div>
     );
-}
+};
 
 export default PaginaDesempleadoOrdenada;

@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
-import { Paper, Typography, Snackbar, Alert } from '@mui/material'; 
-import { PaginaDesempleado } from './Componentes/PaginaDesempleado';
-import { PaginaDesempleadoOrdenada } from './Componentes/PaginaDesempleadoOrdenada';
-import { PaginaDesempleadoEmpresa } from './Componentes/PaginaDesempleadoEmpresa';
-import { PaginaDesempleadoEvento } from './Componentes/PaginaDesempleadoEvento';
-import { PaginaDesempleadoModificacion } from './Componentes/PaginaDesempleadoModificacion';
-import { axiosConfig } from '../../constant/axiosConfig.constant';
+import { Paper, Typography, Snackbar, Alert } from '@mui/material';
 import Header from '../../components/Header.component';
+
+import PaginaDesempleado from './Componentes/PaginaDesempleado';
+import PaginaDesempleadoHome from './Componentes/PaginaDesempleadoHome';
+import PaginaDesempleadoOrdenada from './Componentes/PaginaDesempleadoOrdenada';
+import PaginaDesempleadoEmpresa from './Componentes/PaginaDesempleadoEmpresa';
+import PaginaDesempleadoEvento from './Componentes/PaginaDesempleadoEvento';
+import PaginaDesempleadoModificacion from './Componentes/PaginaDesempleadoModificacion';
+import PaginaDesempleadoEmpresaUnica from './Componentes/PaginaDesempleadoEmpresaUnica';
+
+import { axiosConfig } from '../../constant/axiosConfig.constant';
 
 export const Desempleado = () => {
   const [logoutError, setLogoutError] = useState('');
   const [userData, setUserData] = useState({});
   const [finishLoading, setFinishLoading] = useState(null);
-  const [mostrarOrdenada, setMostrarOrdenada] = useState(false);
-  const [mostrarEmpresa, setMostrarEmpresa] = useState(false);
-  const [mostrarEvento, setMostrarEvento] = useState(false); 
-  const [mostrarModificacion, setMostrarModificacion] = useState(false); 
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,42 +39,25 @@ export const Desempleado = () => {
       <>
         <div style={{ position: 'relative' }}>
           <Header 
-            onMostrarOrdenada={() => {
-              setMostrarOrdenada(true);
-              setMostrarEmpresa(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrar={() => {
-              setMostrarOrdenada(false);
-              setMostrarEmpresa(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrarEmpresa={() => {
-              setMostrarOrdenada(false);
-              setMostrarEmpresa(true);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrarEvento={() => {
-              setMostrarOrdenada(false);
-              setMostrarEmpresa(false);
-              setMostrarEvento(true);
-              setMostrarModificacion(false);
-            }}
-            onModificarUsuario={() => {
-              setMostrarOrdenada(false);
-              setMostrarEmpresa(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(true);
-            }}
+            onMostrarOrdenada={() => navigate('/desempleado/ordenada')}
+            onMostrar={() => navigate('/desempleado/ofertas')}
+            onMostrarEmpresa={() => navigate('/desempleado/empresas')}
+            onMostrarEvento={() => navigate('/desempleado/eventos')}
+            onModificarUsuario={() => navigate('/desempleado/modificacion')} 
           />
         </div>
         <div style={{ marginTop: '70px', padding: '20px' }}>
           <Paper>
             <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
-            {mostrarOrdenada ? <PaginaDesempleadoOrdenada /> : mostrarEmpresa ? <PaginaDesempleadoEmpresa /> : mostrarEvento ? <PaginaDesempleadoEvento /> : mostrarModificacion ? <PaginaDesempleadoModificacion userId={userData.id}/> : <PaginaDesempleado />}
+            <Routes>
+              <Route path="/" element={<PaginaDesempleadoHome userId={userData.id}/>} />
+              <Route path="/ofertas" element={<PaginaDesempleado />} />
+              <Route path="/ordenada" element={<PaginaDesempleadoOrdenada userId={userData.id}/>} />
+              <Route path="/empresas" element={<PaginaDesempleadoEmpresa />} />
+              <Route path="/empresas/:idEmpresa" element={<PaginaDesempleadoEmpresaUnica />} />
+              <Route path="/eventos" element={<PaginaDesempleadoEvento />} />
+              <Route path="/modificacion" element={<PaginaDesempleadoModificacion userId={userData.id}/>} />
+            </Routes>
           </Paper>
         </div>
       </> :
@@ -88,5 +70,3 @@ export const Desempleado = () => {
       </Snackbar>
   );
 };
-
-export default Desempleado;

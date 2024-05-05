@@ -43,7 +43,7 @@ export const PaginaDesempleadoEmpresa = () => {
                         {empresas.map((empresa, index) => (
                             <TableRow key={empresa._id}>
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
-                                    <Link to={`/empresa/${empresa._id}`}>
+                                    <Link to={`/desempleado/empresas/${empresa._id}`}>
                                         <Typography sx={{ fontWeight: 'bold', color: 'white' }}>{empresa.Nombre}</Typography>
                                     </Link>
                                 </TableCell>

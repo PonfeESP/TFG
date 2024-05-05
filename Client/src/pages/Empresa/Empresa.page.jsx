@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
-import { Paper, Typography, Snackbar, Alert } from '@mui/material'; 
+import { Paper, Typography, Snackbar, Alert } from '@mui/material';
 import { PaginaEmpresa } from './Componentes/PaginaEmpresa';
 import { PaginaEmpresaModificacion } from './Componentes/PaginaEmpresaModificacion';
 import { PaginaEmpresaUsuario } from './Componentes/PaginaEmpresaUsuario';
 import { PaginaEmpresaEvento } from './Componentes/PaginaEmpresaEvento';
+import { PaginaEmpresaUsuarioUnico } from './Componentes/PaginaEmpresaUsuarioUnico';
 import { axiosConfig } from '../../constant/axiosConfig.constant';
 import Header from '../../components/Header.component';
 
@@ -14,9 +15,9 @@ export const Empresa = () => {
   const [userData, setUserData] = useState({});
   const [finishLoading, setFinishLoading] = useState(null);
   const [mostrarUsuario, setMostrarUsuario] = useState(false);
-  const [mostrarEvento, setMostrarEvento] = useState(false); 
-  const [mostrarModificacion, setMostrarModificacion] = useState(false); 
-  const [mostrarOfertas, setMostrarOfertas] = useState(false); 
+  const [mostrarEvento, setMostrarEvento] = useState(false);
+  const [mostrarModificacion, setMostrarModificacion] = useState(false);
+  const [mostrarOfertas, setMostrarOfertas] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,42 +40,22 @@ export const Empresa = () => {
       <>
         <div style={{ position: 'relative' }}>
           <Header 
-            onMostrarUsuario={() => {
-              setMostrarUsuario(true);
-              setMostrarOfertas(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrar={() => {
-              setMostrarUsuario(false);
-              setMostrarOfertas(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrarOfertas={() => {
-              setMostrarUsuario(false);
-              setMostrarOfertas(true);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrarEvento={() => {
-              setMostrarUsuario(false);
-              setMostrarOfertas(false);
-              setMostrarEvento(true);
-              setMostrarModificacion(false);
-            }}
-            onModificarUsuario={() => {
-              setMostrarUsuario(false);
-              setMostrarOfertas(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(true);
-            }}
+            onMostrarUsuario={() => navigate('/empresa/usuarios')}
+            onMostrarOfertas={() => navigate('/empresa')}
+            onMostrarEvento={() => navigate('/empresa/eventos')}
+            onModificarUsuario={() => navigate('/empresa/modificacion')} 
           />
         </div>
         <div style={{ marginTop: '70px', padding: '20px' }}>
           <Paper>
             <Typography variant="h4" color="primary">EMPRESA</Typography>
-            {mostrarEvento ? <PaginaEmpresaEvento userId={userData.id}/> : mostrarModificacion ? <PaginaEmpresaModificacion userId={userData.id}/> : mostrarUsuario ? <PaginaEmpresaUsuario/> : <PaginaEmpresa userId={userData.id}/>}
+            <Routes>
+              <Route path="/" element={<PaginaEmpresa userId={userData.id}/>} />
+              <Route path="/usuarios" element={<PaginaEmpresaUsuario />} />
+              <Route path="/usuarios/:idUsuario" element={<PaginaEmpresaUsuarioUnico />} />
+              <Route path="/eventos" element={<PaginaEmpresaEvento userId={userData.id}/>} />
+              <Route path="/modificacion" element={<PaginaEmpresaModificacion userId={userData.id}/>} />
+            </Routes>
           </Paper>
         </div>
       </> :

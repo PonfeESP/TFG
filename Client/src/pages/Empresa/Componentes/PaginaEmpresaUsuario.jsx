@@ -47,7 +47,7 @@ export const PaginaEmpresaUsuario = () => {
                         {usuarios.map((usuario, index) => (
                             <TableRow key={usuario._id}>
                                 <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
-                                    <Link to={`/usuario/${usuario._id}`}>
+                                    <Link to={`/empresa/usuarios/${usuario._id}`}>
                                         <Typography sx={{ fontWeight: 'bold', color: 'white' }}>{usuario.Nombre}</Typography>
                                     </Link>
                                 </TableCell>
