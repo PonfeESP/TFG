@@ -10,10 +10,6 @@ const eventoSchema = new Schema({
         type: Date,
         required: true
     },
-    Hora: {
-        type: String,
-        required: true
-    },
     Descripcion: {
         type: String,
         required: true
@@ -24,6 +20,10 @@ const eventoSchema = new Schema({
     },
     Localizacion: {
         type: String,
+        required: true
+    },
+    Fecha_Creacion: {
+        type: Date,
         required: true
     },
     Empresa: {

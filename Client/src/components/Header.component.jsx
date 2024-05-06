@@ -48,7 +48,7 @@ const styles = {
     }
 };
 
-export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarEmpresa, onMostrarEvento, onModificarUsuario, onMostrarTags, onMostrarOfertas, onMostrarUsuario }) => {
+export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMostrarEmpresa, onMostrarEvento, onModificarUsuario, onMostrarTags, onMostrarOfertas, onMostrarUsuario }) => {
     const [logoutError, setLogoutError] = useState('');
     const [userData, setUserData] = useState({});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -144,7 +144,11 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarEmpresa, onMostr
                             </Paper>
 
                             <Paper sx={styles.paper}>
-                                <Button onClick={onMostrar} sx={styles.mostrarButton}>Mostrar</Button>
+                                <Button onClick={onMostrar} sx={styles.mostrarButton}>Mostrar Ofertas</Button>
+                            </Paper>
+
+                            <Paper sx={styles.paper}>
+                                <Button onClick={onMostrarOfertas} sx={styles.mostrarButton}>Tus Ofertas</Button>
                             </Paper>
 
                             <Paper sx={styles.paper}>
@@ -153,6 +157,10 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarEmpresa, onMostr
 
                             <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarEvento} sx={styles.mostrarButton}>Mostrar Eventos</Button>
+                            </Paper>
+
+                            <Paper sx={styles.paper}>
+                                <Button onClick={onMostrarInteresado} sx={styles.mostrarButton}>Tus Eventos</Button>
                             </Paper>
                         </>
                     )}

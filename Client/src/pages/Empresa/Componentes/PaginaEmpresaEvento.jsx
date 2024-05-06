@@ -17,6 +17,7 @@ export const PaginaEmpresaEvento = ({ userId }) => {
         Nombre: '',
         Descripcion: '',
         Fecha: '',
+        Localizacion: '',
         Aforo: ''
     });
     const [modalOpen, setModalOpen] = useState(false);
@@ -50,6 +51,7 @@ export const PaginaEmpresaEvento = ({ userId }) => {
     };
 
     const handleRegistrarNuevoEvento = () => {
+        console.log("papapa", nuevoEventoData)
         axios.post(`http://localhost:8000/registro_evento/${userId}`, nuevoEventoData)
             .then(res => {
                 console.log('Evento registrado con éxito:', res.data);
@@ -75,7 +77,9 @@ export const PaginaEmpresaEvento = ({ userId }) => {
                                 <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EVENTO</Typography></TableCell>
                                 <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>DESCRIPCION</Typography></TableCell>
                                 <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>FECHA</Typography></TableCell>
+                                <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>LOCALIZACION</Typography></TableCell>
                                 <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>AFORO</Typography></TableCell>
+                                <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>AFORORESTANTE</Typography></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -88,7 +92,9 @@ export const PaginaEmpresaEvento = ({ userId }) => {
                                     </TableCell>                                
                                     <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Descripcion}</Typography></TableCell>
                                     <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Fecha}</Typography></TableCell>
+                                    <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Localizacion}</Typography></TableCell>
                                     <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.Aforo}</Typography></TableCell>
+                                    <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{evento.aforo_restante}</Typography></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -127,6 +133,14 @@ export const PaginaEmpresaEvento = ({ userId }) => {
                         name="Fecha"
                         type="date"
                         value={nuevoEventoData.Fecha}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Localizacion"
+                        name="Localizacion"
+                        value={nuevoEventoData.Localizacion}
                         onChange={handleInputChange}
                         fullWidth
                         margin="normal"

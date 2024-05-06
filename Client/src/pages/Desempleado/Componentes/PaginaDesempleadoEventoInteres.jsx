@@ -12,7 +12,7 @@ const styles = `
     }
 `;
 
-export const PaginaDesempleadoEvento = ({ userId }) => {
+export const PaginaDesempleadoEventoInteres = ({ userId }) => {
 
     console.log("opa", userId )
 
@@ -21,7 +21,7 @@ export const PaginaDesempleadoEvento = ({ userId }) => {
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/noInteresado_eventos/${userId}`,
+            url: `http://localhost:8000/interesado_evento/${userId}`,
             method: 'GET'
         })
             .then(res => {
@@ -71,4 +71,4 @@ export const PaginaDesempleadoEvento = ({ userId }) => {
     );
 }
 
-export default PaginaDesempleadoEvento;
+export default PaginaDesempleadoEventoInteres;

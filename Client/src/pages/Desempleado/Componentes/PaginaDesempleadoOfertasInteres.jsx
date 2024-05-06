@@ -11,14 +11,14 @@ const styles = `
     }
 `;
 
-export const PaginaDesempleado = ({ userId }) => {
+export const PaginaDesempleadoOfertasInteres = ({ userId }) => {
 
     const [ofertas, setOfertas] = useState([]);
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/noInteresado_ofertas/${userId}`,
+            url: `http://localhost:8000/interesado_ofertas/${userId}`,
             method: 'GET'
         })
             .then(res => {
@@ -64,4 +64,4 @@ export const PaginaDesempleado = ({ userId }) => {
     );
 }
 
-export default PaginaDesempleado;
+export default PaginaDesempleadoOfertasInteres;

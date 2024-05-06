@@ -10,7 +10,8 @@ export const PaginaEventoDesempleado = () => {
     const [evento, setEvento] = useState(null);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [userData, setUserData] = useState({});
-    const [isRegistrado, setIsRegistrado] = useState(false); 
+    const [isRegistrado, setIsRegistrado] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         axios({
@@ -32,12 +33,14 @@ export const PaginaEventoDesempleado = () => {
         })
             .then(res => {
                 setEvento(res.data);
-                // Comprobación si el usuario ya está registrado en el evento
                 if (res.data && userData.id) {
                     setIsRegistrado(res.data.Interesados.includes(userData.id));
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                setErrorMessage('Error al cargar el evento. Por favor, inténtelo de nuevo.');
+            });
     }, [idEvento, userData.id]);
 
     const handleInteresado = () => {
@@ -48,20 +51,50 @@ export const PaginaEventoDesempleado = () => {
         const userId = userData.id;
         axios({
             ...axiosConfig,
-            url: 'http://localhost:8000/solicitud_evento',
+            url: `http://localhost:8000/solicitud_evento/${idEvento}`,
             method: 'PUT',
             data: {
                 userId: userId,
-                eventoId: idEvento
             }
         })
             .then(res => {
                 console.log('Solicitud enviada con éxito');
-                setIsRegistrado(true); 
+                setIsRegistrado(true);
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                }
+            })
             .finally(() => {
-                setConfirmOpen(false); 
+                setConfirmOpen(false);
+            });
+    };
+
+    const handleCancelarInteres = () => {
+        const userId = userData.id;
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/retirar_solicitud_evento/${idEvento}`,
+            method: 'DELETE',
+            data: {
+                userId: userId,
+            }
+        })
+            .then(res => {
+                console.log('Interés cancelado con éxito');
+                setIsRegistrado(false);
+            })
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al cancelar el interés. Por favor, inténtelo de nuevo.');
+                }
             });
     };
 
@@ -82,11 +115,12 @@ export const PaginaEventoDesempleado = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleInteresado}
-                        disabled={isRegistrado} 
+                        onClick={isRegistrado ? handleCancelarInteres : handleInteresado}
+                        disabled={evento.Interesados.length >= evento.Aforo}
                     >
-                        {isRegistrado ? 'Ya registrado' : 'Interesado'}
+                        {isRegistrado ? 'Cancelar Interés' : 'Interesado'}
                     </Button>
+
 
                     <Modal
                         open={confirmOpen}
@@ -100,6 +134,11 @@ export const PaginaEventoDesempleado = () => {
                             </Typography>
                             <Button onClick={handleConfirm} variant="contained" color="primary">Confirmar</Button>
                             <Button onClick={handleClose} variant="outlined" color="secondary">Cancelar</Button>
+                            {errorMessage && (
+                                <Typography variant="body2" color="error">
+                                    {errorMessage}
+                                </Typography>
+                            )}
                         </Box>
                     </Modal>
                 </>

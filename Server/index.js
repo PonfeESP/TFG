@@ -73,7 +73,7 @@ app.get('/tags', async (req, res) => {
   }
 });
 
-app.get('/empresas', async (req, res) => {
+app.get('/empresas', async (req, res) => { //SI
   try {
     const empresas = await User.find({ Rol: 'Empresa' });
     res.json(empresas);
@@ -82,40 +82,111 @@ app.get('/empresas', async (req, res) => {
   }
 });
 
-app.get('/eventos', async (req, res) => {
+app.get('/noInteresado_eventos/:userId', async (req, res) => {
   try {
+    const userId = req.params.userId;
+
     const fechaActual = new Date();
 
-    const eventosFuturos = await Evento.find({
-      Fecha: { $gte: fechaActual }
-    }).populate('Empresa', 'Nombre');
+    // Calcular la fecha actual más 24 horas
+    const fechaLimite = new Date();
+    fechaLimite.setHours(fechaLimite.getHours() + 24);
 
-    res.json(eventosFuturos);
+    const eventosFuturos = await Evento.find({
+      Fecha: { $gte: fechaLimite },
+      Interesados: { $not: { $eq: userId } } // Filtrar eventos en los que el usuario no esté interesado
+    })
+    .populate('Empresa', 'Nombre')
+    .sort({ Fecha_Creacion: -1 });
+
+    const eventosFormateados = eventosFuturos.map(evento => {
+      const aforoRestante = evento.Aforo - evento.Interesados.length;
+      return {
+        ...evento.toObject(),
+        Dia: evento.Fecha.toISOString().split('T')[0], // Obtener el día en formato YYYY-MM-DD
+        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Obtener la hora en formato HH:MM
+        aforo_restante: aforoRestante
+      };
+    });
+
+    res.json(eventosFormateados);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
+app.get('/interesado_evento/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const eventosInteresado = await Evento.find({
+      Interesados: userId // Filtrar eventos en los que el usuario esté interesado
+    })
+    .populate('Empresa', 'Nombre')
+    .sort({ Fecha_Creacion: -1 });
+
+    const eventosFormateados = eventosInteresado.map(evento => {
+      const aforoRestante = evento.Aforo - evento.Interesados.length;
+      return {
+        ...evento.toObject(),
+        Dia: evento.Fecha.toISOString().split('T')[0], // Obtener el día en formato YYYY-MM-DD
+        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Obtener la hora en formato HH:MM
+        aforo_restante: aforoRestante
+      };
+    });
+
+    res.json(eventosFormateados);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
 
 app.get('/eventos/:id', async (req, res) => {
   try {
+    // Find the event by its ID and populate the 'Empresa' field with 'Nombre'
     const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
-    res.json(evento);
+    
+    // Check if the event exists
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento no encontrado' });
+    }
+
+    // Format the date and time of the event
+    const eventoFormateado = {
+      ...evento.toObject(),
+      Dia: evento.Fecha.toISOString().split('T')[0], // Get the day in YYYY-MM-DD format
+      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Get the time in HH:MM format
+    };
+
+    res.json(eventoFormateado);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
 
 app.get('/eventos_empresa/:id', async (req, res) => {
   try {
     const eventos = await Evento.find({
       Empresa: req.params.id 
     });
-    console.log(eventos)
-    res.json(eventos);
+
+    // Crear una nueva lista de eventos con aforo_restante calculado
+    const eventosConAforoRestante = eventos.map(evento => {
+      const aforoRestante = evento.Aforo - evento.Interesados.length;
+      return {
+        ...evento.toObject(),
+        aforo_restante: aforoRestante
+      };
+    });
+
+    res.json(eventosConAforoRestante);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
 
 app.get('/empresa_unica/:id', async (req, res) => {
   try {
@@ -163,6 +234,50 @@ app.get('/ofertas/:id', async (req, res) => {
   }
 });
 
+app.get('/noInteresado_ofertas/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Obtener todas las ofertas que no tienen al usuario en la lista de interesados
+    const ofertasNoInteresadas = await Oferta.find({
+      Interesados: { $ne: userId } // Filtrar ofertas que no contienen al usuario en la lista de interesados
+    }).populate('Empresa', 'Nombre');
+
+    const ofertasFormateadas = ofertasNoInteresadas.map(oferta => ({
+      ...oferta.toObject(),
+      Nombre_Empresa: oferta.Empresa.Nombre
+    }));
+
+    res.json(ofertasFormateadas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
+
+app.get('/interesado_ofertas/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Obtener todas las ofertas que tienen al usuario en la lista de interesados
+    const ofertasInteresadas = await Oferta.find({
+      Interesados: userId
+    }).populate('Empresa', 'Nombre');
+
+    const ofertasFormateadas = ofertasInteresadas.map(oferta => ({
+      ...oferta.toObject(),
+      Nombre_Empresa: oferta.Empresa.Nombre
+    }));
+
+    res.json(ofertasFormateadas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
+
 
 app.get('/ofertas_empresa/:id', async (req, res) => {
   try {
@@ -178,16 +293,6 @@ app.get('/ofertas_empresa/:id', async (req, res) => {
     res.status(500).json({ error: 'Fallo' });
   }
 });
-
-app.get('/ofertas', async (req, res) => {
-  try {
-    const ofertas = await Oferta.find({ Disponible: true }).populate('Empresa', 'Nombre');
-    res.json(ofertas);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
-  }
-});
-
 
 app.get('/ofertas_ordenadas/:id', async (req, res) => {
   console.log("asasa", req.params.id)
@@ -328,29 +433,30 @@ app.post('/registro_evento/:id', async (req, res) => {
 
   const idEmpresa = req.params.id
   const evento = req.body;
+  console.log("evento", evento);
 
   try {
     const fechaEvento = new Date(evento.Fecha);
-
-    const fechaActual = new Date();
-    if (fechaEvento <= fechaActual) {
-      return res.status(400).json({ error: 'La fecha del evento debe ser en el futuro' });
+    const fechaLimite = new Date();
+    fechaLimite.setDate(fechaLimite.getDate() + 1); // Añadir un día a la fecha actual
+    
+    if (fechaEvento <= fechaLimite) {
+      return res.status(400).json({ error: 'La fecha del evento debe ser al menos 24 horas en el futuro' });
     }
 
     if (isNaN(fechaEvento.getTime())) {
       return res.status(400).json({ error: 'La fecha del evento es inválida' });
     }
 
-    const fecha = fechaEvento.toISOString().split('T')[0];
-    const hora = fechaEvento.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+    const fechaActual = new Date(); // Se agrega la declaración de fechaActual aquí
+    
     const nuevoEvento = new Evento({
       Nombre: evento.Nombre,
-      Fecha: fecha,
-      Hora: hora,
+      Fecha: evento.Fecha,
       Descripcion: evento.Descripcion,
       Aforo: evento.Aforo,
       Localizacion: evento.Localizacion,
+      Fecha_Creacion: fechaActual,
       Empresa: idEmpresa
     });
 
@@ -369,17 +475,19 @@ app.post('/registro_oferta/:id', async (req, res) => {
     const idEmpresa = req.params.id;
     const oferta = req.body;
 
+    const fechaActual = new Date(); // Se agrega la declaración de fechaActual aquí
+
     if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || !oferta.Disponible || !oferta.Empresa) {
       return res.status(400).json({ error: "Mo se han rellenado los campos correctamente" });
     }
 
-    console.log("aaa", oferta)
 
     const nuevaOferta = new Oferta({
       Nombre: oferta.Nombre,
       Descripcion: oferta.Descripcion,
       Tags: oferta.Tags,
       Disponible: oferta.Disponible,
+      Fecha_Creacion: fechaActual,
       Empresa: idEmpresa,
       Interesados: oferta.Interesados
     });
@@ -433,6 +541,24 @@ app.post('/tags', async (req, res) => {
   }
 });
 
+app.put('/disponible_oferta/:id', async (req, res) => {
+  const ofertaId = req.params.id;
+  try {
+    const oferta = await Oferta.findById(ofertaId);
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    oferta.Disponible = false;
+    await oferta.save();
+
+    res.status(200).json({ message: 'Oferta desactivada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
 app.put('/usuarios/:id', async (req, res) => {
   const userId = req.params.id;
   const newData = req.body;
@@ -461,7 +587,7 @@ app.put('/oferta/:id', async (req, res) => {
   try {
     const oferta = await Oferta.findById(ofertaId);
     if (!oferta) {
-      return res.status(404).json({ error: 'oferta no encontrado' });
+      return res.status(404).json({ error: 'oferta no encontrada' });
     }
 
     Object.assign(oferta, newData);
@@ -478,16 +604,22 @@ app.put('/evento/:id', async (req, res) => {
   const eventoId = req.params.id;
   const newData = req.body;
 
-  console.log("asasas",newData)
-
   try {
     const evento = await Evento.findById(eventoId);
     if (!evento) {
-      return res.status(404).json({ error: 'evento no encontrado' });
+      return res.status(404).json({ error: 'Evento no encontrado' });
+    }
+
+    const fechaActual = new Date();
+    const fechaEvento = new Date(newData.Fecha);
+    const diferenciaTiempo = fechaEvento.getTime() - fechaActual.getTime();
+    const diferenciaHoras = diferenciaTiempo / (1000 * 60 * 60);
+
+    if (diferenciaHoras <= 24) {
+      return res.status(400).json({ error: 'No se puede modificar el evento porque la fecha está a menos de 24 horas de la hora actual' });
     }
 
     Object.assign(evento, newData);
-
     await evento.save();
 
     res.status(200).json(evento);
@@ -496,19 +628,17 @@ app.put('/evento/:id', async (req, res) => {
   }
 });
 
+
 app.put('/solicitud_oferta', async (req, res) => {
   const userId = req.body.userId;
   const ofertaId = req.body.ofertaId;
-  console.log("aaa", userId, ofertaId)
   try {
     const oferta = await Oferta.findById(ofertaId);
     if (!oferta) {
-      console.log("bbbb")
       return res.status(404).json({ error: 'Oferta no encontrada' });
     }
 
     if (oferta.Interesados.includes(userId)) {
-      console.log("ccccc")
       return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
     }
 
@@ -522,23 +652,114 @@ app.put('/solicitud_oferta', async (req, res) => {
   }
 });
 
-app.put('/solicitud_evento', async (req, res) => {
+app.put('/solicitud_evento/:idEvento', async (req, res) => {
   const userId = req.body.userId;
-  const eventoId = req.body.eventoId;
+  const eventoId = req.params.idEvento;
   try {
     const evento = await Evento.findById(eventoId);
     if (!evento) {
-      return res.status(404).json({ error: 'eventop no encontrada' });
+      return res.status(404).json({ error: 'evento no encontrada' });
     }
 
     if (evento.Interesados.includes(userId)) {
       return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
     }
 
+    if (evento.Interesados.length >= evento.Aforo) {
+      return res.status(400).json({ error: 'El evento ha alcanzado su límite de interesados' });
+    }
+
     evento.Interesados.push(userId);
     await evento.save();
 
     res.status(200).json({ message: 'Registro realizado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
+
+// DELETE
+
+app.delete('/eliminar_oferta/:id', async (req, res) => {
+  const ofertaId = req.params.id;
+  try {
+    const oferta = await Oferta.findById(ofertaId);
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    await Oferta.findByIdAndDelete(ofertaId);
+
+    res.status(200).json({ message: 'Oferta eliminada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
+app.delete('/eliminar_evento/:id', async (req, res) => {
+  const eventoId = req.params.id;
+  try {
+    const evento = await Evento.findById(eventoId);
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento no encontrado' });
+    }
+
+    await Evento.findByIdAndDelete(eventoId);
+
+    res.status(200).json({ message: 'Evento eliminado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
+
+
+app.delete('/retirar_solicitud_evento/:eventoId', async (req, res) => {
+  const userId = req.body.userId;
+  const eventoId = req.params.eventoId;
+  try {
+    const evento = await Evento.findById(eventoId);
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento no encontrado' });
+    }
+
+    const index = evento.Interesados.indexOf(userId);
+    if (index === -1) {
+      return res.status(400).json({ error: 'El usuario no está registrado para este evento' });
+    }
+
+    evento.Interesados.splice(index, 1);
+    await evento.save();
+
+    res.status(200).json({ message: 'Usuario retirado del evento correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
+app.delete('/retirar_solicitud_oferta/:ofertaId', async (req, res) => {
+  const userId = req.body.userId;
+  const ofertaId = req.params.ofertaId;
+  try {
+    const oferta = await Oferta.findById(ofertaId);
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    const index = oferta.Interesados.indexOf(userId);
+    if (index === -1) {
+      return res.status(400).json({ error: 'El usuario no está registrado para esta oferta' });
+    }
+
+    oferta.Interesados.splice(index, 1);
+    await oferta.save();
+
+    res.status(200).json({ message: 'Usuario retirado de la oferta correctamente' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al procesar la solicitud' });

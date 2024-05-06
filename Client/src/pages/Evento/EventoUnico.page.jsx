@@ -27,6 +27,7 @@ export const EventoUnico = () => {
   const [mostrarOfertas, setMostrarOfertas] = useState(false); 
   const [mostrarOrdenada, setMostrarOrdenada] = useState(false);
   const [mostrarEmpresa, setMostrarEmpresa] = useState(false);
+  const [onMostrarInteresado, setMostrarInteresado] = useState(false);
 
 
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export const EventoUnico = () => {
               setMostrarModificacion(false);
             }}
             onMostrar={() => {
-              navigate('/desempleado'); // Navega a la ruta '/empresa'
+              navigate('/desempleado/ofertas'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(false);
               setMostrarEmpresa(false);
               setMostrarEvento(false);
@@ -84,6 +85,22 @@ export const EventoUnico = () => {
               setMostrarEmpresa(false);
               setMostrarEvento(false);
               setMostrarModificacion(true);
+            }}
+            onMostrarOfertas={() => {
+              navigate('/desempleado/ofertas_Interesado'); // Navega a la ruta '/empresa'
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+              setMostrarInteresado(true);
+            }}
+            onMostrarInteresado={() => {
+              navigate('/desempleado/eventos_Interesado'); // Navega a la ruta '/empresa'
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+              setMostrarInteresado(true);
             }}/>
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>

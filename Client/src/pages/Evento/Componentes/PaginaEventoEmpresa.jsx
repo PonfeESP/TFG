@@ -9,6 +9,26 @@ const styles = `
     .degradado-invertido {
         border: solid ;  
     }
+    .modal-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+        outline: none;
+    }
+    .modal-button-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+    .error-message {
+        color: red;
+        margin-top: 10px;
+    }
 `;
 
 export const PaginaEventoEmpresa = () => {
@@ -20,6 +40,7 @@ export const PaginaEventoEmpresa = () => {
     const [nuevoTag, setNuevoTag] = useState('');
     const [tags, setTags] = useState([]);
     const [tagSeleccionado, setTagSeleccionado] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         axios({
@@ -44,29 +65,44 @@ export const PaginaEventoEmpresa = () => {
                 setEvento(res.data);
                 setTags(res.data.Tags.map(tag => tag.Lenguaje));
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.status === 404) {
+                    setErrorMessage('Evento no encontrado');
+                } else {
+                    setErrorMessage('');
+                }
+            });
     }, []);
 
     const handleModificar = () => {
+        setConfirmOpen(true);
+    };
+
+    const handleConfirmarModificacion = () => {
+        const nuevaFechaHora = new Date(evento.Dia + 'T' + evento.Hora);
         axios({
             ...axiosConfig,
             url: `http://localhost:8000/evento/${idEvento}`,
             method: 'PUT',
-            data: { /* Aquí pasa los datos actualizados de la Evento */ }
+            data: {
+                // Aquí pasamos los datos actualizados del evento, incluyendo la nueva fecha y hora combinadas
+                ...evento,
+                Fecha: nuevaFechaHora.toISOString() // Aquí combinamos el día y la hora en un solo formato
+            }
         })
             .then(res => {
-                console.log('Evento modificada con éxito:', res.data);
+                console.log('Evento modificado con éxito:', res.data);
+                setConfirmOpen(false);
             })
-            .catch(err => console.log(err));
-    };
-
-    const handleNuevoTag = () => {
-        setTags([...tags, nuevoTag]);
-        setNuevoTag('');
-    };
-
-    const handleEliminarTag = (tag) => {
-        setTags(tags.filter(t => t !== tag));
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.data && err.response.data.error === 'No se puede modificar el evento porque la fecha está a menos de 24 horas de la hora actual') {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al modificar el evento. Por favor, inténtelo de nuevo.');
+                }
+            });
     };
 
     return (
@@ -74,11 +110,45 @@ export const PaginaEventoEmpresa = () => {
             <style>{styles}</style>
             {evento && (
                 <>
-                    <Typography variant="h4">{evento.Nombre}</Typography>
-                    <Typography variant="body1">Dsescripción: {evento.Descripcion}</Typography>
-                    <Typography variant="body1">Fecha: {new Date(evento.Fecha).toLocaleDateString()}</Typography>
-                    <Typography variant="body1">Hora: {evento.Hora}</Typography>
-                    <Typography variant="body1">Aforo: {evento.Aforo}</Typography>
+                    <Typography variant="h4">Nombre:
+                        <TextField
+                            defaultValue={evento.Nombre}
+                            onChange={(e) => setEvento({ ...evento, Nombre: e.target.value })}
+                        />
+                    </Typography>
+                    <Typography variant="body1">Descripción:
+                        <TextField
+                            defaultValue={evento.Descripcion}
+                            onChange={(e) => setEvento({ ...evento, Descripcion: e.target.value })}
+                        />
+                    </Typography>
+                    <Typography variant="body1">Dia:
+                        <TextField
+                            type="date"
+                            defaultValue={evento.Dia}
+                            onChange={(e) => setEvento({ ...evento, Dia: e.target.value })}
+                        />
+                    </Typography>
+                    <Typography variant="body1">Hora:
+                        <TextField
+                            type="time"
+                            defaultValue={evento.Hora}
+                            onChange={(e) => setEvento({ ...evento, Hora: e.target.value })}
+                        />
+                    </Typography>
+                    <Typography variant="body1">Localizacion:
+                        <TextField
+                            defaultValue={evento.Localizacion}
+                            onChange={(e) => setEvento({ ...evento, Localizacion: e.target.value })}
+                        />
+                    </Typography>
+                    <Typography variant="body1">Aforo:
+                        <TextField
+                            type="number"
+                            defaultValue={evento.Aforo}
+                            onChange={(e) => setEvento({ ...evento, Aforo: e.target.value })}
+                        />
+                    </Typography>
                     <Typography variant="h5">Interesados:</Typography>
                     <ul>
                         {evento.Interesados.map((interesado, index) => (
@@ -92,8 +162,25 @@ export const PaginaEventoEmpresa = () => {
                     >
                         Modificar
                     </Button>
+                    {errorMessage && <Typography className="error-message">{errorMessage}</Typography>}
                 </>
             )}
+            <Modal
+                open={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+                aria-labelledby="confirm-modal-title"
+                aria-describedby="confirm-modal-description"
+            >
+                <Box className="modal-box">
+                    <Typography variant="h6" id="confirm-modal-title">
+                        ¿Confirmar modificación?
+                    </Typography>
+                    <div className="modal-button-container">
+                        <Button onClick={handleConfirmarModificacion}>Confirmar</Button>
+                        <Button onClick={() => setConfirmOpen(false)}>Cancelar</Button>
+                    </div>
+                </Box>
+            </Modal>
         </div>
     );
 };

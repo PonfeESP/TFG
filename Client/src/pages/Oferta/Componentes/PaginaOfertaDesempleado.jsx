@@ -18,6 +18,7 @@ export const PaginaOfertaDesempleado = () => {
     const [userData, setUserData] = useState({});
     const [finishLoading, setFinishLoading] = useState(null);
     const [isRegistrado, setIsRegistrado] = useState(false); // Estado para controlar el registro repetido
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         axios({
@@ -40,9 +41,12 @@ export const PaginaOfertaDesempleado = () => {
         })
             .then(res => {
                 setOferta(res.data);
+                if (res.data && userData.id) {
+                    setIsRegistrado(res.data.Interesados.includes(userData.id));
+                }
             })
             .catch(err => console.log(err));
-    }, []);
+    }, [idOferta, userData.id]);
 
     const handleInteresado = () => {
         setConfirmOpen(true);
@@ -63,9 +67,40 @@ export const PaginaOfertaDesempleado = () => {
                 console.log('Solicitud enviada con éxito');
                 setIsRegistrado(true); // Actualizar el estado para indicar que ya está registrado
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                }
+            })
             .finally(() => {
                 setConfirmOpen(false); // Cerrar el modal después de enviar la solicitud
+            });
+    };
+
+    const handleCancelarInteres = () => {
+        const userId = userData.id;
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/retirar_solicitud_oferta/${idOferta}`,
+            method: 'DELETE',
+            data: {
+                userId: userId,
+            }
+        })
+            .then(res => {
+                console.log('Interés cancelado con éxito');
+                setIsRegistrado(false);
+            })
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al cancelar el interés. Por favor, inténtelo de nuevo.');
+                }
             });
     };
 
@@ -88,14 +123,23 @@ export const PaginaOfertaDesempleado = () => {
                             <li key={index}>{tag.Lenguaje}: {tag.Puntuacion}</li>
                         ))}
                     </ul>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleInteresado}
-                        disabled={isRegistrado} // Deshabilitar el botón si ya está registrado
-                    >
-                        {isRegistrado ? 'Ya registrado' : 'Interesado'}
-                    </Button>
+                    {isRegistrado ? (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleCancelarInteres}
+                        >
+                            Cancelar Interés
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleInteresado}
+                        >
+                            Interesado
+                        </Button>
+                    )}
 
                     <Modal
                         open={confirmOpen}
@@ -109,6 +153,11 @@ export const PaginaOfertaDesempleado = () => {
                             </Typography>
                             <Button onClick={handleConfirm} variant="contained" color="primary">Confirmar</Button>
                             <Button onClick={handleClose} variant="outlined" color="secondary">Cancelar</Button>
+                            {errorMessage && (
+                                <Typography variant="body2" color="error">
+                                    {errorMessage}
+                                </Typography>
+                            )}
                         </Box>
                     </Modal>
                 </>

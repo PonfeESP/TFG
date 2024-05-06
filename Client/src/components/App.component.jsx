@@ -14,9 +14,11 @@ import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
 import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
 import { EventoUnico } from '../pages/Evento/EventoUnico.page';
+import { PaginaDesempleadoOfertasInteres } from '../pages/Desempleado/Componentes/PaginaDesempleadoOfertasInteres';
 import { PaginaDesempleadoOrdenada } from '../pages/Desempleado/Componentes/PaginaDesempleadoOrdenada';
 import { PaginaDesempleadoEmpresa } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresa';
 import { PaginaDesempleadoEvento } from '../pages/Desempleado/Componentes/PaginaDesempleadoEvento';
+import { PaginaDesempleadoEventoInteres } from '../pages/Desempleado/Componentes/PaginaDesempleadoEventoInteres';
 import { PaginaDesempleadoModificacion } from '../pages/Desempleado/Componentes/PaginaDesempleadoModificacion';
 import { PaginaDesempleadoEmpresaUnica } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresaUnica';
 import { PaginaEmpresaUsuario } from '../pages/Empresa/Componentes/PaginaEmpresaUsuario';
@@ -63,10 +65,12 @@ const App = () => {
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/desempleado" element={<Desempleado />}>
                         <Route path="ofertas" element={<PaginaDesempleadoOrdenada />} />
+                        <Route path="ofertas_Interesado" element={<PaginaDesempleadoOfertasInteres />} />
                         <Route path="ordenada" element={<PaginaDesempleadoOrdenada />} />
                         <Route path="empresas" element={<PaginaDesempleadoEmpresa />} />
                         <Route path="empresas/:idEmpresa" element={<PaginaDesempleadoEmpresaUnica />} />
                         <Route path="eventos" element={<PaginaDesempleadoEvento />} />
+                        <Route path="eventos_Interesado" element={<PaginaDesempleadoEventoInteres />} />
                         <Route path="modificacion" element={<PaginaDesempleadoModificacion />} />
                     </Route>
                     <Route path="/empresa" element={<Empresa />} >

@@ -24,6 +24,10 @@ const ofertaSchema = new Schema({
         type: Boolean,
         required: true
     },
+    Fecha_Creacion: {
+        type: Date,
+        required: true
+    },
     Empresa: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario',

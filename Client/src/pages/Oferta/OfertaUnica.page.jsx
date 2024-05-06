@@ -6,15 +6,7 @@ import { PaginaOfertaDesempleado } from './Componentes/PaginaOfertaDesempleado';
 import { PaginaOfertaEmpresa } from './Componentes/PaginaOfertaEmpresa'; // Importa la página de oferta para empresas
 import { axiosConfig } from '../../constant/axiosConfig.constant';
 import Header from '../../components/Header.component';
-import { PaginaEmpresa } from '../Empresa/Componentes/PaginaEmpresa';
-import { PaginaEmpresaModificacion } from '../Empresa/Componentes/PaginaEmpresaModificacion';
-import { PaginaEmpresaUsuario } from '../Empresa/Componentes/PaginaEmpresaUsuario';
-import { PaginaEmpresaEvento } from '../Empresa/Componentes/PaginaEmpresaEvento';
-import { PaginaDesempleado } from '../Desempleado/Componentes/PaginaDesempleado';
-import { PaginaDesempleadoOrdenada } from '../Desempleado/Componentes/PaginaDesempleadoOrdenada';
-import { PaginaDesempleadoEmpresa } from '../Desempleado/Componentes/PaginaDesempleadoEmpresa';
-import { PaginaDesempleadoEvento } from '../Desempleado/Componentes/PaginaDesempleadoEvento';
-import { PaginaDesempleadoModificacion } from '../Desempleado/Componentes/PaginaDesempleadoModificacion';
+
 
 export const OfertaUnica = () => {
   const [logoutError, setLogoutError] = useState('');
@@ -26,6 +18,8 @@ export const OfertaUnica = () => {
   const [mostrarOfertas, setMostrarOfertas] = useState(false);
   const [mostrarOrdenada, setMostrarOrdenada] = useState(false);
   const [mostrarEmpresa, setMostrarEmpresa] = useState(false);
+  const [onMostrarInteresado, setMostrarInteresado] = useState(false);
+
   
 
   const navigate = useNavigate();
@@ -55,13 +49,15 @@ export const OfertaUnica = () => {
               setMostrarEmpresa(false);
               setMostrarEvento(false);
               setMostrarModificacion(false);
+              setMostrarInteresado(false);
             }}
             onMostrar={() => {
-              navigate('/desempleado'); // Navega a la ruta '/empresa'
+              navigate('/desempleado/ofertas'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(false);
               setMostrarEmpresa(false);
               setMostrarEvento(false);
               setMostrarModificacion(false);
+              setMostrarInteresado(false);
             }}
             onMostrarEmpresa={() => {
               navigate('/desempleado/empresas'); // Navega a la ruta '/empresa'
@@ -69,6 +65,7 @@ export const OfertaUnica = () => {
               setMostrarEmpresa(true);
               setMostrarEvento(false);
               setMostrarModificacion(false);
+              setMostrarInteresado(false);
             }}
             onMostrarEvento={() => {
               navigate('/desempleado/eventos'); // Navega a la ruta '/empresa'
@@ -76,6 +73,7 @@ export const OfertaUnica = () => {
               setMostrarEmpresa(false);
               setMostrarEvento(true);
               setMostrarModificacion(false);
+              setMostrarInteresado(false);
             }}
             onModificarUsuario={() => {
               navigate('/desempleado/modificacion'); // Navega a la ruta '/empresa'
@@ -83,6 +81,23 @@ export const OfertaUnica = () => {
               setMostrarEmpresa(false);
               setMostrarEvento(false);
               setMostrarModificacion(true);
+              setMostrarInteresado(false);
+            }}
+            onMostrarOfertas={() => {
+              navigate('/desempleado/ofertas_Interesado'); // Navega a la ruta '/empresa'
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+              setMostrarInteresado(true);
+            }}
+            onMostrarInteresado={() => {
+              navigate('/desempleado/eventos_Interesado'); // Navega a la ruta '/empresa'
+              setMostrarOrdenada(false);
+              setMostrarEmpresa(false);
+              setMostrarEvento(false);
+              setMostrarModificacion(false);
+              setMostrarInteresado(true);
             }}/>
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>

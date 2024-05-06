@@ -1,4 +1,4 @@
-@media (max-width: 768px) {
+@media (max-width: 798px) {
     .ofertas-wrapper {
         flex-direction: column; /* Cambia la dirección del contenedor a columna */
     }
@@ -31,11 +31,11 @@
     box-sizing: border-box;
 }
 
-.box-1 {
+.box-4 {
     min-height: 300px;
     height: 100%;
     align-self: flex-end;
-    order: 5;
+    order: 2;
 }
 
 .box-3 {

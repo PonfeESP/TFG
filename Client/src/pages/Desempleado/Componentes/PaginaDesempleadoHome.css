@@ -1,0 +1,65 @@
+@media (min-width: 800px) {
+    .eventos-resumen-izquierda,
+    .eventos-resumen-derecha {
+        flex: 1 1 100%; /* Cambiado para que ocupen el ancho completo */
+    }
+}
+.operator-display {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.operator-display img {
+    width: 100px; /* Ajusta el tamaño de la imagen según sea necesario */
+    margin-right: 10px;
+}
+
+.operator-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.operator-number {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.operator-name {
+    color: gray;
+}
+
+
+.degradado-invertido {
+    border: solid;  
+}
+.evento-resumen {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 20px; /* Añade un margen derecho de 20px */
+}
+.evento-resumen:hover {
+    background-color: #f0f0f0;
+}
+
+.eventos-resumen-container {
+    display: flex;
+    flex-direction: row; /* Cambiado de 'column' a 'row' */
+    flex-wrap: wrap; /* Añadido para que los elementos se envuelvan cuando no haya suficiente espacio */
+}
+
+.eventos-resumen-contenedor {
+    display: flex;
+    flex-wrap: wrap; /* Añadido para permitir que los elementos se envuelvan */
+}
+
+.eventos-resumen-izquierda,
+.eventos-resumen-derecha {
+    flex: 1 1 50%;
+    padding: 10px;
+    width: 100%;
+    min-width: 360px;
+}
