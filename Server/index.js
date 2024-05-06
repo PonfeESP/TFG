@@ -213,26 +213,34 @@ app.get('/ofertas/:id', async (req, res) => {
     if (!oferta) {
       return res.status(404).json({ error: 'Oferta no encontrada' });
     }
+    const usuarioId = req.query.usuarioId;
 
-    console.log("sas", oferta)
-
-    const empresa = await User.findById(oferta.Empresa);
-
-    if (!empresa) {
-      return res.status(404).json({ error: 'Empresa no encontrada' });
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'ID de usuario no proporcionado' });
     }
 
-    const ofertaConEmpresa = {
+    const usuario = await User.findById(usuarioId);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const porcentajeConcordancia = calcularPorcentajeConcordancia(usuario.Tags, oferta.Tags);
+
+    const ofertaConUsuario = {
       ...oferta.toObject(),
-      Nombre_Empresa: empresa.Nombre
+      Nombre_Usuario: usuario.Nombre,
+      Porcentaje_Concordancia: porcentajeConcordancia,
+      Tags_Usuario: usuario.Tags
     };
 
-    res.json(ofertaConEmpresa);
+    res.json(ofertaConUsuario);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
+
 
 app.get('/noInteresado_ofertas/:userId', async (req, res) => {
   try {
@@ -813,19 +821,6 @@ function calcularPorcentajeConcordancia(usuarioTags, ofertaTags) {
   return porcentajeConcordancia;
 }
 
-const usuarioTags = [
-  { Lenguaje: "C", Puntuacion: 5 },
-  { Lenguaje: "Java", Puntuacion: 3 },
-  { Lenguaje: "Python", Puntuacion: 4 }
-];
-
-const ofertaTags = [
-  { Lenguaje: "C", Puntuacion: 3 },
-  { Lenguaje: "Java", Puntuacion: 5 }
-];
-
-const porcentajeConcordancia = calcularPorcentajeConcordancia(usuarioTags, ofertaTags);
-console.log("Porcentaje de concordancia:", porcentajeConcordancia);
 
 
 export default app;

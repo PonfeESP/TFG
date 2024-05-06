@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, Button, Modal, Box } from '@mui/material';
+import { Typography, Button, Modal, Box, Chip } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
 
@@ -17,8 +17,10 @@ export const PaginaOfertaDesempleado = () => {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [userData, setUserData] = useState({});
     const [finishLoading, setFinishLoading] = useState(null);
-    const [isRegistrado, setIsRegistrado] = useState(false); // Estado para controlar el registro repetido
+    const [isRegistrado, setIsRegistrado] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [tagsCoincidentes, setTagsCoincidentes] = useState([]);
+    const [porcentajeCoincidencia, setPorcentajeCoincidencia] = useState({});
 
     useEffect(() => {
         axios({
@@ -36,8 +38,8 @@ export const PaginaOfertaDesempleado = () => {
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/ofertas/${idOferta}`,
-            method: 'GET'
+            url: `http://localhost:8000/ofertas/${idOferta}?usuarioId=${userData.id}`,
+            method: 'GET',
         })
             .then(res => {
                 setOferta(res.data);
@@ -47,6 +49,28 @@ export const PaginaOfertaDesempleado = () => {
             })
             .catch(err => console.log(err));
     }, [idOferta, userData.id]);
+
+    useEffect(() => {
+        if (oferta && userData.id) {
+            const tagsUsuario = oferta.Tags_Usuario.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+            const tagsOferta = oferta.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+
+            const coincidencias = tagsOferta.map(tagOferta => {
+                const tagUsuario = tagsUsuario.find(tag => tag.nombre === tagOferta.nombre);
+                if (tagUsuario) {
+                    const porcentaje = (tagUsuario.puntuacion / tagOferta.puntuacion) * 100;
+                    return { nombre: tagOferta.nombre, porcentaje };
+                }
+                return null;
+            }).filter(Boolean);
+
+            const coincidenciaState = {};
+            coincidencias.forEach(coincidencia => {
+                coincidenciaState[coincidencia.nombre] = coincidencia.porcentaje;
+            });
+            setPorcentajeCoincidencia(coincidenciaState);
+        }
+    }, [oferta, userData.id]);
 
     const handleInteresado = () => {
         setConfirmOpen(true);
@@ -65,7 +89,7 @@ export const PaginaOfertaDesempleado = () => {
         })
             .then(res => {
                 console.log('Solicitud enviada con éxito');
-                setIsRegistrado(true); // Actualizar el estado para indicar que ya está registrado
+                setIsRegistrado(true);
             })
             .catch(err => {
                 console.log(err);
@@ -76,7 +100,7 @@ export const PaginaOfertaDesempleado = () => {
                 }
             })
             .finally(() => {
-                setConfirmOpen(false); // Cerrar el modal después de enviar la solicitud
+                setConfirmOpen(false);
             });
     };
 
@@ -104,6 +128,20 @@ export const PaginaOfertaDesempleado = () => {
             });
     };
 
+    // Componente actualizado para mostrar barras de progreso verticales y limitar su altura
+    const TagProgressBar = ({ tag, percentage }) => {
+        return (
+            <div style={{ marginRight: '20px', marginBottom: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Typography variant="body1" style={{ marginBottom: '4px' }}>{tag}</Typography>
+                <div style={{ backgroundColor: '#2E8B57', width: '20px', height: '200px', borderRadius: '4px', position: 'relative', alignSelf: 'flex-start' }}>
+                    <div style={{ backgroundColor: '#00FF00', width: '100%', height: `${percentage}%`, borderRadius: '4px' }}></div>
+                </div>
+            </div>
+        );
+    };
+
+
+
     const handleClose = () => {
         setConfirmOpen(false);
     };
@@ -117,12 +155,44 @@ export const PaginaOfertaDesempleado = () => {
                     <Typography variant="body1">Descripción: {oferta.Descripcion}</Typography>
                     <Typography variant="body1">Empresa: {oferta.Empresa.Nombre}</Typography>
                     <Typography variant="body1">Disponible: {oferta.Disponible ? 'Sí' : 'No'}</Typography>
-                    <Typography variant="h5">Tags:</Typography>
-                    <ul>
+                    <Typography variant="h5">Tags de la oferta:</Typography>
+                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {oferta.Tags.map((tag, index) => (
-                            <li key={index}>{tag.Lenguaje}: {tag.Puntuacion}</li>
+                            <Chip
+                                key={index}
+                                label={`${tag.Lenguaje}: ${tag.Puntuacion}`}
+                                style={{ margin: '4px' }}
+                                variant="outlined"
+                            />
                         ))}
-                    </ul>
+                    </div>
+                    {userData.id && (
+                        <>
+                            <Typography variant="h5">Tags del usuario:</Typography>
+                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                {oferta.Tags_Usuario.map((tag, index) => (
+                                    <Chip
+                                        key={index}
+                                        label={`${tag.Lenguaje}: ${tag.Puntuacion}`}
+                                        style={{ margin: '4px' }}
+                                        variant="outlined"
+                                    />
+                                ))}
+                            </div>
+                            <Typography variant="h5">Tags coincidentes:</Typography>
+                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                {tagsCoincidentes.map((tag, index) => (
+                                    <Chip
+                                        key={index}
+                                        label={tag}
+                                        style={{ margin: '4px' }}
+                                        variant="outlined"
+                                    />
+                                ))}
+                            </div>
+                            <Typography variant="body1">Porcentaje de concordancia: {oferta.Porcentaje_Concordancia}%</Typography>
+                        </>
+                    )}
                     {isRegistrado ? (
                         <Button
                             variant="contained"
@@ -160,6 +230,14 @@ export const PaginaOfertaDesempleado = () => {
                             )}
                         </Box>
                     </Modal>
+
+                    {/* Nueva sección para mostrar porcentaje de coincidencia de tags */}
+                    <Typography variant="h5">Porcentaje de coincidencia por tag:</Typography>
+                    <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
+                        {Object.entries(porcentajeCoincidencia).map(([tag, porcentaje], index) => (
+                            <TagProgressBar key={index} tag={tag} percentage={porcentaje} />
+                        ))}
+                    </div>
                 </>
             )}
         </div>
