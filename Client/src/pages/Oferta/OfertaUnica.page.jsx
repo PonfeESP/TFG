@@ -42,7 +42,7 @@ export const OfertaUnica = () => {
     finishLoading ? (
       userData.userType === 'Desempleado' ? (
         <>
-          <div style={{ position: 'relative' }}>
+          <div>
             <Header onMostrarOrdenada={() => {
               navigate('/desempleado/ordenada'); // Navega a la ruta '/empresa'
               setMostrarOrdenada(true);
@@ -100,7 +100,7 @@ export const OfertaUnica = () => {
               setMostrarInteresado(true);
             }}/>
           </div>
-          <div style={{ marginTop: '70px', padding: '20px' }}>
+          <div>
             <Paper>
              <PaginaOfertaDesempleado />
             </Paper>

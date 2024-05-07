@@ -259,7 +259,9 @@ app.get('/noInteresado_ofertas/:userId', async (req, res) => {
     // Obtener todas las ofertas que no tienen al usuario en la lista de interesados
     const ofertasNoInteresadas = await Oferta.find({
       Interesados: { $ne: userId } // Filtrar ofertas que no contienen al usuario en la lista de interesados
-    }).populate('Empresa', 'Nombre');
+    })
+    .populate('Empresa', 'Nombre')
+    .sort({ Fecha_Creacion: -1 }); // Ordenar las ofertas por Fecha_Creacion de más nuevas a más viejas
 
     const ofertasFormateadas = ofertasNoInteresadas.map(oferta => ({
       ...oferta.toObject(),

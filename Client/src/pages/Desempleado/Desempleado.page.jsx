@@ -53,7 +53,6 @@ export const Desempleado = () => {
         </div>
         <div style={{ marginTop: '70px', padding: '20px' }}>
           <Paper>
-            <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
             <Routes>
               <Route path="/" element={<PaginaDesempleadoHome userId={userData.id}/>} />
               <Route path="/ofertas" element={<PaginaDesempleado userId={userData.id}/>} />
