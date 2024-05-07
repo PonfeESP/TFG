@@ -37,7 +37,7 @@ export const PaginaOfertaEmpresa = () => {
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/ofertas/${idOferta}`,
+            url: `http://localhost:8000/oferta_empresa/${idOferta}`,
             method: 'GET'
         })
             .then(res => {

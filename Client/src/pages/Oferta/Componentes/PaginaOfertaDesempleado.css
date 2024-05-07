@@ -1,0 +1,79 @@
+.degradado-invertido {
+    border: solid;  
+}
+.contenedor-derecha {
+    margin-right: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cosa1 {
+    background-color: #2E8B57;
+    width: 20px;
+    height: 200px;
+    border-radius: 4px;
+    position: relative;
+    align-self: flex-start;
+}
+
+.cosa2 {
+    background-color: #00FF00;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.pagina {
+    display: flex;
+}
+
+.pagina-columna {
+    flex-direction: column;
+}
+
+.pagina-fila {
+    flex-direction: row;
+}
+
+.componente-izquierda {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 60%;
+    margin-bottom: 10px;
+    padding: 0 3px; /* Margen de 3px a la izquierda y derecha */
+    border-right: 2px solid #ffffff; /* Borde derecho */
+    box-shadow: 5px 5px 15px 0px rgb(255, 255, 255); /* Sombra derecha */
+    text-align: center; /* Centrar el texto */
+}
+
+.componente-derecha {
+    flex: 0 0 40%;
+    padding: 6px 3px; /* Margen de 3px a la izquierda y derecha */
+    margin-bottom: 10px;
+    border-left: 2px solid #ffffff; /* Borde izquierdo */
+    box-shadow: -5px 5px 15px 0px rgb(255, 255, 255); /* Sombra izquierda */
+    text-align: center; /* Centrar el texto */
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrar los tags */
+}
+
+.barras {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center; /* Centrar las barras de progreso */
+}
+
+.boton-interesado {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.campo {
+    border-bottom: 1px solid #ccc; /* Línea horizontal entre cada campo */
+    padding-bottom: 8px; /* Espacio entre la línea y el texto */
+}

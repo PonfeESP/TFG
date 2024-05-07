@@ -102,7 +102,6 @@ export const OfertaUnica = () => {
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
-              <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
              <PaginaOfertaDesempleado />
             </Paper>
           </div>
@@ -141,7 +140,6 @@ export const OfertaUnica = () => {
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
-              <Typography variant="h4" color="primary">EMPRESA</Typography>
               <PaginaOfertaEmpresa/>
             </Paper>
           </div>

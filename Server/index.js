@@ -213,23 +213,20 @@ app.get('/ofertas/:id', async (req, res) => {
     if (!oferta) {
       return res.status(404).json({ error: 'Oferta no encontrada' });
     }
-    const usuarioId = req.query.usuarioId;
 
-    if (!usuarioId) {
-      return res.status(400).json({ error: 'ID de usuario no proporcionado' });
-    }
-
-    const usuario = await User.findById(usuarioId);
+    const usuario = await User.findById(req.query.usuarioId);
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
     const porcentajeConcordancia = calcularPorcentajeConcordancia(usuario.Tags, oferta.Tags);
+    const porcentajeCoincidenciaporTag = calcularPorcentajeCoincidenciaporTag(oferta, usuario);
 
     const ofertaConUsuario = {
       ...oferta.toObject(),
       Nombre_Usuario: usuario.Nombre,
       Porcentaje_Concordancia: porcentajeConcordancia,
+      Porcentaje_Concordancia_Tag: porcentajeCoincidenciaporTag,
       Tags_Usuario: usuario.Tags
     };
 
@@ -240,7 +237,20 @@ app.get('/ofertas/:id', async (req, res) => {
   }
 });
 
+app.get('/oferta_empresa/:id', async (req, res) => {
+  try {
+    const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
+    
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
 
+    res.json(oferta);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
 
 app.get('/noInteresado_ofertas/:userId', async (req, res) => {
   try {
@@ -820,6 +830,31 @@ function calcularPorcentajeConcordancia(usuarioTags, ofertaTags) {
 
   return porcentajeConcordancia;
 }
+
+function calcularPorcentajeCoincidenciaporTag(oferta, usuario) {
+  if (oferta && usuario) {
+      const tagsUsuario = usuario.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+      const tagsOferta = oferta.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+
+      const coincidencias = tagsOferta.map(tagOferta => {
+          const tagUsuario = tagsUsuario.find(tag => tag.nombre === tagOferta.nombre);
+          if (tagUsuario) {
+              const porcentaje = (tagUsuario.puntuacion / tagOferta.puntuacion) * 100;
+              return { nombre: tagOferta.nombre, porcentaje };
+          }
+          return null;
+      }).filter(Boolean);
+
+      const coincidenciaState = {};
+      coincidencias.forEach(coincidencia => {
+          coincidenciaState[coincidencia.nombre] = coincidencia.porcentaje;
+      });
+
+      return coincidenciaState;
+  }
+  return null; // O puedes devolver un valor por defecto dependiendo de tus necesidades
+}
+
 
 
 
