@@ -51,7 +51,7 @@ export const Desempleado = () => {
             onModificarUsuario={() => navigate('/desempleado/modificacion')} 
 />
         </div>
-        <div style={{ marginTop: '70px', padding: '20px' }}>
+        <div className = "hola" style={{ marginTop: '70px', padding: '20px' }}>
           <Paper>
             <Routes>
               <Route path="/" element={<PaginaDesempleadoHome userId={userData.id}/>} />

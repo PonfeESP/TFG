@@ -51,6 +51,9 @@ const userSchema = new Schema({
         required: function () {
             return this.Rol === 'Desempleado';
         }
+    },
+    CurriculumPDF: {
+        type: String,
     }
 });
 

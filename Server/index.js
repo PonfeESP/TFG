@@ -4,6 +4,11 @@ import { ObjectId } from 'mongodb';
 import session from 'express-session';
 import passport from 'passport';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import multer from 'multer';
+
+
 
 import { strategyInit } from './Passport/Autenticacion.js';
 import User from './Modelos/Usuario.model.js';
@@ -12,9 +17,21 @@ import Evento from './Modelos/Evento.model.js';
 import Oferta from './Modelos/Ofertas.model.js';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const pdfDirectory = path.join(__dirname, '', 'PDF');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, pdfDirectory);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
 app.use(express.json())
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
-
+app.use('/pdfs', express.static('./PDF'));
 
 let db;
 
@@ -66,7 +83,7 @@ app.get('/usuarios/:id', async (req, res) => {
 
 app.get('/tags', async (req, res) => {
   try {
-    const tags = await Tags.find();
+    const tags = await Tags.find().sort({ Nombre: 1 }); // Ordenar por el campo Nombre de forma ascendente
     res.json(tags);
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
@@ -256,12 +273,11 @@ app.get('/noInteresado_ofertas/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Obtener todas las ofertas que no tienen al usuario en la lista de interesados
     const ofertasNoInteresadas = await Oferta.find({
-      Interesados: { $ne: userId } // Filtrar ofertas que no contienen al usuario en la lista de interesados
+      Interesados: { $ne: userId }
     })
     .populate('Empresa', 'Nombre')
-    .sort({ Fecha_Creacion: -1 }); // Ordenar las ofertas por Fecha_Creacion de más nuevas a más viejas
+    .sort({ Fecha_Creacion: -1 });
 
     const ofertasFormateadas = ofertasNoInteresadas.map(oferta => ({
       ...oferta.toObject(),
@@ -396,30 +412,30 @@ app.get('/mostrarSolicitudes/usuario', async (req, res) => { //Version antigua, 
 
 app.post('/registro/usuario/desempleado', async (req, res) => {
   const usuario = req.body;
-  console.log('XD', req.body);
 
   try {
-    const usuarioExistente = await User.findOne({ Email: usuario.Email });
+      const usuarioExistente = await User.findOne({ Email: usuario.Email });
 
-    if (usuarioExistente) {
-      return res.status(400).json({ error: 'Este Email ya está registrado' });
-    } else {
-      const nuevoUsuario = new User({
-        Nombre: usuario.Nombre,
-        Email: usuario.Email,
-        Contraseña: usuario.Contraseña,
-        Rol: usuario.Rol,
-        Descripcion: usuario.Descripcion,
-        Edad: parseInt(usuario.Edad),
-        Experiencia_Laboral: parseInt(usuario.Experiencia_Laboral),
-        Estudios: usuario.Estudios,
-        Tags: usuario.Tags
-      });
-      const respuesta = await nuevoUsuario.save();
-      res.status(201).json({ status: 'OK', user: respuesta });
-    }
+      if (usuarioExistente) {
+          return res.status(400).json({ error: 'Este Email ya está registrado' });
+      } else {
+          const nuevoUsuario = new User({
+              Nombre: usuario.Nombre,
+              Email: usuario.Email,
+              Contraseña: usuario.Contraseña,
+              Rol: usuario.Rol,
+              Descripcion: usuario.Descripcion,
+              Edad: parseInt(usuario.Edad),
+              Experiencia_Laboral: parseInt(usuario.Experiencia_Laboral),
+              Estudios: usuario.Estudios,
+              Tags: usuario.Tags,
+          });
+
+          const respuesta = await nuevoUsuario.save();
+          res.status(201).json({ status: 'OK', user: respuesta });
+      }
   } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+      res.status(500).json({ error: 'Fallo' });
   }
 });
 
@@ -589,7 +605,43 @@ app.put('/usuarios/:id', async (req, res) => {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
+    // Validar si hay tags duplicados
+    const lenguajes = new Set();
+    for (const tag of newData.Tags) {
+      if (lenguajes.has(tag.Lenguaje)) {
+        return res.status(400).json({ error: 'No se pueden introducir tags con el mismo lenguaje' });
+      }
+      lenguajes.add(tag.Lenguaje);
+    }
+
     Object.assign(usuario, newData);
+
+    await usuario.save();
+
+    res.status(200).json(usuario);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
+});
+
+
+app.put('/usuarios/:id/pdf', upload.single('pdf'), async (req, res) => {
+  const userId = req.params.id;
+  const pdfFile = req.file;
+
+  try {
+    const usuario = await User.findById(userId);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    if (pdfFile) {
+      // Si se proporciona un archivo PDF, lo añadimos
+      usuario.CurriculumPDF = pdfFile.filename; // Asigna el nombre del archivo al campo pdf del usuario
+    } else {
+      // Si no se proporciona un archivo PDF, lo eliminamos
+      usuario.CurriculumPDF = null;
+    }
 
     await usuario.save();
 

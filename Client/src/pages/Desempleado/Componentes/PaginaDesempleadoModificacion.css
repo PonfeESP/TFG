@@ -1,12 +1,29 @@
 .pagina-desempleado-modificacion-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Alinear los elementos en la parte superior */
     height: 100%;
 }
 
+.info-usuario {
+    display: flex;
+    justify-content: space-between; /* Distribuir los elementos en los extremos */
+    width: 100%; /* Asegurar que ocupe todo el ancho disponible */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column; /* Apilar los elementos verticalmente */
+    width: 60%;
+    margin-right: 10px; /* Ajustar margen derecho para separación entre los papers */
+}
+
+.tags-container {
+    width: 30%;
+}
+
 .formulario {
-    width: 50%;
+    width: 100%; /* Utilizar todo el ancho del contenedor */
     padding: 20px;
 }
 
@@ -37,6 +54,8 @@ input[type="number"] {
 
 .tag {
     margin-bottom: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 button {
@@ -52,4 +71,23 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.pdf {
+    margin-top: 20px; /* Añade un espacio entre los PDFs y los otros elementos */
+}
+@media only screen and (max-width: 768px) {
+    .info-usuario {
+      flex-direction: column !important;
+    }
+    
+    .form-container {
+      width: 100% !important;
+      margin-right: 0 !important;
+      margin-bottom: 10px !important;
+    }
+    
+    .tags-container {
+      width: 100% !important;
+    }
 }

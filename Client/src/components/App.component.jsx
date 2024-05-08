@@ -42,6 +42,7 @@ const App = () => {
         typography: {
             fontFamily: 'Roboto, sans-serif',
         },
+        
     }));
 
     const backgroundStyle = {
@@ -58,7 +59,7 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
+            <CssBaseline/>
             <Router>
                 <Routes>
                     <Route exact path="/" element={<Home />} />

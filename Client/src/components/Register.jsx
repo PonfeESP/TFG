@@ -34,6 +34,7 @@ export const Register = () => {
     const [open, setOpen] = useState(false);
     const [programmingLanguages, setProgrammingLanguages] = useState([]);
 
+
     useEffect(() => {
         axios({
             ...axiosConfig,
@@ -61,6 +62,7 @@ export const Register = () => {
     const handleClose = () => {
         setOpen(false);
     };
+    
 
     const performRegister = (event) => {
         event.preventDefault();
@@ -93,8 +95,6 @@ export const Register = () => {
             if (tags.length === 0) setTagsError(true);
         }
 
-        console.log("Jaas", nombre, email, password, confirmPassword, rol, tags.length)
-
         if (!!nombre && !!email && !!password && !!confirmPassword && !!rol && tags.length > 0) {
 
             if (password !== confirmPassword) {
@@ -114,7 +114,7 @@ export const Register = () => {
                     Edad: parseInt(edad),
                     Experiencia_Laboral: parseInt(experiencia_Laboral),
                     Estudios: estudios,
-                    Tags: tagsWithExperience.map(tag => ({ Lenguaje: tag.tag, Puntuacion: tag.experience }))
+                    Tags: tagsWithExperience.map(tag => ({ Lenguaje: tag.tag, Puntuacion: tag.experience })),
                 };
 
                 const userEmpresaData = {
@@ -127,12 +127,12 @@ export const Register = () => {
 
                 const userData = rol === 'Desempleado' ? {
                     ...userDesempleadoData,
-                    Tags: tagsWithExperience
+                    Tags: tagsWithExperience,
                 } : {
                     ...userEmpresaData
                 };
 
-                const url = rol === 'Empresa' ? 'http://localhost:8000/Registro/Usuario/Empresa' : 'http://localhost:8000/Registro/Usuario/Desempleado';
+                const url = rol === 'Empresa' ? 'http://localhost:8000/registro/usuario/empresa' : 'http://localhost:8000/Registro/Usuario/Desempleado';
 
                 axios({
                     url: url,
