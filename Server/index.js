@@ -331,7 +331,6 @@ app.get('/ofertas_empresa/:id', async (req, res) => {
 });
 
 app.get('/ofertas_ordenadas/:id', async (req, res) => {
-  console.log("asasa", req.params.id)
   try {
     const usuario = await User.findById(req.params.id);
 

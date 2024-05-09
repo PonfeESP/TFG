@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Grid, Card, CardContent, Typography, Chip, Button } from '@mui/material';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
+import './PaginaDesempleado.css';
 
 export const PaginaDesempleado = ({ userId }) => {
     const [ofertas, setOfertas] = useState([]);
@@ -42,18 +43,18 @@ export const PaginaDesempleado = ({ userId }) => {
             <Grid container spacing={2}>
                 {currentOfertas.map((oferta, index) => (
                     <Grid key={oferta._id} item xs={12} sm={6} md={4} lg={3}>
-                        <Link to={`/oferta/${oferta._id}`} style={{ textDecoration: 'none' }}>
-                            <Card variant="outlined" style={{ cursor: 'pointer', maxHeight: 370, minHeight: 370, overflow: 'auto' }}>
+                        <Link to={`/oferta/${oferta._id}`} className="link">
+                            <Card variant="outlined" className="card">
                                 <CardContent>
-                                    <Typography variant="h5" style={{ fontWeight: 'bold', minHeight: 100, maxHeight: 100, overflow: 'hidden' }}>
+                                    <Typography variant="h5" className="title">
                                         {oferta.Nombre}
                                     </Typography>
-                                    <Typography variant="body1" style={{ marginTop: '10px', marginBottom: '10px', minHeight: 120, maxHeight: 120, overflow: 'hidden'}}>
+                                    <Typography variant="body1" className="tags">
                                         {oferta.Tags && oferta.Tags.map((tag, tagIndex) => (
-                                            <Chip key={tagIndex} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} variant="outlined" style={{ marginRight: '5px', marginBottom: '5px' }} />
+                                            <Chip key={tagIndex} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} variant="outlined" className="chip" />
                                         ))}
                                     </Typography>
-                                    <Typography variant="body1" style={{ marginTop: '5px', marginBottom: '10px', minHeight: 50, maxHeight: 100, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', fontWeight: 'bold', fontSize: '14px' }}>
+                                    <Typography variant="body1" className="description">
                                         {oferta.Descripcion}
                                     </Typography>
                                 </CardContent>
@@ -63,13 +64,14 @@ export const PaginaDesempleado = ({ userId }) => {
                 ))}
             </Grid>
             {/* Controles de paginación */}
-            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <div className="pagination">
                 <Button onClick={prevPage} disabled={currentPage === 1}>Anterior</Button>
-                <span style={{ margin: '0 10px' }}>Página {currentPage} de {totalPages}</span>
+                <span className="page-info">Página {currentPage} de {totalPages}</span>
                 <Button onClick={nextPage} disabled={currentPage === totalPages}>Siguiente</Button>
             </div>
         </div>
     );
+
 }
 
 export default PaginaDesempleado;

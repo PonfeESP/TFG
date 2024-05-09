@@ -115,10 +115,21 @@ export const PaginaDesempleadoModificacion = ({ userId }) => {
     };
 
     const handlePdfChange = (event) => {
-        setPdfFile(event.target.files[0]);
+        const selectedFile = event.target.files[0];
+        // Validar que el archivo seleccionado sea un PDF
+        if (selectedFile && selectedFile.type === 'application/pdf') {
+            setPdfFile(selectedFile);
+        } else {
+            alert('Por favor, seleccione un archivo PDF.');
+        }
     };
 
     const handlePdfUpload = () => {
+        if (!pdfFile) {
+            alert('Por favor, seleccione un archivo PDF.');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('pdf', pdfFile);
 
@@ -298,14 +309,14 @@ export const PaginaDesempleadoModificacion = ({ userId }) => {
             <div className="pdf" style={{ width: '100%', marginTop: '20px' }}>
                 <Paper elevation={3} className="pdf-upload" style={{ textAlign: 'center' }}>
                     <Typography variant="h5" className="titulo" style={{ marginBottom: '10px' }}>Agregar PDF</Typography>
-                    <input type="file" onChange={handlePdfChange} style={{ display: 'block', margin: 'auto' }} />
+                    <input type="file" onChange={handlePdfChange} style={{ display: 'block', margin: 'auto' }} accept=".pdf"/>
                     <button type="button" onClick={handlePdfUpload} style={{ marginTop: '20px', marginBottom: '20px' }}>Subir PDF</button>
                 </Paper>
 
                 {pdfUrl && (
                     <Paper elevation={3} className="pdf-list" style={{ textAlign: 'center' }}>
                         <Typography variant="h5" className="titulo">PDF existente</Typography>
-                        <a href={`http://localhost:8000/pdfs/${pdfUrl}`} target="_blank" rel="noopener noreferrer">Ver PDF</a>
+                        <a href={`http://localhost:8000/pdfs/${pdfUrl}`} target="_blank" rel="noopener noreferrer">Curriculum</a>
                     </Paper>
                 )}
             </div>
