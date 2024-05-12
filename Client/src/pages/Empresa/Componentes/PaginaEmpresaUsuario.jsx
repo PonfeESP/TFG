@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, Button, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
 import { Link } from 'react-router-dom';
-
 
 const styles = `
     .degradado-invertido {
         border: solid ;  
     }
+    .tags-scroll {
+        max-height: 100px;
+        overflow-y: auto;
+    }
 `;
 
 export const PaginaEmpresaUsuario = () => {
-
-    const [usuarios, setusuarios] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
 
     useEffect(() => {
         axios({
@@ -23,49 +25,60 @@ export const PaginaEmpresaUsuario = () => {
             method: 'GET'
         })
             .then(res => {
-                setusuarios(res.data);
+                setUsuarios(res.data);
             })
             .catch(err => console.log(err))
     }, []);
 
     return (
-        <div style={{ backgroundColor: 'transparent' }}>
-            <style>{styles}</style>
-            {usuarios.length > 0 && !!usuarios[0]._id && (
-                <Table aria-label="collapsible table" style={{ borderCollapse: 'collapse', backgroundColor: 'transparent', backgroundImage: 'linear-gradient(to right, red 0%, blue 100%)', backgroundOrigin: 'border-box', borderSpacing: '5px', border: '5px solid transparent' }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>USUARIO</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>DESCRIPCION</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EDAD</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>ESTUDIOS</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>EXPERIENCIA</Typography></TableCell>
-                            <TableCell className="degradado-invertido"><Typography sx={{ fontWeight: 'bold', color: 'white' }}>TAGs</Typography></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {usuarios.map((usuario, index) => (
-                            <TableRow key={usuario._id}>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
-                                    <Link to={`/empresa/usuarios/${usuario._id}`}>
-                                        <Typography sx={{ fontWeight: 'bold', color: 'white' }}>{usuario.Nombre}</Typography>
-                                    </Link>
-                                </TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{usuario.Descripcion}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{usuario.Edad}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{usuario.Estudios}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}><Typography sx={{ fontWeight: 'bold', color: 'white' }}>{usuario.Experiencia_Laboral}</Typography></TableCell>
-                                <TableCell className="degradado-invertido" style={{ background: 'transparent' }}>
-                                    {usuario.Tags && usuario.Tags.map((tag, tagIndex) => (
-                                        <Typography key={tagIndex} sx={{ fontWeight: 'bold', color: 'white' }}>{tag.Lenguaje}: {tag.Puntuacion}</Typography>
-                                    ))}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            )}
-        </div>
+        <Grid container spacing={2}>
+            {usuarios.map((usuario, index) => (
+                <Grid key={usuario._id} item xs={12} sm={6} md={4} lg={3}>
+                    <Link to={`${usuario._id}`} style={{ textDecoration: 'none' }}>
+                        <Card variant="outlined" style={{ minHeight: '400px', maxHeight: '400px' }}>
+                            <CardContent style={{ overflowY: 'auto' }}>
+                                <Typography variant="h5" gutterBottom style={{ maxHeight: '70px', overflowY: 'auto' }}>
+                                    {usuario.Nombre}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom style={{ maxHeight: '70px', overflowY: 'auto' }}>
+                                    {usuario.Descripcion}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom>
+                                    Edad: {usuario.Edad}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom>
+                                    Estudios: {usuario.Estudios}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom>
+                                    Experiencia Laboral: {usuario.Experiencia_Laboral}
+                                </Typography>
+                                <Typography variant="body1" gutterBottom>
+                                    Tags:
+                                </Typography>
+                                <div className="tags-scroll" style={{ maxHeight: '120px', overflowY: 'auto' }}>
+                                    <TableContainer>
+                                        <Table aria-label="tags table">
+                                            <TableBody>
+                                                {usuario.Tags && usuario.Tags.map((tag, tagIndex) => (
+                                                    <TableRow key={tagIndex}>
+                                                        <TableCell>
+                                                            <Typography variant="body2">{tag.Lenguaje}</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="body2">{tag.Puntuacion}</Typography>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                </Grid>
+            ))}
+        </Grid>
     );
 }
 

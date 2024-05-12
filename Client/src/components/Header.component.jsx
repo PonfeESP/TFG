@@ -230,9 +230,11 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                         {isLoggedIn && isDesempleado && (
                             <>
                                 <MenuItem onClick={onMostrarOrdenada}>Mostrar Ordenada</MenuItem>
-                                <MenuItem onClick={onMostrar}>Mostrar</MenuItem>
+                                <MenuItem onClick={onMostrar}>Mostrar Ofertas</MenuItem>
+                                <MenuItem onClick={onMostrarOfertas}>Tus Ofertas</MenuItem>
                                 <MenuItem onClick={onMostrarEmpresa}>Mostrar Empresas</MenuItem>
                                 <MenuItem onClick={onMostrarEvento}>Mostrar Eventos</MenuItem>
+                                <MenuItem onClick={onMostrarInteresado} >Tus Eventos</MenuItem>
                             </>
                         )}
 

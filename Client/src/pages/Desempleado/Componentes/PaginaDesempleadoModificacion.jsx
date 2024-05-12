@@ -264,7 +264,7 @@ export const PaginaDesempleadoModificacion = ({ userId }) => {
                 </Paper>
                 <Paper elevation={3} className="tags-container" style={{ width: '40%' }}>
                     <Typography variant="h4" className="titulo">Etiquetas</Typography>
-                    <div className="form-group tags">
+                    <div className="form-group tags" style={{ minHeight: '430px', overflowY: 'auto' }}>
                         {tags.map((tag, index) => (
                             <div key={index} className="tag">
                                 <label htmlFor={`tag-${index}`}>Lenguaje:</label>

@@ -23,7 +23,6 @@ const paperStyle = {
   color: 'white', // Texto blanco
 };
 
-
 const paperStyle2 = {
   padding: '20px',
   minHeight: '500px', // Altura mínima de cada sección
@@ -34,6 +33,12 @@ const paperStyle3 = {
   padding: '20px',
   minHeight: '500px', // Altura mínima de cada sección
   height: '100%', // El papel ocupa toda la altura de su contenedor
+};
+
+const containerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center', // Centrar horizontalmente
 };
 
 export const Home = () => {
@@ -55,23 +60,41 @@ export const Home = () => {
       .catch(err => console.log(err))
   }, []);
 
+  const lines = [
+    '<span style="color: purple;">if</span>( !<span style="color: green;">user </span> ) <span style="color: blue;">{</span>',
+    '  <span style="color: yellow;">console.log </span>("Bienvenido a ITJobFinder");',
+    '  <span style="color: yellow;">console.log </span>("ITJobFinder es una aplicacion web de busqueda de empleo desarrollada por y para ingenieros informaticos");',
+    '  <span style="color: yellow;">console.log </span>("Contamos con la colaboracion de multiples empresas");',
+  '<span style="color: blue;">}</span>'
+  ];
+  
+  <Typography>
+    {lines.map((line, index) => (
+      <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
+    ))}
+  </Typography>
+  
+
   return (
     <>
       <Header style={headerStyle} />
-      <img src={Logo} alt="Logo" />
-      <div >
-          <Paper style={paperStyle}>
-            <Typography>Bienvenido a ITJobFinder</Typography> 
-            <Typography>ITJobFinder es una aplicacion web de busqueda de empleo desarrollada por y para ingenieros informaticos</Typography> 
-            <Typography>Contamos con la colaboracion de multiples empresas</Typography> 
-          </Paper>
-          <Paper style={paperStyle2}>
-            {/* Contenido de la segunda sección */}
-          </Paper>
-          <Paper style={paperStyle3}>
-            {/* Contenido de la tercera sección */}
-          </Paper>
-        </div>
+      <div style={containerStyle}>
+        <img src={Logo} alt="Logo" />
+      </div>
+      <div>
+        <Paper style={paperStyle}>
+        <Typography>
+  {lines.map((line, index) => (
+    <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
+  ))}
+</Typography>        </Paper>
+        <Paper style={paperStyle2}>
+          {/* Contenido de la segunda sección */}
+        </Paper>
+        <Paper style={paperStyle3}>
+          {/* Contenido de la tercera sección */}
+        </Paper>
+      </div>
     </>
   );
 };

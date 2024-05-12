@@ -105,7 +105,6 @@ export const EventoUnico = () => {
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
-              <Typography variant="h4" color="primary">DESEMPLEADO</Typography>
               <PaginaEventoDesempleado />
             </Paper>
           </div>
@@ -144,7 +143,6 @@ export const EventoUnico = () => {
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>
             <Paper>
-              <Typography variant="h4" color="primary">EMPRESA</Typography>
              <PaginaEventoEmpresa/>
             </Paper>
           </div>

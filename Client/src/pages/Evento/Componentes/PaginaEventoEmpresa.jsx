@@ -37,9 +37,6 @@ export const PaginaEventoEmpresa = () => {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [userData, setUserData] = useState({});
     const [finishLoading, setFinishLoading] = useState(null);
-    const [nuevoTag, setNuevoTag] = useState('');
-    const [tags, setTags] = useState([]);
-    const [tagSeleccionado, setTagSeleccionado] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
@@ -63,7 +60,6 @@ export const PaginaEventoEmpresa = () => {
         })
             .then(res => {
                 setEvento(res.data);
-                setTags(res.data.Tags.map(tag => tag.Lenguaje));
             })
             .catch(err => {
                 console.log(err);

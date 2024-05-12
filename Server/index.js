@@ -111,7 +111,7 @@ app.get('/noInteresado_eventos/:userId', async (req, res) => {
 
     const eventosFuturos = await Evento.find({
       Fecha: { $gte: fechaLimite },
-      Interesados: { $not: { $eq: userId } } // Filtrar eventos en los que el usuario no esté interesado
+      Interesados: { $not: { $eq: userId } }
     })
     .populate('Empresa', 'Nombre')
     .sort({ Fecha_Creacion: -1 });
@@ -120,8 +120,8 @@ app.get('/noInteresado_eventos/:userId', async (req, res) => {
       const aforoRestante = evento.Aforo - evento.Interesados.length;
       return {
         ...evento.toObject(),
-        Dia: evento.Fecha.toISOString().split('T')[0], // Obtener el día en formato YYYY-MM-DD
-        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Obtener la hora en formato HH:MM
+        Dia: evento.Fecha.toISOString().split('T')[0],
+        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         aforo_restante: aforoRestante
       };
     });
@@ -137,7 +137,7 @@ app.get('/interesado_evento/:userId', async (req, res) => {
     const userId = req.params.userId;
 
     const eventosInteresado = await Evento.find({
-      Interesados: userId // Filtrar eventos en los que el usuario esté interesado
+      Interesados: userId
     })
     .populate('Empresa', 'Nombre')
     .sort({ Fecha_Creacion: -1 });
@@ -146,8 +146,8 @@ app.get('/interesado_evento/:userId', async (req, res) => {
       const aforoRestante = evento.Aforo - evento.Interesados.length;
       return {
         ...evento.toObject(),
-        Dia: evento.Fecha.toISOString().split('T')[0], // Obtener el día en formato YYYY-MM-DD
-        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Obtener la hora en formato HH:MM
+        Dia: evento.Fecha.toISOString().split('T')[0],
+        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         aforo_restante: aforoRestante
       };
     });
@@ -161,22 +161,21 @@ app.get('/interesado_evento/:userId', async (req, res) => {
 
 app.get('/eventos/:id', async (req, res) => {
   try {
-    // Find the event by its ID and populate the 'Empresa' field with 'Nombre'
-    const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
     
-    // Check if the event exists
+    const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
+    const usuarios = await User.find({ _id: { $in: evento.Interesados } });
+    
     if (!evento) {
       return res.status(404).json({ error: 'Evento no encontrado' });
     }
 
-    // Format the date and time of the event
     const eventoFormateado = {
       ...evento.toObject(),
-      Dia: evento.Fecha.toISOString().split('T')[0], // Get the day in YYYY-MM-DD format
-      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Get the time in HH:MM format
+      Dia: evento.Fecha.toISOString().split('T')[0],
+      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    res.json(eventoFormateado);
+    res.json({ eventoFormateado, usuarios });
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
@@ -189,7 +188,6 @@ app.get('/eventos_empresa/:id', async (req, res) => {
       Empresa: req.params.id 
     });
 
-    // Crear una nueva lista de eventos con aforo_restante calculado
     const eventosConAforoRestante = eventos.map(evento => {
       const aforoRestante = evento.Aforo - evento.Interesados.length;
       return {
@@ -208,11 +206,23 @@ app.get('/eventos_empresa/:id', async (req, res) => {
 app.get('/empresa_unica/:id', async (req, res) => {
   try {
     const empresa = await User.findById(req.params.id);
-    res.json(empresa);
+    const ofertas = await Oferta.find({ Empresa: req.params.id });
+    const eventos = await Evento.find({ Empresa: req.params.id });
+
+    const formattedEventos = eventos.map(evento => ({
+      ...evento.toObject(),
+      Dia: evento.Fecha.toISOString().split('T')[0],
+      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }));
+
+    console.log(formattedEventos)
+
+    res.json({ empresa, ofertas, eventos: formattedEventos });
   } catch (error) {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
 
 app.get('/usuario_unico/:id', async (req, res) => {
   try {
@@ -296,7 +306,6 @@ app.get('/interesado_ofertas/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Obtener todas las ofertas que tienen al usuario en la lista de interesados
     const ofertasInteresadas = await Oferta.find({
       Interesados: userId
     }).populate('Empresa', 'Nombre');
@@ -466,11 +475,14 @@ app.post('/registro/usuario/empresa', async (req, res) => {
 
 app.post('/registro_evento/:id', async (req, res) => {
 
-  const idEmpresa = req.params.id
+  const idEmpresa = req.params.id;
   const evento = req.body;
-  console.log("evento", evento);
 
   try {
+    if (!evento.Nombre || !evento.Descripcion || !evento.Fecha || !evento.Localizacion || !evento.Aforo) {
+      return res.status(400).json({ error: 'Todos los campos deben estar llenos' });
+    }
+
     const fechaEvento = new Date(evento.Fecha);
     const fechaLimite = new Date();
     fechaLimite.setDate(fechaLimite.getDate() + 1); // Añadir un día a la fecha actual
@@ -505,6 +517,7 @@ app.post('/registro_evento/:id', async (req, res) => {
 
 
 
+
 app.post('/registro_oferta/:id', async (req, res) => {
   try {
     const idEmpresa = req.params.id;
@@ -512,10 +525,17 @@ app.post('/registro_oferta/:id', async (req, res) => {
 
     const fechaActual = new Date(); // Se agrega la declaración de fechaActual aquí
 
-    if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || !oferta.Disponible || !oferta.Empresa) {
-      return res.status(400).json({ error: "Mo se han rellenado los campos correctamente" });
+    // Validación de campos requeridos y al menos un tag
+    if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || oferta.Tags.length === 0 || !oferta.Disponible || !oferta.Empresa) {
+      return res.status(400).json({ error: "No se han rellenado los campos correctamente. Asegúrate de proporcionar un nombre, una descripción, al menos un tag y especificar la disponibilidad." });
     }
 
+    // Validación de tags duplicados
+    const tagNames = oferta.Tags.map(tag => tag.Lenguaje);
+    const uniqueTagNames = new Set(tagNames);
+    if (tagNames.length !== uniqueTagNames.size) {
+      return res.status(400).json({ error: "No se permiten tags duplicados en la oferta." });
+    }
 
     const nuevaOferta = new Oferta({
       Nombre: oferta.Nombre,

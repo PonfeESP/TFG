@@ -19,6 +19,7 @@ export const PaginaEmpresaUsuarioUnico = () => {
 
     return (
         <div style={{ backgroundColor: 'transparent' }}>
+            AAAAAAAAAAAAAA
             {usuario && (
                 <>
                     <Typography variant="h4">{usuario.Nombre}</Typography>
