@@ -101,6 +101,8 @@ export const PaginaEventoEmpresa = () => {
             });
     };
 
+    console.log("DAPKF", evento)
+
     return (
         <div style={{ backgroundColor: 'transparent' }}>
             <style>{styles}</style>
@@ -108,49 +110,54 @@ export const PaginaEventoEmpresa = () => {
                 <>
                     <Typography variant="h4">Nombre:
                         <TextField
-                            defaultValue={evento.Nombre}
+                            defaultValue={evento.eventoFormateado.Nombre}
                             onChange={(e) => setEvento({ ...evento, Nombre: e.target.value })}
                         />
                     </Typography>
                     <Typography variant="body1">Descripción:
                         <TextField
-                            defaultValue={evento.Descripcion}
+                            defaultValue={evento.eventoFormateado.Descripcion}
                             onChange={(e) => setEvento({ ...evento, Descripcion: e.target.value })}
                         />
                     </Typography>
                     <Typography variant="body1">Dia:
                         <TextField
                             type="date"
-                            defaultValue={evento.Dia}
+                            defaultValue={evento.eventoFormateado.Dia}
                             onChange={(e) => setEvento({ ...evento, Dia: e.target.value })}
                         />
                     </Typography>
                     <Typography variant="body1">Hora:
                         <TextField
                             type="time"
-                            defaultValue={evento.Hora}
+                            defaultValue={evento.eventoFormateado.Hora}
                             onChange={(e) => setEvento({ ...evento, Hora: e.target.value })}
                         />
                     </Typography>
                     <Typography variant="body1">Localizacion:
                         <TextField
-                            defaultValue={evento.Localizacion}
+                            defaultValue={evento.eventoFormateado.Localizacion}
                             onChange={(e) => setEvento({ ...evento, Localizacion: e.target.value })}
                         />
                     </Typography>
                     <Typography variant="body1">Aforo:
                         <TextField
                             type="number"
-                            defaultValue={evento.Aforo}
+                            defaultValue={evento.eventoFormateado.Aforo}
                             onChange={(e) => setEvento({ ...evento, Aforo: e.target.value })}
                         />
                     </Typography>
                     <Typography variant="h5">Interesados:</Typography>
                     <ul>
-                        {evento.Interesados.map((interesado, index) => (
-                            <li key={index}>{interesado}</li>
-                        ))}
+                        {evento.Interesados && evento.eventoFormateado.Interesados.length > 0 ? (
+                            evento.eventoFormateado.Interesados.map((interesado, index) => (
+                                <li key={index}>{interesado}</li>
+                            ))
+                        ) : (
+                            <li>No hay interesados</li>
+                        )}
                     </ul>
+
                     <Button
                         variant="contained"
                         color="primary"

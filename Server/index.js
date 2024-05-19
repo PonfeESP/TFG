@@ -61,360 +61,389 @@ strategyInit(passport);
 // GETs
 
 app.get('/usuarios', async (req, res) => {
-  try {
-    const usuarios = await User.find({ Rol: 'Desempleado' });
-    res.json(usuarios);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  if (req.isAuthenticated()) {
+    try {
+      const usuarios = await User.find({ Rol: 'Desempleado' });
+      res.json(usuarios);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/usuarios/:id', async (req, res) => {
-  try {
-    const usuario = await User.findById(req.params.id);
-    if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+  if (req.isAuthenticated()) {
+    try {
+      const usuario = await User.findById(req.params.id);
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+      res.json(usuario);
+    } catch (error) {
+      res.status(500).json({ error: 'Error interno del servidor' });
     }
-    res.json(usuario);
-  } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/tags', async (req, res) => {
-  try {
-    const tags = await Tags.find().sort({ Nombre: 1 }); // Ordenar por el campo Nombre de forma ascendente
-    res.json(tags);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  if (req.isAuthenticated()) {
+    try {
+      const tags = await Tags.find().sort({ Nombre: 1 });
+      res.json(tags);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/empresas', async (req, res) => { //SI
-  try {
-    const empresas = await User.find({ Rol: 'Empresa' });
-    res.json(empresas);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  if (req.isAuthenticated()) {
+    try {
+      const empresas = await User.find({ Rol: 'Empresa' });
+      res.json(empresas);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/noInteresado_eventos/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
+  if (req.isAuthenticated()) {
+    try {
+      const userId = req.params.userId;
 
-    const fechaActual = new Date();
+      const fechaActual = new Date();
 
-    // Calcular la fecha actual más 24 horas
-    const fechaLimite = new Date();
-    fechaLimite.setHours(fechaLimite.getHours() + 24);
+      const fechaLimite = new Date();
+      fechaLimite.setHours(fechaLimite.getHours() + 24);
 
-    const eventosFuturos = await Evento.find({
-      Fecha: { $gte: fechaLimite },
-      Interesados: { $not: { $eq: userId } }
-    })
-    .populate('Empresa', 'Nombre')
-    .sort({ Fecha_Creacion: -1 });
+      const eventosFuturos = await Evento.find({
+        Fecha: { $gte: fechaLimite },
+        Interesados: { $not: { $eq: userId } }
+      })
+        .populate('Empresa', 'Nombre')
+        .sort({ Fecha_Creacion: -1 });
 
-    const eventosFormateados = eventosFuturos.map(evento => {
-      const aforoRestante = evento.Aforo - evento.Interesados.length;
-      return {
-        ...evento.toObject(),
-        Dia: evento.Fecha.toISOString().split('T')[0],
-        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        aforo_restante: aforoRestante
-      };
-    });
+      const eventosFormateados = eventosFuturos.map(evento => {
+        const aforoRestante = evento.Aforo - evento.Interesados.length;
+        return {
+          ...evento.toObject(),
+          Dia: evento.Fecha.toISOString().split('T')[0],
+          Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          aforo_restante: aforoRestante
+        };
+      });
 
-    res.json(eventosFormateados);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+      res.json(eventosFormateados);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/interesado_evento/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
+  if (req.isAuthenticated()) {
 
-    const eventosInteresado = await Evento.find({
-      Interesados: userId
-    })
-    .populate('Empresa', 'Nombre')
-    .sort({ Fecha_Creacion: -1 });
+    try {
+      const userId = req.params.userId;
 
-    const eventosFormateados = eventosInteresado.map(evento => {
-      const aforoRestante = evento.Aforo - evento.Interesados.length;
-      return {
-        ...evento.toObject(),
-        Dia: evento.Fecha.toISOString().split('T')[0],
-        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        aforo_restante: aforoRestante
-      };
-    });
+      const eventosInteresado = await Evento.find({
+        Interesados: userId
+      })
+        .populate('Empresa', 'Nombre')
+        .sort({ Fecha_Creacion: -1 });
 
-    res.json(eventosFormateados);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+      const eventosFormateados = eventosInteresado.map(evento => {
+        const aforoRestante = evento.Aforo - evento.Interesados.length;
+        return {
+          ...evento.toObject(),
+          Dia: evento.Fecha.toISOString().split('T')[0],
+          Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          aforo_restante: aforoRestante
+        };
+      });
+
+      res.json(eventosFormateados);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.get('/eventos/:id', async (req, res) => {
-  try {
-    
-    const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
-    const usuarios = await User.find({ _id: { $in: evento.Interesados } });
-    
-    if (!evento) {
-      return res.status(404).json({ error: 'Evento no encontrado' });
+  if (req.isAuthenticated()) {
+
+    try {
+
+      const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
+      const usuarios = await User.find({ _id: { $in: evento.Interesados } });
+
+      if (!evento) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      const eventoFormateado = {
+        ...evento.toObject(),
+        Dia: evento.Fecha.toISOString().split('T')[0],
+        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      res.json({ eventoFormateado, usuarios });
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    const eventoFormateado = {
-      ...evento.toObject(),
-      Dia: evento.Fecha.toISOString().split('T')[0],
-      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-
-    res.json({ eventoFormateado, usuarios });
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.get('/eventos_empresa/:id', async (req, res) => {
-  try {
-    const eventos = await Evento.find({
-      Empresa: req.params.id 
-    });
+  if (req.isAuthenticated()) {
 
-    const eventosConAforoRestante = eventos.map(evento => {
-      const aforoRestante = evento.Aforo - evento.Interesados.length;
-      return {
-        ...evento.toObject(),
-        aforo_restante: aforoRestante
-      };
-    });
+    try {
+      const eventos = await Evento.find({
+        Empresa: req.params.id
+      });
 
-    res.json(eventosConAforoRestante);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+      const eventosConAforoRestante = eventos.map(evento => {
+        const aforoRestante = evento.Aforo - evento.Interesados.length;
+        return {
+          ...evento.toObject(),
+          aforo_restante: aforoRestante
+        };
+      });
+
+      res.json(eventosConAforoRestante);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.get('/empresa_unica/:id', async (req, res) => {
-  try {
-    const empresa = await User.findById(req.params.id);
-    const ofertas = await Oferta.find({ Empresa: req.params.id });
-    const eventos = await Evento.find({ Empresa: req.params.id });
+  if (req.isAuthenticated()) {
 
-    const formattedEventos = eventos.map(evento => ({
-      ...evento.toObject(),
-      Dia: evento.Fecha.toISOString().split('T')[0],
-      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }));
+    try {
+      const empresa = await User.findById(req.params.id);
+      const ofertas = await Oferta.find({ Empresa: req.params.id });
+      const eventos = await Evento.find({ Empresa: req.params.id });
 
-    console.log(formattedEventos)
+      const formattedEventos = eventos.map(evento => ({
+        ...evento.toObject(),
+        Dia: evento.Fecha.toISOString().split('T')[0],
+        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }));
 
-    res.json({ empresa, ofertas, eventos: formattedEventos });
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+      console.log(formattedEventos)
+
+      res.json({ empresa, ofertas, eventos: formattedEventos });
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.get('/usuario_unico/:id', async (req, res) => {
-  try {
-    const usuario = await User.findById(req.params.id);
-    res.json(usuario);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  if (req.isAuthenticated()) {
+
+    try {
+      const usuario = await User.findById(req.params.id);
+      res.json(usuario);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/ofertas/:id', async (req, res) => {
-  try {
-    const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
-    
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
+  if (req.isAuthenticated()) {
+
+    try {
+      const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
+
+      if (!oferta) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+
+      const usuario = await User.findById(req.query.usuarioId);
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const porcentajeConcordancia = calcularPorcentajeConcordancia(usuario.Tags, oferta.Tags);
+      const porcentajeCoincidenciaporTag = calcularPorcentajeCoincidenciaporTag(oferta, usuario);
+
+      const ofertaConUsuario = {
+        ...oferta.toObject(),
+        Nombre_Usuario: usuario.Nombre,
+        Porcentaje_Concordancia: porcentajeConcordancia,
+        Porcentaje_Concordancia_Tag: porcentajeCoincidenciaporTag,
+        Tags_Usuario: usuario.Tags
+      };
+
+      res.json(ofertaConUsuario);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    const usuario = await User.findById(req.query.usuarioId);
-    if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-
-    const porcentajeConcordancia = calcularPorcentajeConcordancia(usuario.Tags, oferta.Tags);
-    const porcentajeCoincidenciaporTag = calcularPorcentajeCoincidenciaporTag(oferta, usuario);
-
-    const ofertaConUsuario = {
-      ...oferta.toObject(),
-      Nombre_Usuario: usuario.Nombre,
-      Porcentaje_Concordancia: porcentajeConcordancia,
-      Porcentaje_Concordancia_Tag: porcentajeCoincidenciaporTag,
-      Tags_Usuario: usuario.Tags
-    };
-
-    res.json(ofertaConUsuario);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/oferta_empresa/:id', async (req, res) => {
-  try {
-    const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
-    
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
-    }
+  if (req.isAuthenticated()) {
 
-    res.json(oferta);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Fallo' });
+    try {
+      const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
+
+      if (!oferta) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+
+      res.json(oferta);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/noInteresado_ofertas/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
+  if (req.isAuthenticated()) {
 
-    const ofertasNoInteresadas = await Oferta.find({
-      Interesados: { $ne: userId }
-    })
-    .populate('Empresa', 'Nombre')
-    .sort({ Fecha_Creacion: -1 });
+    try {
+      const userId = req.params.userId;
 
-    const ofertasFormateadas = ofertasNoInteresadas.map(oferta => ({
-      ...oferta.toObject(),
-      Nombre_Empresa: oferta.Empresa.Nombre
-    }));
+      const ofertasNoInteresadas = await Oferta.find({
+        Interesados: { $ne: userId }
+      })
+        .populate('Empresa', 'Nombre')
+        .sort({ Fecha_Creacion: -1 });
 
-    res.json(ofertasFormateadas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Fallo' });
+      const ofertasFormateadas = ofertasNoInteresadas.map(oferta => ({
+        ...oferta.toObject(),
+        Nombre_Empresa: oferta.Empresa.Nombre
+      }));
+
+      res.json(ofertasFormateadas);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.get('/interesado_ofertas/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
+  if (req.isAuthenticated()) {
 
-    const ofertasInteresadas = await Oferta.find({
-      Interesados: userId
-    }).populate('Empresa', 'Nombre');
+    try {
+      const userId = req.params.userId;
 
-    const ofertasFormateadas = ofertasInteresadas.map(oferta => ({
-      ...oferta.toObject(),
-      Nombre_Empresa: oferta.Empresa.Nombre
-    }));
+      const ofertasInteresadas = await Oferta.find({
+        Interesados: userId
+      }).populate('Empresa', 'Nombre');
 
-    res.json(ofertasFormateadas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Fallo' });
+      const ofertasFormateadas = ofertasInteresadas.map(oferta => ({
+        ...oferta.toObject(),
+        Nombre_Empresa: oferta.Empresa.Nombre
+      }));
+
+      res.json(ofertasFormateadas);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 
 app.get('/ofertas_empresa/:id', async (req, res) => {
-  try {
-    const ofertas = await Oferta.find({
-      Empresa: { $gte: req.params.id }
-    });
+  if (req.isAuthenticated()) {
 
-    if (!ofertas) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
+    try {
+      const ofertas = await Oferta.find({
+        Empresa: { $gte: req.params.id }
+      });
+
+      if (!ofertas) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+      res.json(ofertas);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-    res.json(ofertas);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.get('/ofertas_ordenadas/:id', async (req, res) => {
-  try {
-    const usuario = await User.findById(req.params.id);
+  if (req.isAuthenticated()) {
 
-    if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+    try {
+      const usuario = await User.findById(req.params.id);
+
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const usuarioTags = usuario.Tags;
+
+      const ofertas = await Oferta.find({ Disponible: true }).populate('Empresa', 'Nombre');
+      ofertas.sort((a, b) => {
+        const porcentajeA = calcularPorcentajeConcordancia(usuarioTags, a.Tags);
+        const porcentajeB = calcularPorcentajeConcordancia(usuarioTags, b.Tags);
+        return porcentajeB - porcentajeA;
+      });
+
+      const ofertasConPorcentaje = ofertas.map(oferta => {
+        const porcentaje = calcularPorcentajeConcordancia(usuarioTags, oferta.Tags);
+        return {
+          ...oferta._doc,
+          PorcentajeConcordancia: porcentaje.toFixed(2)
+        };
+      });
+
+      res.json(ofertasConPorcentaje);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    const usuarioTags = usuario.Tags;
-
-    const ofertas = await Oferta.find({ Disponible: true }).populate('Empresa', 'Nombre');
-    ofertas.sort((a, b) => {
-      const porcentajeA = calcularPorcentajeConcordancia(usuarioTags, a.Tags);
-      const porcentajeB = calcularPorcentajeConcordancia(usuarioTags, b.Tags);
-      return porcentajeB - porcentajeA;
-    });
-
-    const ofertasConPorcentaje = ofertas.map(oferta => {
-      const porcentaje = calcularPorcentajeConcordancia(usuarioTags, oferta.Tags);
-      return {
-        ...oferta._doc,
-        PorcentajeConcordancia: porcentaje.toFixed(2)
-      };
-    });
-
-    res.json(ofertasConPorcentaje);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
-
-app.get('/ofertas/empresa', async (req, res) => {
-  try {
-    const idempresa = new ObjectId('65d36ce2e3c807a31324a657');//req.user.id;
-    const ofertas = await Oferta.find({ Empresa: idempresa });
-    res.json(ofertas);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
-  }
-});
-
-app.get('/Mostrar/Solicitudes', async (req, res) => { //Version antigua, no es valido por ahora
-  try {
-    console.log("data", req.isAuthenticated());
-    const solicitudes = db.collection('Solicitudes');
-    const solicitudesData = await solicitudes.find().toArray();
-    res.json(solicitudesData);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
-  }
-});
-
-app.get('/Mostrar/Solicitudes/Empresa', async (req, res) => { //Version antigua, no es valido por ahora
-  try {
-    const solicitudes = db.collection('Solicitudes');
-    const idempresa = new ObjectId('65d5ea83ba8482276f009d80');//req.user.id;
-    console.log(`Sasdad`, idempresa);
-    const solicitudesData = await solicitudes.find({ _id: idempresa }).toArray();
-    res.json(solicitudesData);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
-  }
-});
-
-app.get('/mostrarSolicitudes/usuario', async (req, res) => { //Version antigua, no es valido por ahora
-  try {
-    const solicitudes = db.collection('Solicitudes');
-    const idusuario = new ObjectId('65d3660de3c807a31324a64e');//req.user.id;
-    console.log(`Sasdad`, idusuario);
-    const solicitudesData = await solicitudes.find({ Users: idusuario }).toArray();
-    res.json(solicitudesData);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
-  }
-});
 
 //POSTS
 
@@ -422,34 +451,33 @@ app.post('/registro/usuario/desempleado', async (req, res) => {
   const usuario = req.body;
 
   try {
-      const usuarioExistente = await User.findOne({ Email: usuario.Email });
+    const usuarioExistente = await User.findOne({ Email: usuario.Email });
 
-      if (usuarioExistente) {
-          return res.status(400).json({ error: 'Este Email ya está registrado' });
-      } else {
-          const nuevoUsuario = new User({
-              Nombre: usuario.Nombre,
-              Email: usuario.Email,
-              Contraseña: usuario.Contraseña,
-              Rol: usuario.Rol,
-              Descripcion: usuario.Descripcion,
-              Edad: parseInt(usuario.Edad),
-              Experiencia_Laboral: parseInt(usuario.Experiencia_Laboral),
-              Estudios: usuario.Estudios,
-              Tags: usuario.Tags,
-          });
+    if (usuarioExistente) {
+      return res.status(400).json({ error: 'Este Email ya está registrado' });
+    } else {
+      const nuevoUsuario = new User({
+        Nombre: usuario.Nombre,
+        Email: usuario.Email,
+        Contraseña: usuario.Contraseña,
+        Rol: usuario.Rol,
+        Descripcion: usuario.Descripcion,
+        Edad: parseInt(usuario.Edad),
+        Experiencia_Laboral: parseInt(usuario.Experiencia_Laboral),
+        Estudios: usuario.Estudios,
+        Tags: usuario.Tags,
+      });
 
-          const respuesta = await nuevoUsuario.save();
-          res.status(201).json({ status: 'OK', user: respuesta });
-      }
+      const respuesta = await nuevoUsuario.save();
+      res.status(201).json({ status: 'OK', user: respuesta });
+    }
   } catch (error) {
-      res.status(500).json({ error: 'Fallo' });
+    res.status(500).json({ error: 'Fallo' });
   }
 });
 
 app.post('/registro/usuario/empresa', async (req, res) => {
   const usuario = req.body;
-  console.log('XD', req.body);
 
   try {
     const usuarioExistente = await User.findOne({ Email: usuario.Email });
@@ -475,43 +503,48 @@ app.post('/registro/usuario/empresa', async (req, res) => {
 
 app.post('/registro_evento/:id', async (req, res) => {
 
-  const idEmpresa = req.params.id;
-  const evento = req.body;
+  if (req.isAuthenticated()) {
 
-  try {
-    if (!evento.Nombre || !evento.Descripcion || !evento.Fecha || !evento.Localizacion || !evento.Aforo) {
-      return res.status(400).json({ error: 'Todos los campos deben estar llenos' });
+    const idEmpresa = req.params.id;
+    const evento = req.body;
+
+    try {
+      if (!evento.Nombre || !evento.Descripcion || !evento.Fecha || !evento.Localizacion || !evento.Aforo) {
+        return res.status(400).json({ error: 'Todos los campos deben estar llenos' });
+      }
+
+      const fechaEvento = new Date(evento.Fecha);
+      const fechaLimite = new Date();
+      fechaLimite.setDate(fechaLimite.getDate() + 1); // Añadir un día a la fecha actual
+
+      if (fechaEvento <= fechaLimite) {
+        return res.status(400).json({ error: 'La fecha del evento debe ser al menos 24 horas en el futuro' });
+      }
+
+      if (isNaN(fechaEvento.getTime())) {
+        return res.status(400).json({ error: 'La fecha del evento es inválida' });
+      }
+
+      const fechaActual = new Date(); // Se agrega la declaración de fechaActual aquí
+
+      const nuevoEvento = new Evento({
+        Nombre: evento.Nombre,
+        Fecha: evento.Fecha,
+        Descripcion: evento.Descripcion,
+        Aforo: evento.Aforo,
+        Localizacion: evento.Localizacion,
+        Fecha_Creacion: fechaActual,
+        Empresa: idEmpresa
+      });
+
+      const respuesta = await nuevoEvento.save();
+      res.status(201).json(respuesta);
+
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    const fechaEvento = new Date(evento.Fecha);
-    const fechaLimite = new Date();
-    fechaLimite.setDate(fechaLimite.getDate() + 1); // Añadir un día a la fecha actual
-    
-    if (fechaEvento <= fechaLimite) {
-      return res.status(400).json({ error: 'La fecha del evento debe ser al menos 24 horas en el futuro' });
-    }
-
-    if (isNaN(fechaEvento.getTime())) {
-      return res.status(400).json({ error: 'La fecha del evento es inválida' });
-    }
-
-    const fechaActual = new Date(); // Se agrega la declaración de fechaActual aquí
-    
-    const nuevoEvento = new Evento({
-      Nombre: evento.Nombre,
-      Fecha: evento.Fecha,
-      Descripcion: evento.Descripcion,
-      Aforo: evento.Aforo,
-      Localizacion: evento.Localizacion,
-      Fecha_Creacion: fechaActual,
-      Empresa: idEmpresa
-    });
-
-    const respuesta = await nuevoEvento.save();
-    res.status(201).json(respuesta);
-
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
@@ -519,254 +552,271 @@ app.post('/registro_evento/:id', async (req, res) => {
 
 
 app.post('/registro_oferta/:id', async (req, res) => {
-  try {
-    const idEmpresa = req.params.id;
-    const oferta = req.body;
+  if (req.isAuthenticated()) {
 
-    const fechaActual = new Date(); // Se agrega la declaración de fechaActual aquí
+    try {
+      const idEmpresa = req.params.id;
+      const oferta = req.body;
 
-    // Validación de campos requeridos y al menos un tag
-    if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || oferta.Tags.length === 0 || !oferta.Disponible || !oferta.Empresa) {
-      return res.status(400).json({ error: "No se han rellenado los campos correctamente. Asegúrate de proporcionar un nombre, una descripción, al menos un tag y especificar la disponibilidad." });
+      const fechaActual = new Date();
+
+      if (!oferta.Nombre || !oferta.Descripcion || !oferta.Tags || oferta.Tags.length === 0 || !oferta.Disponible || !oferta.Empresa) {
+        return res.status(400).json({ error: "No se han rellenado los campos correctamente. Asegúrate de proporcionar un nombre, una descripción, al menos un tag y especificar la disponibilidad." });
+      }
+
+      const tagNames = oferta.Tags.map(tag => tag.Lenguaje);
+      const uniqueTagNames = new Set(tagNames);
+      if (tagNames.length !== uniqueTagNames.size) {
+        return res.status(400).json({ error: "No se permiten tags duplicados en la oferta." });
+      }
+
+      const nuevaOferta = new Oferta({
+        Nombre: oferta.Nombre,
+        Descripcion: oferta.Descripcion,
+        Tags: oferta.Tags,
+        Disponible: oferta.Disponible,
+        Fecha_Creacion: fechaActual,
+        Empresa: idEmpresa,
+        Interesados: oferta.Interesados
+      });
+
+      const respuesta = await nuevaOferta.save();
+      res.status(201).json(respuesta);
+    } catch (error) {
+      console.error("Error al crear la Oferta:", error);
+      res.status(500).json({ error: "Error de servidor" });
     }
-
-    // Validación de tags duplicados
-    const tagNames = oferta.Tags.map(tag => tag.Lenguaje);
-    const uniqueTagNames = new Set(tagNames);
-    if (tagNames.length !== uniqueTagNames.size) {
-      return res.status(400).json({ error: "No se permiten tags duplicados en la oferta." });
-    }
-
-    const nuevaOferta = new Oferta({
-      Nombre: oferta.Nombre,
-      Descripcion: oferta.Descripcion,
-      Tags: oferta.Tags,
-      Disponible: oferta.Disponible,
-      Fecha_Creacion: fechaActual,
-      Empresa: idEmpresa,
-      Interesados: oferta.Interesados
-    });
-
-    const respuesta = await nuevaOferta.save();
-    res.status(201).json(respuesta);
-  } catch (error) {
-    console.error("Error al crear la Oferta:", error);
-    res.status(500).json({ error: "Error de servidor" });
-  }
-});
-
-app.post('/registro/solicitudes', async (req, res) => { //Version antigua, no valido por ahora
-  try {
-    const solicitud = req.body;
-    const ofertaId = solicitud.ofertaId;
-
-    const ofertaExistente = await Oferta.findById(ofertaId);
-
-    if (!ofertaExistente) {
-      return res.status(404).json({ error: "Error en la Oferta" });
-    }
-
-    ofertaExistente.Interesados.push(...solicitud.Interesados);
-
-    const ofertaActualizada = await ofertaExistente.save();
-
-    res.status(200).json(ofertaActualizada);
-  } catch (error) {
-    console.error("No se ha podido realizar la solicitud", error);
-    res.status(500).json({ error: "Error de servidor" });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.post('/tags', async (req, res) => {
-  const tags = req.body;
-  try {
-    const existe = await Tags.findOne({ Nombre: tags.Nombre });
+  if (req.isAuthenticated()) {
 
-    if (existe) {
-      return res.status(400).json({ error: 'Este Tag ya está registrado' });
-    } else {
-      const nuevoTag = new Tags({
-        Nombre: tags.Nombre,
-      });
-      const respuesta = await nuevoTag.save();
-      res.status(201).json({ status: 'OK', user: respuesta });
+    const tags = req.body;
+    try {
+      const existe = await Tags.findOne({ Nombre: tags.Nombre });
+
+      if (existe) {
+        return res.status(400).json({ error: 'Este Tag ya está registrado' });
+      } else {
+        const nuevoTag = new Tags({
+          Nombre: tags.Nombre,
+        });
+        const respuesta = await nuevoTag.save();
+        res.status(201).json({ status: 'OK', user: respuesta });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.put('/disponible_oferta/:id', async (req, res) => {
-  const ofertaId = req.params.id;
-  try {
-    const oferta = await Oferta.findById(ofertaId);
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
+  if (req.isAuthenticated()) {
+
+    const ofertaId = req.params.id;
+    try {
+      const oferta = await Oferta.findById(ofertaId);
+      if (!oferta) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+
+      oferta.Disponible = false;
+      await oferta.save();
+
+      res.status(200).json({ message: 'Oferta desactivada correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    oferta.Disponible = false;
-    await oferta.save();
-
-    res.status(200).json({ message: 'Oferta desactivada correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.put('/usuarios/:id', async (req, res) => {
-  const userId = req.params.id;
-  const newData = req.body;
+  if (req.isAuthenticated()) {
 
-  try {
-    const usuario = await User.findById(userId);
-    if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
+    const userId = req.params.id;
+    const newData = req.body;
 
-    // Validar si hay tags duplicados
-    const lenguajes = new Set();
-    for (const tag of newData.Tags) {
-      if (lenguajes.has(tag.Lenguaje)) {
-        return res.status(400).json({ error: 'No se pueden introducir tags con el mismo lenguaje' });
+    try {
+      const usuario = await User.findById(userId);
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
       }
-      lenguajes.add(tag.Lenguaje);
+
+      // Validar si hay tags duplicados
+      const lenguajes = new Set();
+      for (const tag of newData.Tags) {
+        if (lenguajes.has(tag.Lenguaje)) {
+          return res.status(400).json({ error: 'No se pueden introducir tags con el mismo lenguaje' });
+        }
+        lenguajes.add(tag.Lenguaje);
+      }
+
+      Object.assign(usuario, newData);
+
+      await usuario.save();
+
+      res.status(200).json(usuario);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    Object.assign(usuario, newData);
-
-    await usuario.save();
-
-    res.status(200).json(usuario);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.put('/usuarios/:id/pdf', upload.single('pdf'), async (req, res) => {
-  const userId = req.params.id;
-  const pdfFile = req.file;
+  if (req.isAuthenticated()) {
 
-  try {
-    const usuario = await User.findById(userId);
-    if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+    const userId = req.params.id;
+    const pdfFile = req.file;
+
+    try {
+      const usuario = await User.findById(userId);
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      if (pdfFile) {
+        usuario.CurriculumPDF = pdfFile.filename;
+      } else {
+        usuario.CurriculumPDF = null;
+      }
+
+      await usuario.save();
+
+      res.status(200).json(usuario);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    if (pdfFile) {
-      // Si se proporciona un archivo PDF, lo añadimos
-      usuario.CurriculumPDF = pdfFile.filename; // Asigna el nombre del archivo al campo pdf del usuario
-    } else {
-      // Si no se proporciona un archivo PDF, lo eliminamos
-      usuario.CurriculumPDF = null;
-    }
-
-    await usuario.save();
-
-    res.status(200).json(usuario);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.put('/oferta/:id', async (req, res) => {
-  console.log("saas", req.body)
-  const ofertaId = req.params.id;
-  const newData = req.body;
+  if (req.isAuthenticated()) {
+    const ofertaId = req.params.id;
+    const newData = req.body;
 
-  try {
-    const oferta = await Oferta.findById(ofertaId);
-    if (!oferta) {
-      return res.status(404).json({ error: 'oferta no encontrada' });
+    try {
+      const oferta = await Oferta.findById(ofertaId);
+      if (!oferta) {
+        return res.status(404).json({ error: 'oferta no encontrada' });
+      }
+
+      Object.assign(oferta, newData);
+
+      await oferta.save();
+
+      res.status(200).json(oferta);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    Object.assign(oferta, newData);
-
-    await oferta.save();
-
-    res.status(200).json(oferta);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.put('/evento/:id', async (req, res) => {
-  const eventoId = req.params.id;
-  const newData = req.body;
+  if (req.isAuthenticated()) {
 
-  try {
-    const evento = await Evento.findById(eventoId);
-    if (!evento) {
-      return res.status(404).json({ error: 'Evento no encontrado' });
+    const eventoId = req.params.id;
+    const newData = req.body;
+
+    try {
+      const evento = await Evento.findById(eventoId);
+      if (!evento) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      const fechaActual = new Date();
+      const fechaEvento = new Date(newData.Fecha);
+      const diferenciaTiempo = fechaEvento.getTime() - fechaActual.getTime();
+      const diferenciaHoras = diferenciaTiempo / (1000 * 60 * 60);
+
+      if (diferenciaHoras <= 24) {
+        return res.status(400).json({ error: 'No se puede modificar el evento porque la fecha está a menos de 24 horas de la hora actual' });
+      }
+
+      Object.assign(evento, newData);
+      await evento.save();
+
+      res.status(200).json(evento);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
     }
-
-    const fechaActual = new Date();
-    const fechaEvento = new Date(newData.Fecha);
-    const diferenciaTiempo = fechaEvento.getTime() - fechaActual.getTime();
-    const diferenciaHoras = diferenciaTiempo / (1000 * 60 * 60);
-
-    if (diferenciaHoras <= 24) {
-      return res.status(400).json({ error: 'No se puede modificar el evento porque la fecha está a menos de 24 horas de la hora actual' });
-    }
-
-    Object.assign(evento, newData);
-    await evento.save();
-
-    res.status(200).json(evento);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 app.put('/solicitud_oferta', async (req, res) => {
-  const userId = req.body.userId;
-  const ofertaId = req.body.ofertaId;
-  try {
-    const oferta = await Oferta.findById(ofertaId);
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
+  if (req.isAuthenticated()) {
+
+    const userId = req.body.userId;
+    const ofertaId = req.body.ofertaId;
+    try {
+      const oferta = await Oferta.findById(ofertaId);
+      if (!oferta) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+
+      if (oferta.Interesados.includes(userId)) {
+        return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
+      }
+
+      oferta.Interesados.push(userId);
+      await oferta.save();
+
+      res.status(200).json({ message: 'Registro realizado correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    if (oferta.Interesados.includes(userId)) {
-      return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
-    }
-
-    oferta.Interesados.push(userId);
-    await oferta.save();
-
-    res.status(200).json({ message: 'Registro realizado correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.put('/solicitud_evento/:idEvento', async (req, res) => {
-  const userId = req.body.userId;
-  const eventoId = req.params.idEvento;
-  try {
-    const evento = await Evento.findById(eventoId);
-    if (!evento) {
-      return res.status(404).json({ error: 'evento no encontrada' });
+  if (req.isAuthenticated()) {
+
+    const userId = req.body.userId;
+    const eventoId = req.params.idEvento;
+    try {
+      const evento = await Evento.findById(eventoId);
+      if (!evento) {
+        return res.status(404).json({ error: 'evento no encontrada' });
+      }
+
+      if (evento.Interesados.includes(userId)) {
+        return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
+      }
+
+      if (evento.Interesados.length >= evento.Aforo) {
+        return res.status(400).json({ error: 'El evento ha alcanzado su límite de interesados' });
+      }
+
+      evento.Interesados.push(userId);
+      await evento.save();
+
+      res.status(200).json({ message: 'Registro realizado correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    if (evento.Interesados.includes(userId)) {
-      return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
-    }
-
-    if (evento.Interesados.length >= evento.Aforo) {
-      return res.status(400).json({ error: 'El evento ha alcanzado su límite de interesados' });
-    }
-
-    evento.Interesados.push(userId);
-    await evento.save();
-
-    res.status(200).json({ message: 'Registro realizado correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
@@ -774,86 +824,106 @@ app.put('/solicitud_evento/:idEvento', async (req, res) => {
 // DELETE
 
 app.delete('/eliminar_oferta/:id', async (req, res) => {
-  const ofertaId = req.params.id;
-  try {
-    const oferta = await Oferta.findById(ofertaId);
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
+  if (req.isAuthenticated()) {
+
+    const ofertaId = req.params.id;
+    try {
+      const oferta = await Oferta.findById(ofertaId);
+      if (!oferta) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+
+      await Oferta.findByIdAndDelete(ofertaId);
+
+      res.status(200).json({ message: 'Oferta eliminada correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    await Oferta.findByIdAndDelete(ofertaId);
-
-    res.status(200).json({ message: 'Oferta eliminada correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.delete('/eliminar_evento/:id', async (req, res) => {
-  const eventoId = req.params.id;
-  try {
-    const evento = await Evento.findById(eventoId);
-    if (!evento) {
-      return res.status(404).json({ error: 'Evento no encontrado' });
+  if (req.isAuthenticated()) {
+
+    const eventoId = req.params.id;
+    try {
+      const evento = await Evento.findById(eventoId);
+      if (!evento) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      await Evento.findByIdAndDelete(eventoId);
+
+      res.status(200).json({ message: 'Evento eliminado correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    await Evento.findByIdAndDelete(eventoId);
-
-    res.status(200).json({ message: 'Evento eliminado correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 
 
 app.delete('/retirar_solicitud_evento/:eventoId', async (req, res) => {
-  const userId = req.body.userId;
-  const eventoId = req.params.eventoId;
-  try {
-    const evento = await Evento.findById(eventoId);
-    if (!evento) {
-      return res.status(404).json({ error: 'Evento no encontrado' });
+  if (req.isAuthenticated()) {
+
+    const userId = req.body.userId;
+    const eventoId = req.params.eventoId;
+    try {
+      const evento = await Evento.findById(eventoId);
+      if (!evento) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      const index = evento.Interesados.indexOf(userId);
+      if (index === -1) {
+        return res.status(400).json({ error: 'El usuario no está registrado para este evento' });
+      }
+
+      evento.Interesados.splice(index, 1);
+      await evento.save();
+
+      res.status(200).json({ message: 'Usuario retirado del evento correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    const index = evento.Interesados.indexOf(userId);
-    if (index === -1) {
-      return res.status(400).json({ error: 'El usuario no está registrado para este evento' });
-    }
-
-    evento.Interesados.splice(index, 1);
-    await evento.save();
-
-    res.status(200).json({ message: 'Usuario retirado del evento correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
 app.delete('/retirar_solicitud_oferta/:ofertaId', async (req, res) => {
-  const userId = req.body.userId;
-  const ofertaId = req.params.ofertaId;
-  try {
-    const oferta = await Oferta.findById(ofertaId);
-    if (!oferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada' });
+  if (req.isAuthenticated()) {
+
+    const userId = req.body.userId;
+    const ofertaId = req.params.ofertaId;
+    try {
+      const oferta = await Oferta.findById(ofertaId);
+      if (!oferta) {
+        return res.status(404).json({ error: 'Oferta no encontrada' });
+      }
+
+      const index = oferta.Interesados.indexOf(userId);
+      if (index === -1) {
+        return res.status(400).json({ error: 'El usuario no está registrado para esta oferta' });
+      }
+
+      oferta.Interesados.splice(index, 1);
+      await oferta.save();
+
+      res.status(200).json({ message: 'Usuario retirado de la oferta correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
     }
-
-    const index = oferta.Interesados.indexOf(userId);
-    if (index === -1) {
-      return res.status(400).json({ error: 'El usuario no está registrado para esta oferta' });
-    }
-
-    oferta.Interesados.splice(index, 1);
-    await oferta.save();
-
-    res.status(200).json({ message: 'Usuario retirado de la oferta correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  } else {
+    res.status(401).send('Sesión no iniciada!');
   }
 });
 
@@ -906,29 +976,26 @@ function calcularPorcentajeConcordancia(usuarioTags, ofertaTags) {
 
 function calcularPorcentajeCoincidenciaporTag(oferta, usuario) {
   if (oferta && usuario) {
-      const tagsUsuario = usuario.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
-      const tagsOferta = oferta.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+    const tagsUsuario = usuario.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+    const tagsOferta = oferta.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
 
-      const coincidencias = tagsOferta.map(tagOferta => {
-          const tagUsuario = tagsUsuario.find(tag => tag.nombre === tagOferta.nombre);
-          if (tagUsuario) {
-              const porcentaje = (tagUsuario.puntuacion / tagOferta.puntuacion) * 100;
-              return { nombre: tagOferta.nombre, porcentaje };
-          }
-          return null;
-      }).filter(Boolean);
+    const coincidencias = tagsOferta.map(tagOferta => {
+      const tagUsuario = tagsUsuario.find(tag => tag.nombre === tagOferta.nombre);
+      if (tagUsuario) {
+        const porcentaje = (tagUsuario.puntuacion / tagOferta.puntuacion) * 100;
+        return { nombre: tagOferta.nombre, porcentaje };
+      }
+      return null;
+    }).filter(Boolean);
 
-      const coincidenciaState = {};
-      coincidencias.forEach(coincidencia => {
-          coincidenciaState[coincidencia.nombre] = coincidencia.porcentaje;
-      });
+    const coincidenciaState = {};
+    coincidencias.forEach(coincidencia => {
+      coincidenciaState[coincidencia.nombre] = coincidencia.porcentaje;
+    });
 
-      return coincidenciaState;
+    return coincidenciaState;
   }
-  return null; // O puedes devolver un valor por defecto dependiendo de tus necesidades
+  return null;
 }
-
-
-
 
 export default app;
