@@ -48,7 +48,7 @@ const styles = {
     }
 };
 
-export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMostrarEmpresa, onMostrarEvento, onModificarUsuario, onMostrarTags, onMostrarOfertas, onMostrarUsuario }) => {
+export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMostrarEmpresa, onMostrarEvento, onModificarUsuario, onMostrarTags, onMostrarOfertas, onMostrarEmpresas, onMostrarUsuario }) => {
     const [logoutError, setLogoutError] = useState('');
     const [userData, setUserData] = useState({});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -166,9 +166,15 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                     )}
 
                     {isLoggedIn && isAdmin && (
+                        <>
                         <Paper sx={styles.paper}>
                             <Button onClick={onMostrarTags} sx={styles.mostrarButton}>Tags</Button>
                         </Paper>
+
+                        <Paper sx={styles.paper}>
+                            <Button onClick={onMostrarEmpresas} sx={styles.mostrarButton}>Empresas</Button>
+                        </Paper>
+                        </>
                     )}
 
                     {isLoggedIn && !isDesempleado && !isAdmin && (

@@ -1,9 +1,59 @@
-@media (min-width: 800px) {
-    .eventos-resumen-izquierda,
-    .eventos-resumen-derecha {
-        flex: 1 1 100%; /* Cambiado para que ocupen el ancho completo */
-    }
+.paper-style {
+    padding: 20px;
+    min-height: 100px;
+    margin-bottom: 20px;
+    height: 100%;
+    background-color: white;
+    color: black;
 }
+
+.welcome-style {
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.link-style {
+    text-decoration: none;
+}
+
+.grid-item-style {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.evento-resumen {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+.evento-resumen:hover {
+    background-color: #f0f0f0;
+}
+
+.eventos-resumen-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.eventos-resumen-contenedor {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.eventos-resumen-izquierda,
+.eventos-resumen-derecha {
+    flex: 1 1 50%;
+    padding: 10px;
+    width: 100%;
+    min-width: 360px;
+}
+
 .operator-display {
     display: flex;
     align-items: center;
@@ -11,7 +61,7 @@
 }
 
 .operator-display img {
-    width: 100px; /* Ajusta el tamaño de la imagen según sea necesario */
+    width: 100px;
     margin-right: 10px;
 }
 
@@ -29,37 +79,6 @@
     color: gray;
 }
 
-
 .degradado-invertido {
     border: solid;  
-}
-.evento-resumen {
-    cursor: pointer;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 20px; /* Añade un margen derecho de 20px */
-}
-.evento-resumen:hover {
-    background-color: #f0f0f0;
-}
-
-.eventos-resumen-container {
-    display: flex;
-    flex-direction: row; /* Cambiado de 'column' a 'row' */
-    flex-wrap: wrap; /* Añadido para que los elementos se envuelvan cuando no haya suficiente espacio */
-}
-
-.eventos-resumen-contenedor {
-    display: flex;
-    flex-wrap: wrap; /* Añadido para permitir que los elementos se envuelvan */
-}
-
-.eventos-resumen-izquierda,
-.eventos-resumen-derecha {
-    flex: 1 1 50%;
-    padding: 10px;
-    width: 100%;
-    min-width: 360px;
 }

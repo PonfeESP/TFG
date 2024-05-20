@@ -46,31 +46,35 @@ export const PaginaEmpresaEvento = ({ userId }) => {
     };
 
     const handleRegistrarNuevoEvento = () => {
-        // Validación de campos
         if (!nuevoEventoData.Nombre || !nuevoEventoData.Descripcion || !nuevoEventoData.Fecha || !nuevoEventoData.Localizacion || !nuevoEventoData.Aforo) {
             setError("Por favor, completa todos los campos.");
             return;
         }
-
-        axios.post(`http://localhost:8000/registro_evento/${userId}`, nuevoEventoData)
-            .then(res => {
-                console.log('Evento registrado con éxito:', res.data);
-                setEventos(prevEventos => [...prevEventos, res.data]);
-                handleModalClose();
-                // Resetear la información del nuevo evento después del registro exitoso
-                setNuevoEventoData({
-                    Nombre: '',
-                    Descripcion: '',
-                    Fecha: '',
-                    Localizacion: '',
-                    Aforo: ''
-                });
-            })
-            .catch(err => {
-                console.error('Error al registrar el evento:', err);
-                setError("Error al registrar el evento. Inténtalo de nuevo más tarde.");
+    
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/registro_evento/${userId}`,
+            method: 'POST',
+            data: nuevoEventoData
+        })
+        .then(res => {
+            console.log('Evento registrado con éxito:', res.data);
+            setEventos(prevEventos => [...prevEventos, res.data]);
+            handleModalClose();
+            setNuevoEventoData({
+                Nombre: '',
+                Descripcion: '',
+                Fecha: '',
+                Localizacion: '',
+                Aforo: ''
             });
+        })
+        .catch(err => {
+            console.error('Error al registrar el evento:', err);
+            setError("Error al registrar el evento. Inténtalo de nuevo más tarde.");
+        });
     };
+    
 
     const handleCloseError = () => {
         setError(null);

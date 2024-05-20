@@ -99,7 +99,7 @@ export const PaginaOfertaDesempleado = () => {
         const userId = userData.id;
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/retirar_solicitud_oferta/${idOferta}`,
+            url: `http://localhost:8000/solicitud_oferta/${idOferta}`,
             method: 'DELETE',
             data: {
                 userId: userId,
@@ -137,18 +137,17 @@ export const PaginaOfertaDesempleado = () => {
         setResalto(null);
     };
 
-    // Componente actualizado para mostrar barras de progreso verticales y limitar su altura
     const TagProgressBar = ({ tag, percentage }) => {
         const displayPercentage = Math.min(percentage, 100);
 
         return (
             <div
                 className="tag-progress-container"
-                onMouseEnter={() => auxResaltar(tag)} // Agrega el manejador de evento onMouseEnter
-                onMouseLeave={auxNoResaltar} // Agrega el manejador de evento onMouseLeave
+                onMouseEnter={() => auxResaltar(tag)}
+                onMouseLeave={auxNoResaltar}
             >
                 <div className="bar-container">
-                    <Typography variant="subtitle1" className="tag-name">{tag}</Typography> {/* Muestra el nombre del tag */}
+                    <Typography variant="subtitle1" className="tag-name">{tag}</Typography>
                     <div className="cosa1">
                         <div className="cosa2" style={{ width: `${displayPercentage}%` }} />
                     </div>
@@ -172,9 +171,6 @@ export const PaginaOfertaDesempleado = () => {
                     <div className={isSmallScreen ? "pagina pagina-columna" : "pagina pagina-fila"}>
                         <div className={isSmallScreen ? "componente-izquierda small-screen" : "componente-izquierda"}>
                             <div style={{ backgroundColor: 'transparent' }}>
-                                <div className="campo">
-                                    <Typography variant="body1">{oferta.Descripcion}</Typography>
-                                </div>
                                 <div className="campo">
                                     <Typography variant="body1">{oferta.Empresa.Nombre}</Typography>
                                 </div>
@@ -211,6 +207,9 @@ export const PaginaOfertaDesempleado = () => {
 
                                     </>
                                 )}
+                                <div className="campo">
+                                    <Typography variant="body1">{oferta.Descripcion}</Typography>
+                                </div>
                             </div>
                         </div>
                         <div className="componente-derecha" >

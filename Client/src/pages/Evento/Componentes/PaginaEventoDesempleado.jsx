@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, Grid, Card, CardContent } from '@mui/material';
+import { Typography, Button, Modal, Box, Grid, Card, CardContent } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
 
@@ -78,7 +78,7 @@ export const PaginaEventoDesempleado = () => {
         const userId = userData.id;
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/retirar_solicitud_evento/${idEvento}`,
+            url: `http://localhost:8000/solicitud_evento/${idEvento}`,
             method: 'DELETE',
             data: {
                 userId: userId,
@@ -105,7 +105,6 @@ export const PaginaEventoDesempleado = () => {
     return (
         <div>
             {evento && (
-
                 <div style={{ backgroundColor: 'transparent' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} className="campo">
@@ -127,25 +126,39 @@ export const PaginaEventoDesempleado = () => {
                             <Typography variant="body1" align="center">Empresa: {evento.eventoFormateado.Empresa.Nombre}</Typography>
                         </Grid>
                     </Grid>
-                    {evento.usuarios && evento.usuarios.length > 0 && (
-                        <>
-                            <Typography variant="h5" align="center">Interesados:</Typography>
-                            <Grid container spacing={2}>
-                                {evento.usuarios.map((usuario, index) => (
-                                    <Grid item xs={12} sm={6} md={3} key={index}>
-                                        <Card>
-                                            <CardContent>
-                                                <Typography variant="body1">Usuario: {usuario.Nombre}</Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </>
-                    )}
-
                 </div>
             )}
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                {isRegistrado ? (
+                    <Button variant="contained" color="secondary" onClick={handleCancelarInteres}>Cancelar Interés</Button>
+                ) : (
+                    <Button variant="contained" color="primary" onClick={handleInteresado}>Solicitar Evento</Button>
+                )}
+            </div>
+            <Modal
+                open={confirmOpen}
+                onClose={handleClose}
+                aria-labelledby="modal-confirm-title"
+                aria-describedby="modal-confirm-description"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <Box sx={{ width: 300, bgcolor: 'background.paper', p: 2 }}>
+                    <Typography id="modal-confirm-title" variant="h6" component="h2" gutterBottom>
+                        ¿Está seguro de que quiere solicitar este evento?
+                    </Typography>
+                    <Button onClick={handleConfirm} variant="contained" color="primary">Confirmar</Button>
+                    <Button onClick={handleClose} variant="outlined" color="secondary">Cancelar</Button>
+                    {errorMessage && (
+                        <Typography variant="body2" color="error">
+                            {errorMessage}
+                        </Typography>
+                    )}
+                </Box>
+            </Modal>
         </div>
     );
 };

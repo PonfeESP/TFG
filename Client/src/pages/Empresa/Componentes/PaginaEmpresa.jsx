@@ -73,13 +73,13 @@ export const PaginaEmpresa = ({ userId }) => {
     const handleRegistrarNuevaOferta = () => {
         const tagsData = tags.map(tag => ({ Lenguaje: tag.label, Puntuacion: tagsExperience[tag.value] || 0 }));
         setNuevaOfertaData(prevData => ({ ...prevData, Tags: tagsData }));
-
+    
         // Validación de campos
         if (!nuevaOfertaData.Nombre || !nuevaOfertaData.Descripcion || !nuevaOfertaData.Tags || nuevaOfertaData.Tags.length === 0 || !nuevaOfertaData.Disponible || !nuevaOfertaData.Empresa) {
             setError("Por favor, completa todos los campos y añade al menos un tag.");
             return;
         }
-
+    
         // Validación de tags duplicados
         const tagNames = nuevaOfertaData.Tags.map(tag => tag.Lenguaje);
         const uniqueTagNames = new Set(tagNames);
@@ -87,26 +87,31 @@ export const PaginaEmpresa = ({ userId }) => {
             setError("No se permiten tags duplicados en la oferta.");
             return;
         }
-
-        axios.post(`http://localhost:8000/registro_oferta/${userId}`, nuevaOfertaData)
-            .then(res => {
-                console.log('Oferta registrada con éxito:', res.data);
-                setOfertas(prevOfertas => [...prevOfertas, res.data]);
-                handleModalClose();
-                // Resetear la información de la nueva oferta después del registro exitoso
-                setNuevaOfertaData({
-                    Nombre: '',
-                    Descripcion: '',
-                    Tags: [],
-                    Disponible: true,
-                    Empresa: userId,
-                    Interesados: []
-                });
-            })
-            .catch(err => {
-                console.error('Error al registrar la oferta:', err);
-                setError("Error al registrar la oferta. Inténtalo de nuevo más tarde.");
+    
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/registro_oferta/${userId}`,
+            method: 'POST',
+            data: nuevaOfertaData
+        })
+        .then(res => {
+            console.log('Oferta registrada con éxito:', res.data);
+            setOfertas(prevOfertas => [...prevOfertas, res.data]);
+            handleModalClose();
+            // Resetear la información de la nueva oferta después del registro exitoso
+            setNuevaOfertaData({
+                Nombre: '',
+                Descripcion: '',
+                Tags: [],
+                Disponible: true,
+                Empresa: userId,
+                Interesados: []
             });
+        })
+        .catch(err => {
+            console.error('Error al registrar la oferta:', err);
+            setError("Error al registrar la oferta. Inténtalo de nuevo más tarde.");
+        });
     };
 
     const handleCloseError = () => {

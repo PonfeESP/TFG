@@ -7,6 +7,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import multer from 'multer';
+import bcrypt from 'bcrypt';
 
 
 
@@ -90,20 +91,17 @@ app.get('/usuarios/:id', async (req, res) => {
 });
 
 app.get('/tags', async (req, res) => {
-  if (req.isAuthenticated()) {
     try {
       const tags = await Tags.find().sort({ Nombre: 1 });
       res.json(tags);
     } catch (error) {
       res.status(500).json({ error: 'Fallo' });
     }
-  } else {
-    res.status(401).send('Sesión no iniciada!');
-  }
 });
 
 app.get('/empresas', async (req, res) => { //SI
   if (req.isAuthenticated()) {
+    console.log("que weas pasa")
     try {
       const empresas = await User.find({ Rol: 'Empresa' });
       res.json(empresas);
@@ -213,7 +211,6 @@ app.get('/eventos/:id', async (req, res) => {
 
 app.get('/eventos_empresa/:id', async (req, res) => {
   if (req.isAuthenticated()) {
-
     try {
       const eventos = await Evento.find({
         Empresa: req.params.id
@@ -236,14 +233,18 @@ app.get('/eventos_empresa/:id', async (req, res) => {
   }
 });
 
-
 app.get('/empresa_unica/:id', async (req, res) => {
-  if (req.isAuthenticated()) {
-
     try {
       const empresa = await User.findById(req.params.id);
-      const ofertas = await Oferta.find({ Empresa: req.params.id });
-      const eventos = await Evento.find({ Empresa: req.params.id });
+
+      if (!empresa) {
+        return res.status(404).json({ error: 'Empresa no encontrada' });
+      }
+
+      const [ofertas, eventos] = await Promise.all([
+        Oferta.find({ Empresa: req.params.id }).exec(),
+        Evento.find({ Empresa: req.params.id }).exec()
+      ]);
 
       const formattedEventos = eventos.map(evento => ({
         ...evento.toObject(),
@@ -251,16 +252,14 @@ app.get('/empresa_unica/:id', async (req, res) => {
         Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }));
 
-      console.log(formattedEventos)
+      console.log(formattedEventos);
 
-      res.json({ empresa, ofertas, eventos: formattedEventos });
+      res.json({ empresa, ofertas: ofertas || [], eventos: formattedEventos || [] });
     } catch (error) {
-      res.status(500).json({ error: 'Fallo' });
+      res.status(500).json({ error: 'Fallo del servidor' });
     }
-  } else {
-    res.status(401).send('Sesión no iniciada!');
-  }
 });
+
 
 
 app.get('/usuario_unico/:id', async (req, res) => {
@@ -278,6 +277,7 @@ app.get('/usuario_unico/:id', async (req, res) => {
 });
 
 app.get('/ofertas/:id', async (req, res) => {
+  console.log("papapa", req.isAuthenticated())
   if (req.isAuthenticated()) {
 
     try {
@@ -456,10 +456,13 @@ app.post('/registro/usuario/desempleado', async (req, res) => {
     if (usuarioExistente) {
       return res.status(400).json({ error: 'Este Email ya está registrado' });
     } else {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(usuario.Contraseña, salt);
+
       const nuevoUsuario = new User({
         Nombre: usuario.Nombre,
         Email: usuario.Email,
-        Contraseña: usuario.Contraseña,
+        Contraseña: hashedPassword,
         Rol: usuario.Rol,
         Descripcion: usuario.Descripcion,
         Edad: parseInt(usuario.Edad),
@@ -476,6 +479,7 @@ app.post('/registro/usuario/desempleado', async (req, res) => {
   }
 });
 
+
 app.post('/registro/usuario/empresa', async (req, res) => {
   const usuario = req.body;
 
@@ -485,13 +489,18 @@ app.post('/registro/usuario/empresa', async (req, res) => {
     if (usuarioExistente) {
       return res.status(400).json({ error: 'Este Email ya está registrado' });
     } else {
+      // Encriptar la contraseña
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(usuario.Contraseña, salt);
+
       const nuevoUsuario = new User({
         Nombre: usuario.Nombre,
         Email: usuario.Email,
-        Contraseña: usuario.Contraseña,
+        Contraseña: hashedPassword,
         Rol: usuario.Rol,
         Descripcion: usuario.Descripcion
       });
+
       const respuesta = await nuevoUsuario.save();
       res.status(201).json({ status: 'OK', user: respuesta });
     }
@@ -499,6 +508,7 @@ app.post('/registro/usuario/empresa', async (req, res) => {
     res.status(500).json({ error: 'Fallo' });
   }
 });
+
 
 
 app.post('/registro_evento/:id', async (req, res) => {
@@ -553,7 +563,6 @@ app.post('/registro_evento/:id', async (req, res) => {
 
 app.post('/registro_oferta/:id', async (req, res) => {
   if (req.isAuthenticated()) {
-
     try {
       const idEmpresa = req.params.id;
       const oferta = req.body;
@@ -823,7 +832,7 @@ app.put('/solicitud_evento/:idEvento', async (req, res) => {
 
 // DELETE
 
-app.delete('/eliminar_oferta/:id', async (req, res) => {
+app.delete('/oferta/:id', async (req, res) => {
   if (req.isAuthenticated()) {
 
     const ofertaId = req.params.id;
@@ -845,7 +854,7 @@ app.delete('/eliminar_oferta/:id', async (req, res) => {
   }
 });
 
-app.delete('/eliminar_evento/:id', async (req, res) => {
+app.delete('/evento/:id', async (req, res) => {
   if (req.isAuthenticated()) {
 
     const eventoId = req.params.id;
@@ -869,7 +878,7 @@ app.delete('/eliminar_evento/:id', async (req, res) => {
 
 
 
-app.delete('/retirar_solicitud_evento/:eventoId', async (req, res) => {
+app.delete('/solicitud_evento/:eventoId', async (req, res) => {
   if (req.isAuthenticated()) {
 
     const userId = req.body.userId;
@@ -898,7 +907,7 @@ app.delete('/retirar_solicitud_evento/:eventoId', async (req, res) => {
   }
 });
 
-app.delete('/retirar_solicitud_oferta/:ofertaId', async (req, res) => {
+app.delete('/solicitud_oferta/:ofertaId', async (req, res) => {
   if (req.isAuthenticated()) {
 
     const userId = req.body.userId;

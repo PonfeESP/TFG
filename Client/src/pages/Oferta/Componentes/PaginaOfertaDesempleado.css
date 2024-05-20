@@ -133,6 +133,7 @@
     border-radius: 12px;
     width: 55%;
     margin:0 auto;
+    margin-bottom: 20px;
 }
 .highlighted-tag {
     background-color: yellow; /* Cambia el color de fondo del tag resaltado */

@@ -1,7 +1,8 @@
 import { Strategy as LocalStrategy } from 'passport-local';
 import { llamardb, enlace } from '../conexiondb.js';
 import express from 'express';
-import User from '../Modelos/Usuario.model.js'; // Importa el modelo de usuario
+import User from '../Modelos/Usuario.model.js';
+import bcrypt from 'bcrypt';
 
 const app = express();
 app.use(express.json());
@@ -23,9 +24,10 @@ export const strategyInit = passport => {
   }, (Email, Contraseña, done) => { 
     User.findOne(
       { Email: Email }, 
-    ).then(usuario => {
+    ).then(async usuario => {
         if (!usuario) return done(null, false, { error: 'Usuario desconocido' });
-        if (usuario.Contraseña !== Contraseña) {
+        const isMatch = await bcrypt.compare(Contraseña, usuario.Contraseña);
+        if (!isMatch) {
           return done(null, false, { error: 'Contraseña incorrecta' });
         }
         return done(null, usuario);
