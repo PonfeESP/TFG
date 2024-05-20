@@ -1,0 +1,188 @@
+[{
+  "_id": {
+    "$oid": "6638b5f3b81141f555be9d0f"
+  },
+  "Nombre": "Evento de ejemplo",
+  "Fecha": {
+    "$date": "2024-06-30T11:00:00.000Z"
+  },
+  "Descripcion": "Descripción del evento",
+  "Aforo": 100,
+  "Localizacion": "Ubicación del evento",
+  "Fecha_Creacion": {
+    "$date": "2024-05-06T10:50:27.445Z"
+  },
+  "Empresa": {
+    "$oid": "660c301bddfbc78e22ee2bcc"
+  },
+  "Interesados": [
+    {
+      "$oid": "6617d6a3039fcee9cf9b1ef9"
+    }
+  ],
+  "__v": 3
+},
+{
+  "_id": {
+    "$oid": "6638b5f9b81141f555be9d11"
+  },
+  "Nombre": "Evento de ejemplo",
+  "Fecha": {
+    "$date": "2024-05-07T12:00:00.000Z"
+  },
+  "Descripcion": "Descripción del evento",
+  "Aforo": 0,
+  "Localizacion": "Ubicación del evento",
+  "Fecha_Creacion": {
+    "$date": "2024-05-06T10:50:33.948Z"
+  },
+  "Empresa": {
+    "$oid": "660c301bddfbc78e22ee2bcc"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6638c9689cbf66781d3709f5"
+  },
+  "Nombre": "imagine",
+  "Fecha": {
+    "$date": "2024-05-30T05:00:00.000Z"
+  },
+  "Descripcion": "ssdd",
+  "Aforo": 150,
+  "Localizacion": "Ponferrada",
+  "Fecha_Creacion": {
+    "$date": "2024-05-06T12:13:28.109Z"
+  },
+  "Empresa": {
+    "$oid": "66268a016c11b0bbe7f92b78"
+  },
+  "Interesados": [
+    {
+      "$oid": "664b4bc796ef437630f79b63"
+    }
+  ],
+  "__v": 5
+},
+{
+  "_id": {
+    "$oid": "663e1f4ba739f07c128f67bf"
+  },
+  "Nombre": "ssssss",
+  "Fecha": {
+    "$date": "2024-05-23T00:00:00.000Z"
+  },
+  "Descripcion": "sssss",
+  "Aforo": 20,
+  "Localizacion": "Ponferrada",
+  "Fecha_Creacion": {
+    "$date": "2024-05-10T13:21:15.649Z"
+  },
+  "Empresa": {
+    "$oid": "66268a016c11b0bbe7f92b78"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663e1f53a739f07c128f67c1"
+  },
+  "Nombre": "ssssssaaaa",
+  "Fecha": {
+    "$date": "2024-05-23T00:00:00.000Z"
+  },
+  "Descripcion": "sssss",
+  "Aforo": 20,
+  "Localizacion": "Ponferrada",
+  "Fecha_Creacion": {
+    "$date": "2024-05-10T13:21:23.129Z"
+  },
+  "Empresa": {
+    "$oid": "66268a016c11b0bbe7f92b78"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663e1f57a739f07c128f67c3"
+  },
+  "Nombre": "`ppppp",
+  "Fecha": {
+    "$date": "2024-05-23T00:00:00.000Z"
+  },
+  "Descripcion": "sssss",
+  "Aforo": 20,
+  "Localizacion": "Ponferrada",
+  "Fecha_Creacion": {
+    "$date": "2024-05-10T13:21:27.740Z"
+  },
+  "Empresa": {
+    "$oid": "66268a016c11b0bbe7f92b78"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "663e1f5ca739f07c128f67c5"
+  },
+  "Nombre": "iiiiii",
+  "Fecha": {
+    "$date": "2024-05-23T00:00:00.000Z"
+  },
+  "Descripcion": "sssss",
+  "Aforo": 20,
+  "Localizacion": "Ponferrada",
+  "Fecha_Creacion": {
+    "$date": "2024-05-10T13:21:32.611Z"
+  },
+  "Empresa": {
+    "$oid": "66268a016c11b0bbe7f92b78"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6640da662ce9d451148f0881"
+  },
+  "Nombre": "dadaddad",
+  "Fecha": {
+    "$date": "2024-05-31T00:00:00.000Z"
+  },
+  "Descripcion": "addadadadd",
+  "Aforo": 123,
+  "Localizacion": "adadadad",
+  "Fecha_Creacion": {
+    "$date": "2024-05-12T15:04:06.099Z"
+  },
+  "Empresa": {
+    "$oid": "66268a016c11b0bbe7f92b78"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b549628ce957e291e6d9c"
+  },
+  "Nombre": "imagine",
+  "Fecha": {
+    "$date": "2024-06-21T00:00:00.000Z"
+  },
+  "Descripcion": "porquese",
+  "Aforo": 120,
+  "Localizacion": "Ponferrada",
+  "Fecha_Creacion": {
+    "$date": "2024-05-20T13:48:06.225Z"
+  },
+  "Empresa": {
+    "$oid": "664b520a18139e8cfa1fcbaf"
+  },
+  "Interesados": [],
+  "__v": 0
+}]
