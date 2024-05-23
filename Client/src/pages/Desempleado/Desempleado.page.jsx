@@ -51,8 +51,7 @@ export const Desempleado = () => {
             onModificarUsuario={() => navigate('/desempleado/modificacion')} 
 />
         </div>
-        <div className = "hola" style={{ marginTop: '70px', padding: '20px' }}>
-          <Paper>
+        <div className = "hola" style={{ marginTop: '2vh', padding: '2vw' }}>
             <Routes>
               <Route path="/" element={<PaginaDesempleadoHome userId={userData.id}/>} />
               <Route path="/ofertas" element={<PaginaDesempleado userId={userData.id}/>} />
@@ -64,7 +63,6 @@ export const Desempleado = () => {
               <Route path="/eventos_Interesado" element={<PaginaDesempleadoEventoInteres userId={userData.id}/>} />
               <Route path="/modificacion" element={<PaginaDesempleadoModificacion userId={userData.id}/>} />
             </Routes>
-          </Paper>
         </div>
       </> :
       <Snackbar

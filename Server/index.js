@@ -7,7 +7,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import multer from 'multer';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 
 
