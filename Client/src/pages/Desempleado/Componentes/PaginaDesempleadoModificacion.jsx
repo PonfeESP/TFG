@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Paper, Typography, MenuItem, Select } from '@mui/material';
 import Rating from '@mui/material/Rating';
+import { axiosConfig } from '../../../constant/axiosConfig.constant';
 import './PaginaDesempleadoModificacion.css'; // Importamos el archivo CSS
 
 export const PaginaDesempleadoModificacion = ({ userId }) => {
@@ -35,21 +36,26 @@ export const PaginaDesempleadoModificacion = ({ userId }) => {
     }, []);
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/usuarios/${userId}`)
-            .then(res => {
-                const userData = res.data;
-                setUsuario(userData);
-                setNombre(userData.Nombre);
-                setEmail(userData.Email);
-                setDescripcion(userData.Descripcion);
-                setEdad(userData.Edad);
-                setExperienciaLaboral(userData.Experiencia_Laboral);
-                setEstudios(userData.Estudios);
-                setTags(userData.Tags);
-                setPdfUrl(userData.CurriculumPDF); // Asignar la URL del PDF directamente
-            })
-            .catch(err => console.log(err));
+        axios({
+            ...axiosConfig, // Spread your custom Axios configuration
+            url: `http://localhost:8000/usuarios/${userId}`,
+            method: 'GET'
+        })
+        .then(res => {
+            const userData = res.data;
+            setUsuario(userData);
+            setNombre(userData.Nombre);
+            setEmail(userData.Email);
+            setDescripcion(userData.Descripcion);
+            setEdad(userData.Edad);
+            setExperienciaLaboral(userData.Experiencia_Laboral);
+            setEstudios(userData.Estudios);
+            setTags(userData.Tags);
+            setPdfUrl(userData.CurriculumPDF); // Asignar la URL del PDF directamente
+        })
+        .catch(err => console.log(err));
     }, [userId]);
+    
 
     const handleNombreChange = (e) => {
         const inputValue = e.target.value;
@@ -133,16 +139,21 @@ export const PaginaDesempleadoModificacion = ({ userId }) => {
         const formData = new FormData();
         formData.append('pdf', pdfFile);
 
-        axios.put(`http://localhost:8000/usuarios/${userId}/pdf`, formData, {
+        axios({
+            ...axiosConfig, // Spread your custom Axios configuration
+            url: `http://localhost:8000/usuarios/${userId}/pdf`,
+            method: 'PUT',
+            data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
-            .then(res => {
-                console.log('PDF agregado:', res.data);
-                setPdfs([...pdfs, res.data]);
-            })
-            .catch(err => console.log(err));
+        .then(res => {
+            console.log('PDF agregado:', res.data);
+            setPdfs([...pdfs, res.data]);
+        })
+        .catch(err => console.log(err));
+        
     };
 
     const handleSubmit = (event) => {

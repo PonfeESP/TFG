@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Tooltip, Menu , MenuItem, Paper, Box, CircularProgress, LinearProgress, Stack, Badge, Chip, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography } from '@mui/material';
+import { Tooltip, Menu, MenuItem, Paper, Box, CircularProgress, LinearProgress, Stack, Badge, Chip, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { blueGrey } from '@mui/material/colors';
 
@@ -23,28 +23,26 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function OfferCard({ props, userId }) {
+
+export default function EventCard({ event, userId }) {
   const [expanded, setExpanded] = useState(false);
-  const [isRegistrado, setIsRegistrado] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isInterested, setIsInterested] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // Add anchorEl state
-  
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const color = blueGrey[200];
 
   useEffect(() => {
-    // Verificar si el userId está presente en el array Interesados de la oferta
-    setIsInterested(props.Interesados.includes(userId));
-  }, [props.Interesados, userId]);
+    setIsInterested(event.Interesados.includes(userId));
+  }, [event.Interesados, userId]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   const handleShare = () => {
-    const oferta = props;
-    const shareUrl = `${window.location.origin}/oferta/${oferta._id}`;
+    const shareUrl = `${window.location.origin}/evento/${event._id}`;
     navigator.clipboard.writeText(shareUrl).then(() => {
       alert('Enlace copiado al portapapeles');
     }).catch(err => {
@@ -53,20 +51,18 @@ export default function OfferCard({ props, userId }) {
   };
 
   const handleInterest = () => {
-    const oferta = props;
-    const idOferta = oferta._id;
     axios({
       ...axiosConfig,
-      url: 'http://localhost:8000/solicitud_oferta',
+      url: 'http://localhost:8000/solicitud_evento',
       method: 'PUT',
       data: {
         userId: userId,
-        ofertaId: idOferta
+        eventId: event._id
       }
     })
       .then(res => {
         console.log('Solicitud enviada con éxito');
-        setIsRegistrado(true);
+        setIsRegistered(true);
         setIsInterested(true); // Actualizar el estado para reflejar el interés del usuario
       })
       .catch(err => {
@@ -80,11 +76,9 @@ export default function OfferCard({ props, userId }) {
   };
 
   const handleDisinterest = () => {
-    const oferta = props;
-    const idOferta = oferta._id;
     axios({
       ...axiosConfig,
-      url: `http://localhost:8000/solicitud_oferta/${idOferta}`,
+      url: `http://localhost:8000/solicitud_evento/${event._id}`,
       method: 'DELETE',
       data: {
         userId: userId,
@@ -92,7 +86,7 @@ export default function OfferCard({ props, userId }) {
     })
       .then(res => {
         console.log('Usuario eliminado de la lista de interesados con éxito');
-        setIsRegistrado(false);
+        setIsRegistered(false);
         setIsInterested(false); // Actualizar el estado para reflejar el desinterés del usuario
       })
       .catch(err => {
@@ -108,22 +102,17 @@ export default function OfferCard({ props, userId }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  
+
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const oferta = props;
-  let affinityPercentage = Number(oferta.PorcentajeConcordancia);
-
-  if (isNaN(affinityPercentage)) affinityPercentage = 0;
 
   return (
     <Card sx={{ maxWidth: 750 }}>
       <CardHeader
         avatar={
           <Paper elevation={10} sx={{ position: 'relative', display: 'inline-flex', borderRadius: 50, backgroundColor: color }}>
-            <CircularProgress size="3rem" color="success" thickness={5} variant="determinate" value={affinityPercentage} />
+            <CircularProgress size="3rem" color="success" thickness={5} variant="determinate" value={event.Aforo} />
             <Box
               sx={{
                 top: 0,
@@ -137,7 +126,7 @@ export default function OfferCard({ props, userId }) {
               }}
             >
               <Typography variant="text-body2" component="div" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-                {`${Math.round(affinityPercentage)}%`}
+                {`${event.Aforo}%`}
               </Typography>
             </Box>
           </Paper>
@@ -147,8 +136,8 @@ export default function OfferCard({ props, userId }) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={oferta.Nombre}
-        subheader={`Publicada el ${dayjs(oferta["Fecha_Creacion"]).format("DD/MM/YYYY")} por ${oferta.Empresa.Nombre}`}
+        title={event.Nombre}
+        subheader={`Fecha: ${dayjs(event.Fecha).format("DD/MM/YYYY")}, Aforo: ${event.Aforo}, Localización: ${event.Localizacion}, Publicada el ${dayjs(event.Fecha_Creacion).format("DD/MM/YYYY")} por ${event.Empresa.Nombre}`}
       />
       <Menu
         id="menu"
@@ -157,7 +146,7 @@ export default function OfferCard({ props, userId }) {
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>
-          <Link to={`/oferta/${oferta._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to={`/evento/${event._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <Button variant="text" sx={{ width: '100%' }}>
               Explorar
             </Button>
@@ -165,11 +154,7 @@ export default function OfferCard({ props, userId }) {
         </MenuItem>
       </Menu>
       <CardContent>
-        <Stack direction="row" spacing={1}>
-          {oferta.Tags.map(tag => (
-            <Chip key={tag.Lenguaje} label={tag.Lenguaje} color="primary" variant="outlined" sx={{ margin: 7 }} />
-          ))}
-        </Stack>
+        <Typography paragraph>{event.Descripcion}</Typography>
       </CardContent>
       <CardActions sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Button variant="text" onClick={handleShare}>
@@ -187,7 +172,7 @@ export default function OfferCard({ props, userId }) {
             Me interesa
           </Button>
         )}
-        
+
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -199,9 +184,10 @@ export default function OfferCard({ props, userId }) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>{oferta.Descripcion}</Typography>
+          <Typography paragraph>{event.Descripcion}</Typography>
         </CardContent>
       </Collapse>
     </Card>
   );
 }
+

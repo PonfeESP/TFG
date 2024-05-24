@@ -4,8 +4,6 @@ import axios from 'axios';
 import { Paper, Typography, Snackbar, Alert } from '@mui/material';
 import Header from '../../components/Header.component';
 
-import PaginaDesempleado from './Componentes/PaginaDesempleado';
-import PaginaDesempleadoOfertasInteres from './Componentes/PaginaDesempleadoOfertasInteres';
 import PaginaDesempleadoHome from './Componentes/PaginaDesempleadoHome';
 import PaginaDesempleadoOrdenada from './Componentes/PaginaDesempleadoOrdenada';
 import PaginaDesempleadoEmpresa from './Componentes/PaginaDesempleadoEmpresa';
@@ -42,9 +40,7 @@ export const Desempleado = () => {
       <>
         <div style={{ position: 'relative' }}>
           <Header 
-            onMostrarOrdenada={() => navigate('/desempleado/ordenada')}
-            onMostrar={() => navigate('/desempleado/ofertas')}
-            onMostrarOfertas={() => navigate('/desempleado/ofertas_Interesado')}
+            onMostrarOrdenada={() => navigate('/desempleado/ofertas')}
             onMostrarEmpresa={() => navigate('/desempleado/empresas')}
             onMostrarEvento={() => navigate('/desempleado/eventos')}
             onMostrarInteresado={() => navigate('/desempleado/eventos_Interesado')}
@@ -54,9 +50,7 @@ export const Desempleado = () => {
         <div className = "hola" style={{ marginTop: '2vh', padding: '2vw' }}>
             <Routes>
               <Route path="/" element={<PaginaDesempleadoHome userId={userData.id}/>} />
-              <Route path="/ofertas" element={<PaginaDesempleado userId={userData.id}/>} />
-              <Route path="/ofertas_Interesado" element={<PaginaDesempleadoOfertasInteres userId={userData.id}/>} />
-              <Route path="/ordenada" element={<PaginaDesempleadoOrdenada userId={userData.id}/>} />
+              <Route path="/ofertas" element={<PaginaDesempleadoOrdenada userId={userData.id}/>} />
               <Route path="/empresas" element={<PaginaDesempleadoEmpresa />} />
               <Route path="/empresas/:idEmpresa" element={<PaginaDesempleadoEmpresaUnica />} />
               <Route path="/eventos" element={<PaginaDesempleadoEvento userId={userData.id}/>} />

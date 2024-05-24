@@ -11,7 +11,6 @@ import { PaginaEmpresa } from '../Empresa/Componentes/PaginaEmpresa';
 import { PaginaEmpresaModificacion } from '../Empresa/Componentes/PaginaEmpresaModificacion';
 import { PaginaEmpresaUsuario } from '../Empresa/Componentes/PaginaEmpresaUsuario';
 import { PaginaEmpresaEvento } from '../Empresa/Componentes/PaginaEmpresaEvento';
-import { PaginaDesempleado } from '../Desempleado/Componentes/PaginaDesempleado';
 import { PaginaDesempleadoOrdenada } from '../Desempleado/Componentes/PaginaDesempleadoOrdenada';
 import { PaginaDesempleadoEmpresa } from '../Desempleado/Componentes/PaginaDesempleadoEmpresa';
 import { PaginaDesempleadoEvento } from '../Desempleado/Componentes/PaginaDesempleadoEvento';
@@ -52,15 +51,8 @@ export const EventoUnico = () => {
         <>
           <div style={{ position: 'relative' }}>
           <Header onMostrarOrdenada={() => {
-              navigate('/desempleado/ordenada'); // Navega a la ruta '/empresa'
-              setMostrarOrdenada(true);
-              setMostrarEmpresa(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-            }}
-            onMostrar={() => {
               navigate('/desempleado/ofertas'); // Navega a la ruta '/empresa'
-              setMostrarOrdenada(false);
+              setMostrarOrdenada(true);
               setMostrarEmpresa(false);
               setMostrarEvento(false);
               setMostrarModificacion(false);
@@ -85,22 +77,6 @@ export const EventoUnico = () => {
               setMostrarEmpresa(false);
               setMostrarEvento(false);
               setMostrarModificacion(true);
-            }}
-            onMostrarOfertas={() => {
-              navigate('/desempleado/ofertas_Interesado'); // Navega a la ruta '/empresa'
-              setMostrarOrdenada(false);
-              setMostrarEmpresa(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-              setMostrarInteresado(true);
-            }}
-            onMostrarInteresado={() => {
-              navigate('/desempleado/eventos_Interesado'); // Navega a la ruta '/empresa'
-              setMostrarOrdenada(false);
-              setMostrarEmpresa(false);
-              setMostrarEvento(false);
-              setMostrarModificacion(false);
-              setMostrarInteresado(true);
             }}/>
           </div>
           <div style={{ marginTop: '70px', padding: '20px' }}>
