@@ -1,4 +1,3 @@
-// Importaciones de React
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, IconButton, Menu, MenuItem, Paper, Button, Typography, Hidden } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -48,7 +47,7 @@ const styles = {
     }
 };
 
-export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMostrarEmpresa, onMostrarEvento, onModificarUsuario, onMostrarTags, onMostrarOfertas, onMostrarEmpresas, onMostrarUsuario }) => {
+export const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento }) => {
     const [logoutError, setLogoutError] = useState('');
     const [userData, setUserData] = useState({});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -144,23 +143,11 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                             </Paper>
 
                             <Paper sx={styles.paper}>
-                                <Button onClick={onMostrar} sx={styles.mostrarButton}>Mostrar Ofertas</Button>
-                            </Paper>
-
-                            <Paper sx={styles.paper}>
-                                <Button onClick={onMostrarOfertas} sx={styles.mostrarButton}>Tus Ofertas</Button>
-                            </Paper>
-
-                            <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarEmpresa} sx={styles.mostrarButton}>Mostrar Empresas</Button>
                             </Paper>
 
                             <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarEvento} sx={styles.mostrarButton}>Mostrar Eventos</Button>
-                            </Paper>
-
-                            <Paper sx={styles.paper}>
-                                <Button onClick={onMostrarInteresado} sx={styles.mostrarButton}>Tus Eventos</Button>
                             </Paper>
                         </>
                     )}
@@ -168,11 +155,11 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                     {isLoggedIn && isAdmin && (
                         <>
                         <Paper sx={styles.paper}>
-                            <Button onClick={onMostrarTags} sx={styles.mostrarButton}>Tags</Button>
+                            <Button sx={styles.mostrarButton}>Tags</Button>
                         </Paper>
 
                         <Paper sx={styles.paper}>
-                            <Button onClick={onMostrarEmpresas} sx={styles.mostrarButton}>Empresas</Button>
+                            <Button sx={styles.mostrarButton}>Empresas</Button>
                         </Paper>
                         </>
                     )}
@@ -180,15 +167,15 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                     {isLoggedIn && !isDesempleado && !isAdmin && (
                         <>
                             <Paper sx={styles.paper}>
-                                <Button onClick={onMostrarOfertas} sx={styles.mostrarButton}>Mostrar Ofertas</Button>
+                                <Button sx={styles.mostrarButton}>Mostrar Ofertas</Button>
                             </Paper>
 
                             <Paper sx={styles.paper}>
-                                <Button onClick={onMostrarEvento} sx={styles.mostrarButton}>Mostrar Eventos</Button>
+                                <Button sx={styles.mostrarButton}>Mostrar Eventos</Button>
                             </Paper>
 
                             <Paper sx={styles.paper}>
-                                <Button onClick={onMostrarUsuario} sx={styles.mostrarButton}>Mostrar Usuarios</Button>
+                                <Button sx={styles.mostrarButton}>Mostrar Usuarios</Button>
                             </Paper>
                         </>
                     )}
@@ -210,7 +197,7 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                                     open={Boolean(anchorEl)}
                                     onClose={handleClose}
                                 >
-                                    <MenuItem onClick={onModificarUsuario}>Modificar Usuario</MenuItem>
+                                    <MenuItem>Modificar Usuario</MenuItem>
                                     <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
                                 </Menu>
                             </div>
@@ -236,29 +223,29 @@ export const Header = ({ onMostrarOrdenada, onMostrar, onMostrarInteresado, onMo
                         {isLoggedIn && isDesempleado && (
                             <>
                                 <MenuItem onClick={onMostrarOrdenada}>Mostrar Ordenada</MenuItem>
-                                <MenuItem onClick={onMostrar}>Mostrar Ofertas</MenuItem>
-                                <MenuItem onClick={onMostrarOfertas}>Tus Ofertas</MenuItem>
+                                <MenuItem>Mostrar Ofertas</MenuItem>
+                                <MenuItem>Tus Ofertas</MenuItem>
                                 <MenuItem onClick={onMostrarEmpresa}>Mostrar Empresas</MenuItem>
                                 <MenuItem onClick={onMostrarEvento}>Mostrar Eventos</MenuItem>
-                                <MenuItem onClick={onMostrarInteresado} >Tus Eventos</MenuItem>
+                                <MenuItem>Tus Eventos</MenuItem>
                             </>
                         )}
 
                         {isLoggedIn && isAdmin && (
-                            <MenuItem onClick={onMostrarTags}>Tags</MenuItem>
+                            <MenuItem>Tags</MenuItem>
                         )}
 
                         {isLoggedIn && !isDesempleado && !isAdmin && (
                             <>
-                                <MenuItem onClick={onMostrarOfertas}>Mostrar Ofertas</MenuItem>
-                                <MenuItem onClick={onMostrarEvento}>Mostrar Eventos</MenuItem>
-                                <MenuItem onClick={onMostrarUsuario}>Mostrar Usuarios</MenuItem>
+                                <MenuItem>Mostrar Ofertas</MenuItem>
+                                <MenuItem>Mostrar Eventos</MenuItem>
+                                <MenuItem>Mostrar Usuarios</MenuItem>
                             </>
                         )}
 
                         {isLoggedIn && (
                             <>
-                                <MenuItem onClick={onModificarUsuario}>Modificar Usuario</MenuItem>
+                                <MenuItem>Modificar Usuario</MenuItem>
                                 <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
                             </>
                         )}

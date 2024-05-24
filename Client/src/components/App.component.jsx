@@ -9,12 +9,12 @@ import { useNavigate } from 'react-router-dom';
 
 
 import { Home } from '../pages/Home/Home.page';
+import { Usuario } from '../pages/Usuario/Usuario.Page'; // Asegúrate de que la ruta de importación sea correcta
 import { Admin } from '../pages/Admin/Admin.page';
 import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
 import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
 import { EventoUnico } from '../pages/Evento/EventoUnico.page';
-import { PaginaDesempleadoOfertasInteres } from '../pages/Desempleado/Componentes/PaginaDesempleadoOfertasInteres';
 import { PaginaDesempleadoOrdenada } from '../pages/Desempleado/Componentes/PaginaDesempleadoOrdenada';
 import { PaginaDesempleadoEmpresa } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresa';
 import { PaginaDesempleadoEvento } from '../pages/Desempleado/Componentes/PaginaDesempleadoEvento';
@@ -66,8 +66,6 @@ const App = () => {
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/desempleado" element={<Desempleado />}>
                         <Route path="ofertas" element={<PaginaDesempleadoOrdenada />} />
-                        <Route path="ofertas_Interesado" element={<PaginaDesempleadoOfertasInteres />} />
-                        <Route path="ordenada" element={<PaginaDesempleadoOrdenada />} />
                         <Route path="empresas" element={<PaginaDesempleadoEmpresa />} />
                         <Route path="empresas/:idEmpresa" element={<PaginaDesempleadoEmpresaUnica />} />
                         <Route path="eventos" element={<PaginaDesempleadoEvento />} />
@@ -82,6 +80,7 @@ const App = () => {
                     </Route>
                     <Route path="/oferta/:idOferta" element={<OfertaUnica />} />
                     <Route path="/evento/:idEvento" element={<EventoUnico />} />
+                    <Route path="/usuario" element={<Usuario />} />
                 </Routes>
             </Router>
         </ThemeProvider>

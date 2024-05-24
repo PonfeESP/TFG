@@ -7,7 +7,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import multer from 'multer';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 
 
@@ -91,12 +91,12 @@ app.get('/usuarios/:id', async (req, res) => {
 });
 
 app.get('/tags', async (req, res) => {
-    try {
-      const tags = await Tags.find().sort({ Nombre: 1 });
-      res.json(tags);
-    } catch (error) {
-      res.status(500).json({ error: 'Fallo' });
-    }
+  try {
+    const tags = await Tags.find().sort({ Nombre: 1 });
+    res.json(tags);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo' });
+  }
 });
 
 app.get('/empresas', async (req, res) => { //SI
@@ -105,6 +105,75 @@ app.get('/empresas', async (req, res) => { //SI
     try {
       const empresas = await User.find({ Rol: 'Empresa' });
       res.json(empresas);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
+app.get('/ofertas/:id', async (req, res) => {
+  if (req.isAuthenticated()) {
+
+    try {
+      const usuario = await User.findById(req.params.id);
+
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const usuarioTags = usuario.Tags;
+
+      const ofertas = await Oferta.find({ Disponible: true }).populate('Empresa', 'Nombre');
+      ofertas.sort((a, b) => {
+        const porcentajeA = calcularPorcentajeConcordancia(usuarioTags, a.Tags);
+        const porcentajeB = calcularPorcentajeConcordancia(usuarioTags, b.Tags);
+        return porcentajeB - porcentajeA;
+      });
+
+      const ofertasConPorcentaje = ofertas.map(oferta => {
+        const porcentaje = calcularPorcentajeConcordancia(usuarioTags, oferta.Tags);
+        return {
+          ...oferta._doc,
+          PorcentajeConcordancia: porcentaje.toFixed(2)
+        };
+      });
+
+      res.json(ofertasConPorcentaje);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
+app.get('/eventos', async (req, res) => {
+  if (req.isAuthenticated()) {
+    try {
+      const fechaActual = new Date();
+
+      const fechaLimite = new Date();
+      fechaLimite.setHours(fechaLimite.getHours() + 24);
+
+      const eventosFuturos = await Evento.find({
+        Fecha: { $gte: fechaLimite }
+      })
+        .populate('Empresa', 'Nombre')
+        .sort({ Fecha_Creacion: -1 });
+
+      const eventosFormateados = eventosFuturos.map(evento => {
+        const aforoRestante = evento.Aforo - evento.Interesados.length;
+        return {
+          ...evento.toObject(),
+          Dia: evento.Fecha.toISOString().split('T')[0],
+          Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          aforo_restante: aforoRestante
+        };
+      });
+
+      res.json(eventosFormateados);
     } catch (error) {
       res.status(500).json({ error: 'Fallo' });
     }
@@ -234,30 +303,30 @@ app.get('/eventos_empresa/:id', async (req, res) => {
 });
 
 app.get('/empresa_unica/:id', async (req, res) => {
-    try {
-      const empresa = await User.findById(req.params.id);
+  try {
+    const empresa = await User.findById(req.params.id);
 
-      if (!empresa) {
-        return res.status(404).json({ error: 'Empresa no encontrada' });
-      }
-
-      const [ofertas, eventos] = await Promise.all([
-        Oferta.find({ Empresa: req.params.id }).exec(),
-        Evento.find({ Empresa: req.params.id }).exec()
-      ]);
-
-      const formattedEventos = eventos.map(evento => ({
-        ...evento.toObject(),
-        Dia: evento.Fecha.toISOString().split('T')[0],
-        Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }));
-
-      console.log(formattedEventos);
-
-      res.json({ empresa, ofertas: ofertas || [], eventos: formattedEventos || [] });
-    } catch (error) {
-      res.status(500).json({ error: 'Fallo del servidor' });
+    if (!empresa) {
+      return res.status(404).json({ error: 'Empresa no encontrada' });
     }
+
+    const [ofertas, eventos] = await Promise.all([
+      Oferta.find({ Empresa: req.params.id }).exec(),
+      Evento.find({ Empresa: req.params.id }).exec()
+    ]);
+
+    const formattedEventos = eventos.map(evento => ({
+      ...evento.toObject(),
+      Dia: evento.Fecha.toISOString().split('T')[0],
+      Hora: evento.Fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }));
+
+    console.log(formattedEventos);
+
+    res.json({ empresa, ofertas: ofertas || [], eventos: formattedEventos || [] });
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo del servidor' });
+  }
 });
 
 

@@ -2,7 +2,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { llamardb, enlace } from '../conexiondb.js';
 import express from 'express';
 import User from '../Modelos/Usuario.model.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const app = express();
 app.use(express.json());

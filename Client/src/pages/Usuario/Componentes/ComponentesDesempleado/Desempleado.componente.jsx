@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, Typography, Chip, MenuItem, Button, TextField } from '@mui/material';
-import { axiosConfig } from '../../../constant/axiosConfig.constant';
-import OfferCard from '../../../components/OfferCard.component';
-import SearchComponent from '../../../components/Search.component';
+import { axiosConfig } from '../../../../constant/axiosConfig.constant';
+import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, Typography, Chip, MenuItem, Button } from '@mui/material';
+import OfferCard from '../../../../components/OfferCard.component';
+import SearchComponent from '../../../../components/Search.component';
 
-export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
+const ComponenteDesempleado = ({ userId }) => {
+    const [ofertas, setOfertas] = useState([]);
     const [ofertasOriginales, setOfertasOriginales] = useState([]);
     const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -26,6 +25,8 @@ export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
     };
 
     const applyFilters = (ofertas, orderValue) => {
+        console.log("asdasd offers:", ofertas);
+
         let newOfertas = [...ofertas];
         if (orderValue === 'newer') {
             newOfertas.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
@@ -53,20 +54,20 @@ export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/ofertas_ordenadas/${userId}`,
+            url: `http://localhost:8000/ofertas/${userId}`,
             method: 'GET'
         })
             .then(res => {
-                const data = maxOfertas ? res.data.slice(0, maxOfertas) : res.data;
-                setOfertasOriginales(data);
-                applyFilters(data, order);
+                setOfertas(res.data);
+                setOfertasOriginales(res.data);
+                applyFilters(res.data, order);
             })
             .catch(err => console.error("Error fetching data:", err));
-    }, [userId, maxOfertas, order]);
+    }, [userId, order]);
 
     useEffect(() => {
         applyFilters(ofertasOriginales, order, searchTerm);
-    }, [ofertasOriginales, order, searchTerm]); // Se agregó searchTerm como dependencia
+    }, [ofertasOriginales, order, searchTerm]);
 
     const totalPages = Math.ceil(ofertasFiltradas.length / pageSize);
 
@@ -84,7 +85,6 @@ export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
-    console.log(ofertasFiltradas);
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -93,7 +93,7 @@ export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
                 </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
-                <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} /> {/* Agregamos margen derecho */}
+                <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
                 <FormControl sx={{ minWidth: 200, maxWidth: 200 }}>
                     <InputLabel id="demo-simple-select-label">Ordenar por</InputLabel>
                     <Select
@@ -127,4 +127,4 @@ export const PaginaDesempleadoOrdenada = ({ userId, maxOfertas }) => {
     );
 };
 
-export default PaginaDesempleadoOrdenada;
+export default ComponenteDesempleado
