@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Paper, Button, Typography, Hidden } from '@mui/material';
+import {
+    AppBar, Toolbar, IconButton, Menu, MenuItem,
+    Paper, Button, Hidden, Typography
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { axiosConfig } from '../constant/axiosConfig.constant';
 import './Header.css';
-
 import Fondo from '../Imagenes/HeaderDefinitivo2.jpg';
-import Logo from '../Imagenes/LogoTransparente.png'; // Importa la ruta de tu logo
+import Logo from '../Imagenes/LogoTransparente.png';
 
 const styles = {
     paper: {
@@ -30,25 +33,30 @@ const styles = {
         background: 'linear-gradient(90deg, #6A1B9A 17.5%, #FFEB3B 17.5% 35.6%, #B3E5FC 35.6% 100%)',
     },
     mostrarButton: {
-        backgroundColor: '#FFEB3B', // Fondo amarillo
-        color: 'black', // Letras negras
+        backgroundColor: '#FFEB3B',
+        color: 'black',
         '&:hover': {
-            backgroundColor: '#FFD600', // Cambio de color al pasar el cursor
+            backgroundColor: '#FFD600',
         },
     },
     logo: {
-        height: '100px', // Ajusta el tamaño del logo según sea necesario
-        marginRight: 'auto', // Alinea el logo a la izquierda
+        height: '100px',
+        marginRight: 'auto',
     },
     iconButton: {
-        color: 'white', // Cambia el color del icono a blanco
+        color: 'white',
+    },
+    rightIconButton: {
+        color: 'white',
     }
 };
 
-const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento }) => {
+const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento, onMostrarUsuarios, onMostrarOfertas, onMostrarEventos }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDesempleado, setIsDesempleado] = useState(false);
+    const [isEmpresa, setIsEmpresa] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,21 +68,22 @@ const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento }) => {
             .then(res => {
                 setIsLoggedIn(true);
                 setIsDesempleado(res.data.userType === 'Desempleado');
+                setIsEmpresa(res.data.userType === 'Empresa');
             })
             .catch(err => console.log(err));
     }, []);
 
     const performLogout = (event) => {
         event.preventDefault();
-
         axios({
             ...axiosConfig,
             url: 'http://localhost:8000/logout',
             method: 'POST'
         })
             .then((response) => {
-                if (response.data.status === 'Ok')
+                if (response.data.status === 'Ok') {
                     navigate('/');
+                }
             })
             .catch(() => {
                 console.log('Error en el cierre de sesión');
@@ -89,29 +98,46 @@ const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento }) => {
         setAnchorEl(null);
     };
 
+    const handleUserMenuOpen = (event) => {
+        setUserMenuAnchorEl(event.currentTarget);
+    };
+
+    const handleUserMenuClose = () => {
+        setUserMenuAnchorEl(null);
+    };
+
     return (
         <AppBar position="static" sx={styles.appBar}>
             <Toolbar>
                 <img src={Logo} alt="Logo" style={styles.logo} />
-
                 <Hidden mdDown>
-                    {isLoggedIn && isDesempleado && (
+                    {(isLoggedIn && isDesempleado) && (
                         <>
                             <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarOrdenada} sx={styles.mostrarButton}>Mostrar Ordenada</Button>
                             </Paper>
-
                             <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarEmpresa} sx={styles.mostrarButton}>Mostrar Empresas</Button>
                             </Paper>
-
                             <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarEvento} sx={styles.mostrarButton}>Mostrar Eventos</Button>
                             </Paper>
                         </>
                     )}
+                    {(isLoggedIn && isEmpresa) && (
+                        <>
+                            <Paper sx={styles.paper}>
+                                <Button onClick={onMostrarUsuarios} sx={styles.mostrarButton}>Usuarios</Button>
+                            </Paper>
+                            <Paper sx={styles.paper}>
+                                <Button onClick={onMostrarOfertas} sx={styles.mostrarButton}>Ofertas</Button>
+                            </Paper>
+                            <Paper sx={styles.paper}>
+                                <Button onClick={onMostrarEventos} sx={styles.mostrarButton}>Eventos</Button>
+                            </Paper>
+                        </>
+                    )}
                 </Hidden>
-
                 <Hidden lgUp>
                     <IconButton
                         aria-controls="simple-menu"
@@ -127,18 +153,41 @@ const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento }) => {
                         open={Boolean(anchorEl)}
                         onClose={handleMenuClose}
                     >
-                        {isLoggedIn && isDesempleado && (
+                        {(isLoggedIn && isDesempleado) && (
                             <>
                                 <MenuItem onClick={onMostrarOrdenada}>Mostrar Ordenada</MenuItem>
                                 <MenuItem onClick={onMostrarEmpresa}>Mostrar Empresas</MenuItem>
                                 <MenuItem onClick={onMostrarEvento}>Mostrar Eventos</MenuItem>
                             </>
                         )}
-                        {isLoggedIn && (
-                            <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
+                        {(isLoggedIn && isEmpresa) && (
+                            <>
+                                <MenuItem onClick={onMostrarUsuarios}>Usuarios</MenuItem>
+                                <MenuItem onClick={onMostrarOfertas}>Ofertas</MenuItem>
+                                <MenuItem onClick={onMostrarEventos}>Eventos</MenuItem>
+                            </>
                         )}
                     </Menu>
                 </Hidden>
+                {isLoggedIn && (
+                    <IconButton
+                        aria-controls="user-menu"
+                        aria-haspopup="true"
+                        onClick={handleUserMenuOpen}
+                        sx={styles.rightIconButton}
+                    >
+                        <PersonIcon />
+                    </IconButton>
+                )}
+                <Menu
+                    id="user-menu"
+                    anchorEl={userMenuAnchorEl}
+                    open={Boolean(userMenuAnchorEl)}
+                    onClose={handleUserMenuClose}
+                >
+                    <MenuItem>Perfil</MenuItem>
+                    <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
+                </Menu>
             </Toolbar>
             <div className="header-margin" style={styles.appBarMargin}></div>
         </AppBar>

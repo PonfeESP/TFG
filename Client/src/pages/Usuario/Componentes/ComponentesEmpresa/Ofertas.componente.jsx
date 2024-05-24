@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
-import { Grid, FormControl, InputLabel, Select, Paper, Box, Typography, MenuItem, Button } from '@mui/material';
-import EventCard from '../../../../components/EventCard.component';
+import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, Typography, Chip, MenuItem, Button } from '@mui/material';
+import OfferCard from '../../../../components/OfferCard.component';
 import SearchComponent from '../../../../components/Search.component';
 
-const SubComponenteEventos = ({ userId, userType }) => {
-    const [eventosOriginales, setEventosOriginales] = useState([]);
-    const [eventosFiltrados, setEventosFiltrados] = useState([]);
+const SubComponenteOfertas = ({ userId, userType }) => {
+    const [ofertas, setOfertas] = useState([]);
+    const [ofertasOriginales, setOfertasOriginales] = useState([]);
+    const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 25;
     const [order, setOrder] = useState('newer');
@@ -16,53 +17,61 @@ const SubComponenteEventos = ({ userId, userType }) => {
     const handleChange = (event) => {
         const orderValue = event.target.value;
         setOrder(orderValue);
-        applyFilters(eventosOriginales, orderValue);
+        applyFilters(ofertasOriginales, orderValue);
     };
 
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
     };
 
-    const applyFilters = (eventos, orderValue) => {
-        let newEventos = [...eventos];
+    const applyFilters = (ofertas, orderValue) => {
+        console.log("asdasd offers:", ofertas);
+
+        let newOfertas = [...ofertas];
         if (orderValue === 'newer') {
-            newEventos.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
+            newOfertas.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
         }
         if (orderValue === 'older') {
-            newEventos.sort((a, b) => new Date(a.Fecha_Creacion) - new Date(b.Fecha_Creacion));
+            newOfertas.sort((a, b) => new Date(a.Fecha_Creacion) - new Date(b.Fecha_Creacion));
+        }
+        if (orderValue === 'concordance-down') {
+            newOfertas.sort((a, b) => Number(a.PorcentajeConcordancia) - Number(b.PorcentajeConcordancia));
+        }
+        if (orderValue === 'concordance-up') {
+            newOfertas.sort((a, b) => Number(b.PorcentajeConcordancia) - Number(a.PorcentajeConcordancia));
         }
         if (orderValue === 'favorites') {
-            newEventos = eventosOriginales.filter(elem => elem.Interesados.includes(userId));
+            newOfertas = ofertasOriginales.filter(elem => elem.Interesados.includes(userId));
         }
         if (searchTerm) {
-            newEventos = newEventos.filter(evento =>
-                evento.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+            newOfertas = newOfertas.filter(oferta =>
+                oferta.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-        setEventosFiltrados(newEventos);
+        setOfertasFiltradas(newOfertas);
     };
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/eventos`,
+            url: `http://localhost:8000/ofertas_empresa/${userId}`,
             method: 'GET'
         })
             .then(res => {
-                setEventosOriginales(res.data);
+                setOfertas(res.data);
+                setOfertasOriginales(res.data);
                 applyFilters(res.data, order);
             })
             .catch(err => console.error("Error fetching data:", err));
     }, [userId, order]);
 
     useEffect(() => {
-        applyFilters(eventosOriginales, order, searchTerm);
-    }, [eventosOriginales, order, searchTerm]);
+        applyFilters(ofertasOriginales, order, searchTerm);
+    }, [ofertasOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(eventosFiltrados.length / pageSize);
+    const totalPages = Math.ceil(ofertasFiltradas.length / pageSize);
 
-    const currentEventos = eventosFiltrados.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
+    const currentOfertas = ofertasFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const goToPage = (page) => {
         setCurrentPage(page);
@@ -76,11 +85,14 @@ const SubComponenteEventos = ({ userId, userType }) => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
+    console.log("currenmt:", currentOfertas);
+
+
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography variant="h4" gutterBottom>
-                    Eventos
+                    Ofertas
                 </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
@@ -95,16 +107,14 @@ const SubComponenteEventos = ({ userId, userType }) => {
                         onChange={handleChange}
                     >
                         <MenuItem value={'newer'}>Más recientes</MenuItem>
-                        <MenuItem value={'older'}>Más antiguos</MenuItem>
-                        <MenuItem value={'favorites'}>Solo añadidos a Favoritos</MenuItem>
+                        <MenuItem value={'older'}>Más antiguas</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
             <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
-                
-                {currentEventos.map((evento, index) =>(
+                {currentOfertas.map((oferta, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
-                        <EventCard event={evento} userId={userId} userType={userType}/>
+                        <OfferCard props={oferta} userId={userId} userType={userType}/>
                     </Grid>
                 ))}
             </Grid>
@@ -117,4 +127,4 @@ const SubComponenteEventos = ({ userId, userType }) => {
     );
 };
 
-export default SubComponenteEventos;
+export default SubComponenteOfertas

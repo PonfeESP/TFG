@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
 import { Grid, FormControl, InputLabel, Select, Paper, Box, Typography, MenuItem, Button } from '@mui/material';
-import EventCard from '../../../../components/EventCard.component';
+import UsersCard from '../../../../components/UsersCard.component';
 import SearchComponent from '../../../../components/Search.component';
 
-const SubComponenteEventos = ({ userId, userType }) => {
-    const [eventosOriginales, setEventosOriginales] = useState([]);
-    const [eventosFiltrados, setEventosFiltrados] = useState([]);
+export const SubComponenteUsuarios = ({ userId }) => {
+    const [usuariosOriginales, setUsuariosOriginales] = useState([]);
+    const [usuariosFiltradas, setUsuariosFiltradas] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 25;
     const [order, setOrder] = useState('newer');
@@ -16,53 +16,52 @@ const SubComponenteEventos = ({ userId, userType }) => {
     const handleChange = (event) => {
         const orderValue = event.target.value;
         setOrder(orderValue);
-        applyFilters(eventosOriginales, orderValue);
+        applyFilters(usuariosOriginales, orderValue);
     };
 
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
     };
 
-    const applyFilters = (eventos, orderValue) => {
-        let newEventos = [...eventos];
+    const applyFilters = (usuarios, orderValue) => {
+        let newUsuarios = [...usuarios];
         if (orderValue === 'newer') {
-            newEventos.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
+            newUsuarios.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
         }
         if (orderValue === 'older') {
-            newEventos.sort((a, b) => new Date(a.Fecha_Creacion) - new Date(b.Fecha_Creacion));
+            newUsuarios.sort((a, b) => new Date(a.Fecha_Creacion) - new Date(b.Fecha_Creacion));
         }
         if (orderValue === 'favorites') {
-            newEventos = eventosOriginales.filter(elem => elem.Interesados.includes(userId));
+            newUsuarios = usuariosOriginales.filter(elem => elem.Interesados.includes(userId));
         }
         if (searchTerm) {
-            newEventos = newEventos.filter(evento =>
-                evento.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+            newUsuarios = newUsuarios.filter(usuario =>
+                usuario.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-        setEventosFiltrados(newEventos);
+        setUsuariosFiltradas(newUsuarios);
     };
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/eventos`,
+            url: `http://localhost:8000/usuarios`,
             method: 'GET'
         })
             .then(res => {
-                setEventosOriginales(res.data);
+                setUsuariosOriginales(res.data);
                 applyFilters(res.data, order);
             })
             .catch(err => console.error("Error fetching data:", err));
     }, [userId, order]);
 
     useEffect(() => {
-        applyFilters(eventosOriginales, order, searchTerm);
-    }, [eventosOriginales, order, searchTerm]);
+        applyFilters(usuariosOriginales, order, searchTerm);
+    }, [usuariosOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(eventosFiltrados.length / pageSize);
+    const totalPages = Math.ceil(usuariosFiltradas.length / pageSize);
 
-    const currentEventos = eventosFiltrados.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
+    const currentUsuarios = usuariosFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const goToPage = (page) => {
         setCurrentPage(page);
@@ -80,7 +79,7 @@ const SubComponenteEventos = ({ userId, userType }) => {
         <>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography variant="h4" gutterBottom>
-                    Eventos
+                    Usuarios
                 </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
@@ -96,15 +95,13 @@ const SubComponenteEventos = ({ userId, userType }) => {
                     >
                         <MenuItem value={'newer'}>Más recientes</MenuItem>
                         <MenuItem value={'older'}>Más antiguos</MenuItem>
-                        <MenuItem value={'favorites'}>Solo añadidos a Favoritos</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
             <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
-                
-                {currentEventos.map((evento, index) =>(
+                {currentUsuarios.map((usuario, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
-                        <EventCard event={evento} userId={userId} userType={userType}/>
+                        <UsersCard user={usuario} />
                     </Grid>
                 ))}
             </Grid>
@@ -117,4 +114,4 @@ const SubComponenteEventos = ({ userId, userType }) => {
     );
 };
 
-export default SubComponenteEventos;
+export default SubComponenteUsuarios;

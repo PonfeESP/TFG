@@ -5,7 +5,7 @@ import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, T
 import OfferCard from '../../../../components/OfferCard.component';
 import SearchComponent from '../../../../components/Search.component';
 
-const ComponenteDesempleado = ({ userId }) => {
+const ComponenteDesempleado = ({ userId, userType }) => {
     const [ofertas, setOfertas] = useState([]);
     const [ofertasOriginales, setOfertasOriginales] = useState([]);
     const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
@@ -114,7 +114,7 @@ const ComponenteDesempleado = ({ userId }) => {
             <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
                 {currentOfertas.map((oferta, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
-                        <OfferCard props={oferta} userId={userId} />
+                        <OfferCard props={oferta} userId={userId} userType={userType} />
                     </Grid>
                 ))}
             </Grid>

@@ -345,34 +345,18 @@ app.get('/usuario_unico/:id', async (req, res) => {
   }
 });
 
-app.get('/ofertas/:id', async (req, res) => {
-  console.log("papapa", req.isAuthenticated())
+app.get('/ofertas_empresa/:id', async (req, res) => {
   if (req.isAuthenticated()) {
-
     try {
-      const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
+      const idEmpresa = req.params.id;
+      
+      const ofertas = await Oferta.find({ Empresa: idEmpresa });
 
-      if (!oferta) {
-        return res.status(404).json({ error: 'Oferta no encontrada' });
+      if (ofertas.length === 0) {
+        return res.status(404).json({ error: 'No hay ofertas para esta empresa' });
       }
 
-      const usuario = await User.findById(req.query.usuarioId);
-      if (!usuario) {
-        return res.status(404).json({ error: 'Usuario no encontrado' });
-      }
-
-      const porcentajeConcordancia = calcularPorcentajeConcordancia(usuario.Tags, oferta.Tags);
-      const porcentajeCoincidenciaporTag = calcularPorcentajeCoincidenciaporTag(oferta, usuario);
-
-      const ofertaConUsuario = {
-        ...oferta.toObject(),
-        Nombre_Usuario: usuario.Nombre,
-        Porcentaje_Concordancia: porcentajeConcordancia,
-        Porcentaje_Concordancia_Tag: porcentajeCoincidenciaporTag,
-        Tags_Usuario: usuario.Tags
-      };
-
-      res.json(ofertaConUsuario);
+      res.json(ofertas);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Fallo' });
@@ -381,6 +365,7 @@ app.get('/ofertas/:id', async (req, res) => {
     res.status(401).send('Sesión no iniciada!');
   }
 });
+
 
 app.get('/oferta_empresa/:id', async (req, res) => {
   if (req.isAuthenticated()) {
@@ -866,13 +851,12 @@ app.put('/solicitud_oferta', async (req, res) => {
   }
 });
 
-app.put('/solicitud_evento/:idEvento', async (req, res) => {
+app.put('/solicitud_evento', async (req, res) => {
   if (req.isAuthenticated()) {
-
     const userId = req.body.userId;
-    const eventoId = req.params.idEvento;
+    const eventId = req.body.eventId;
     try {
-      const evento = await Evento.findById(eventoId);
+      const evento = await Evento.findById(eventId);
       if (!evento) {
         return res.status(404).json({ error: 'evento no encontrada' });
       }
