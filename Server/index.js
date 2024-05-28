@@ -329,6 +329,50 @@ app.get('/empresa_unica/:id', async (req, res) => {
   }
 });
 
+app.get('/ofertaUnicaEmpresa/:id', async (req, res) => {
+  try {
+    const oferta = await Oferta.findById(req.params.id);
+
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    res.json(oferta);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo del servidor' });
+  }
+});
+
+app.get('/ofertaUnicaDesempleado/:id', async (req, res) => {
+  try {
+    const oferta = await Oferta.findById(req.params.id);
+    if (!oferta) {
+      return res.status(404).json({ error: 'Oferta no encontrada' });
+    }
+
+    const userId = req.user.id;
+    const usuario = await User.findById(userId);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const usuarioTags = usuario.Tags;
+    const ofertaTags = oferta.Tags;
+
+    const porcentajeConcordancia = calcularPorcentajeConcordancia(usuarioTags, ofertaTags);
+    const porcentajeCoincidenciaPorTag = calcularPorcentajeCoincidenciaporTag(ofertaTags, usuarioTags);
+
+    res.json({
+      oferta,
+      porcentajeConcordancia,
+      porcentajeCoincidenciaPorTag
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Fallo del servidor' });
+  }
+});
+
 
 
 app.get('/usuario_unico/:id', async (req, res) => {
@@ -713,13 +757,14 @@ app.put('/usuarios/:id', async (req, res) => {
         return res.status(404).json({ error: 'Usuario no encontrado' });
       }
 
-      // Validar si hay tags duplicados
-      const lenguajes = new Set();
-      for (const tag of newData.Tags) {
-        if (lenguajes.has(tag.Lenguaje)) {
-          return res.status(400).json({ error: 'No se pueden introducir tags con el mismo lenguaje' });
+      if (newData.Tags) {
+        const lenguajes = new Set();
+        for (const tag of newData.Tags) {
+          if (lenguajes.has(tag.Lenguaje)) {
+            return res.status(400).json({ error: 'No se pueden introducir tags con el mismo lenguaje' });
+          }
+          lenguajes.add(tag.Lenguaje);
         }
-        lenguajes.add(tag.Lenguaje);
       }
 
       Object.assign(usuario, newData);
@@ -1036,28 +1081,23 @@ function calcularPorcentajeConcordancia(usuarioTags, ofertaTags) {
   return porcentajeConcordancia;
 }
 
-function calcularPorcentajeCoincidenciaporTag(oferta, usuario) {
-  if (oferta && usuario) {
-    const tagsUsuario = usuario.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
-    const tagsOferta = oferta.Tags.map(tag => ({ nombre: tag.Lenguaje, puntuacion: tag.Puntuacion }));
+function calcularPorcentajeCoincidenciaporTag(ofertaTags, usuarioTags) {
+  const coincidencias = ofertaTags.map(tagOferta => {
+    const tagUsuario = usuarioTags.find(tag => tag.Lenguaje === tagOferta.Lenguaje);
+    if (tagUsuario) {
+      const porcentaje = (tagUsuario.Puntuacion / tagOferta.Puntuacion) * 100;
+      return { Lenguaje: tagOferta.Lenguaje, porcentaje };
+    }
+    return null;
+  }).filter(Boolean);
 
-    const coincidencias = tagsOferta.map(tagOferta => {
-      const tagUsuario = tagsUsuario.find(tag => tag.nombre === tagOferta.nombre);
-      if (tagUsuario) {
-        const porcentaje = (tagUsuario.puntuacion / tagOferta.puntuacion) * 100;
-        return { nombre: tagOferta.nombre, porcentaje };
-      }
-      return null;
-    }).filter(Boolean);
+  const coincidenciaState = {};
+  coincidencias.forEach(coincidencia => {
+    coincidenciaState[coincidencia.Lenguaje] = coincidencia.porcentaje;
+  });
 
-    const coincidenciaState = {};
-    coincidencias.forEach(coincidencia => {
-      coincidenciaState[coincidencia.nombre] = coincidencia.porcentaje;
-    });
-
-    return coincidenciaState;
-  }
-  return null;
+  return coincidenciaState;
 }
+
 
 export default app;

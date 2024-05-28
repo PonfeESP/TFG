@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { axiosConfig } from '../constant/axiosConfig.constant';
 import './Header.css';
+import { Login } from './Login';
+import { Register } from './Register';
 import Fondo from '../Imagenes/HeaderDefinitivo2.jpg';
 import Logo from '../Imagenes/LogoTransparente.png';
 
@@ -51,7 +53,7 @@ const styles = {
     }
 };
 
-const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento, onMostrarUsuarios, onMostrarOfertas, onMostrarEventos }) => {
+const Header = ({ onMostrarDesempleado, onMostrarPerfil, onMostrarEmpresa, onMostrarEvento, onMostrarUsuarios, onMostrarOfertas, onMostrarEventos }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDesempleado, setIsDesempleado] = useState(false);
     const [isEmpresa, setIsEmpresa] = useState(false);
@@ -110,11 +112,21 @@ const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento, onMostra
         <AppBar position="static" sx={styles.appBar}>
             <Toolbar>
                 <img src={Logo} alt="Logo" style={styles.logo} />
+                {!isLoggedIn && (
+                    <>
+                        <Paper sx={styles.paper}>
+                            <Login />
+                        </Paper>
+                        <Paper sx={styles.paper}>
+                            <Register />
+                        </Paper>
+                    </>
+                )}
                 <Hidden mdDown>
                     {(isLoggedIn && isDesempleado) && (
                         <>
                             <Paper sx={styles.paper}>
-                                <Button onClick={onMostrarOrdenada} sx={styles.mostrarButton}>Mostrar Ordenada</Button>
+                                <Button onClick={onMostrarDesempleado} sx={styles.mostrarButton}>Mostrar Ofertas</Button>
                             </Paper>
                             <Paper sx={styles.paper}>
                                 <Button onClick={onMostrarEmpresa} sx={styles.mostrarButton}>Mostrar Empresas</Button>
@@ -155,7 +167,7 @@ const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento, onMostra
                     >
                         {(isLoggedIn && isDesempleado) && (
                             <>
-                                <MenuItem onClick={onMostrarOrdenada}>Mostrar Ordenada</MenuItem>
+                                <MenuItem onClick={onMostrarDesempleado}>Mostrar Ordenada</MenuItem>
                                 <MenuItem onClick={onMostrarEmpresa}>Mostrar Empresas</MenuItem>
                                 <MenuItem onClick={onMostrarEvento}>Mostrar Eventos</MenuItem>
                             </>
@@ -185,7 +197,7 @@ const Header = ({ onMostrarOrdenada, onMostrarEmpresa, onMostrarEvento, onMostra
                     open={Boolean(userMenuAnchorEl)}
                     onClose={handleUserMenuClose}
                 >
-                    <MenuItem>Perfil</MenuItem>
+                    <MenuItem onClick={onMostrarPerfil}>Perfil</MenuItem>
                     <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
                 </Menu>
             </Toolbar>

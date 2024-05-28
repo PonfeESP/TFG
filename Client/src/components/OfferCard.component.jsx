@@ -24,7 +24,6 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function OfferCard({ props, userId, userType }) {
-  console.log("OOOOOOOOOOOO", props, userId, userType)
   const [expanded, setExpanded] = useState(false);
   const [isRegistrado, setIsRegistrado] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');

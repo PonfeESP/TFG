@@ -144,9 +144,6 @@ export default function EventCard({ event, userId, userType }) {
             </Link>
           </MenuItem>
         </Menu>
-        <CardContent>
-          <Typography paragraph>{event.Descripcion}</Typography>
-        </CardContent>
         <CardActions sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Button variant="text" onClick={handleShare}>
             <ShareIcon sx={{ mr: 1 }} />
@@ -200,9 +197,6 @@ export default function EventCard({ event, userId, userType }) {
             </Link>
           </MenuItem>
         </Menu>
-        <CardContent>
-          <Typography paragraph>{event.Descripcion}</Typography>
-        </CardContent>
         <CardActions sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Button variant="text" onClick={handleShare}>
             <ShareIcon sx={{ mr: 1 }} />

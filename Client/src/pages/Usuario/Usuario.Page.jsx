@@ -7,6 +7,8 @@ import SubComponenteEmpresas from './Componentes/ComponentesDesempleado/Empresa.
 import SubComponenteEventos from './Componentes/ComponentesDesempleado/Evento.componente';
 import SubComponenteUsuarios from './Componentes/ComponentesEmpresa/Usuarios.componente';
 import SubComponenteOfertas from './Componentes/ComponentesEmpresa/Ofertas.componente';
+import SubComponenteEventosEmpresa from './Componentes/ComponentesEmpresa/Eventos.componente';
+import Perfil from './Componentes/Perfil.componente';
 import Header from '../../components/Header2.component';
 import { Typography } from '@mui/material';
 
@@ -40,6 +42,7 @@ export const Usuario = () => {
     const handleMostrarEvento = () => setActiveComponent('evento');
     const handleMostrarUsuarios = () => setActiveComponent('usuarios');
     const handleMostrarOfertas = () => setActiveComponent('ofertas');
+    const handleMostrarPerfil = () => setActiveComponent('perfil');
 
     if (!finishLoading) {
         return <div>Loading...</div>;
@@ -54,8 +57,8 @@ export const Usuario = () => {
                 onMostrarUsuarios={handleMostrarUsuarios}
                 onMostrarOfertas={handleMostrarOfertas}
                 onMostrarEventos={handleMostrarEvento}
+                onMostrarPerfil={handleMostrarPerfil}
             />
-            <Typography>Active Component: {activeComponent}</Typography>
 
             {userType === 'Desempleado' && (
                 <>
@@ -63,6 +66,7 @@ export const Usuario = () => {
                     {activeComponent === 'desempleado' && <ComponenteDesempleado userId={userId} userType={userType} />}
                     {activeComponent === 'empresa' && <SubComponenteEmpresas userId={userId} userType={userType} />}
                     {activeComponent === 'evento' && <SubComponenteEventos userId={userId} userType={userType} />}
+                    {activeComponent === 'perfil' && <Perfil userId={userId} userType={userType} />}
                 </>
             )}
             {userType === 'Empresa' && (
@@ -70,7 +74,8 @@ export const Usuario = () => {
                     {activeComponent === 'inicio' && <Inicio userId={userId} userType={userType} />}
                     {activeComponent === 'usuarios' && <SubComponenteUsuarios userId={userId} userType={userType} />}
                     {activeComponent === 'ofertas' && <SubComponenteOfertas userId={userId} userType={userType} />}
-                    {activeComponent === 'evento' && <SubComponenteEventos userId={userId} userType={userType} />}
+                    {activeComponent === 'evento' && <SubComponenteEventosEmpresa userId={userId} userType={userType} />}
+                    {activeComponent === 'perfil' && <Perfil userId={userId} userType={userType} />}
                 </>
             )}
             {userType === 'tipo3' && (

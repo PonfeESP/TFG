@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../../components/Header.component';
+import Header from '../../components/Header2.component';
 import Logo from '../../Imagenes/LogoTransparente.png';
 import Fond from '../../Imagenes/fond.jpg';
 import { axiosConfig } from '../../constant/axiosConfig.constant';

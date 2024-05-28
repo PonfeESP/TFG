@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Home } from '../pages/Home/Home.page';
 import { Usuario } from '../pages/Usuario/Usuario.Page'; // Asegúrate de que la ruta de importación sea correcta
+import { Oferta } from '../pages/Ofertas/Oferta.page';
 import { Admin } from '../pages/Admin/Admin.page';
 import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
@@ -78,9 +79,8 @@ const App = () => {
                         <Route path="eventos" element={<PaginaEmpresaEvento />} />
                         <Route path="modificacion" element={<PaginaEmpresaModificacion />} />
                     </Route>
-                    <Route path="/oferta/:idOferta" element={<OfertaUnica />} />
-                    <Route path="/evento/:idEvento" element={<EventoUnico />} />
                     <Route path="/usuario" element={<Usuario />} />
+                    <Route path="/oferta/:idOferta" element={<Oferta />} />
                 </Routes>
             </Router>
         </ThemeProvider>

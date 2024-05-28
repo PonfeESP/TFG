@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Stack, Snackbar, Typography, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import { useNavigate } from 'react-router-dom';
 import { axiosConfig } from '../constant/axiosConfig.constant';
-import Fondo from '../Imagenes/HeaderDefinitivo2.jpg';
-import theme from './Theme.js'
-import { ThemeProvider } from '@mui/material/styles';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export const Register = () => {
     const [email, setEmail] = useState("");
@@ -28,6 +24,7 @@ export const Register = () => {
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+    const [rolError, setRolError] = useState(false);
     const [nombreError, setNombreError] = useState(false);
     const [descripcionError, setDescripcionError] = useState(false);
     const [edadError, setEdadError] = useState(false);
@@ -40,9 +37,6 @@ export const Register = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [registroExitoso, setRegistroExitoso] = useState(false);
     const [registroErrorMessage, setRegistroErrorMessage] = useState("");
-    const [registrationSuccess, setRegistrationSuccess] = useState(false);
-    const [registrationFailure, setRegistrationFailure] = useState(false);
-    const [registrationStatus, setRegistrationStatus] = useState({ failure: false, success: false });
     const [formData, setFormData] = useState({
         nombre: "",
         descripcion: "",
@@ -142,6 +136,7 @@ export const Register = () => {
         setSnackbarOpen(false);
     };
 
+    // Function for registering Empresa
     const registerEmpresa = () => {
         setUserError(false);
         setEmailError(false);
@@ -154,8 +149,6 @@ export const Register = () => {
         if (password === '') setPasswordError(true);
         if (descripcion === '') setDescripcionError(true);
         if (nombre === '') setNombreError(true);
-        setConfirmPasswordError(confirmPassword === '' || confirmPassword !== password);
-
 
         if (!!nombre && !!email && !!password && !!descripcion) {
             const userData = {
@@ -174,26 +167,19 @@ export const Register = () => {
             })
                 .then((response) => {
                     console.log('Registro exitoso:', response.data);
-                    setRegistrationSuccess(true);
-                    setOpen(false);
-                    setNombre("");
-                    setDescripcion("");
-                    setEmail("");
-                    setPassword("");
-                    setConfirmPassword("");
-                    setCurrentStep(1);
+                    if (response.data.status === 'OK') {
+                        setRegistroError('El usuario se ha registrado exitosamente.');
+                    } else {
+                        setRegistroError('Error en el registro');
+                    }
                 })
                 .catch((error) => {
                     console.error('Error en el registro:', error);
                     if (error.response && error.response.status === 400 && error.response.data.error === 'Este Email ya está registrado') {
                         setEmailError(true);
                         setRegistroError('El correo electrónico ya está registrado.');
-                        setRegistrationFailure(true);
-                        setRegistrationStatus({ failure: true, success: true });
                     } else {
                         setRegistroError('Error en el registro. Inténtalo de nuevo, por favor.');
-                        setRegistrationFailure(true);
-                        setRegistrationStatus({ failure: true, success: false });
                     }
                 });
         }
@@ -259,34 +245,62 @@ export const Register = () => {
                 })
                     .then((response) => {
                         console.log('Registro exitoso:', response.data);
-                        setRegistrationSuccess(true);
-                        setOpen(false);
-                        setNombre("");
-                        setDescripcion("");
-                        setEmail("");
-                        setPassword("");
-                        setConfirmPassword("");
-                        setEdad("");
-                        setExperienciaLaboral("");
-                        setEstudios("");
-                        setTags([]);
-                        setTagsExperience({});
-                        setCurrentStep(1);
+                        if (response.data.status === 'OK') {
+                            setRegistroError('El usuario se ha registrado exitosamente.');
+                            handleSuccessfulRegistrationCleanup(true);
+                        } else {
+                            setRegistroError('Error en el registro');
+                            setSeverity('error');
+                            setSnackbarMessage('Error en el registro')
+                            setSnackbarOpen(true);
+                        }
                     })
                     .catch((error) => {
                         console.error('Error en el registro:', error);
                         if (error.response && error.response.status === 400 && error.response.data.error === 'Este Email ya está registrado') {
-                            setRegistrationFailure(true);
-                            setRegistrationStatus({ failure: true, success: true });
                             setEmailError(true);
                             setRegistroError('El correo electrónico ya está registrado.');
+                            handleSuccessfulRegistrationCleanup(false);
                         } else {
-                            setRegistrationFailure(true);
-                            setRegistrationStatus({ failure: true, success: false });
                             setRegistroError('Error en el registro. Inténtalo de nuevo, por favor.');
+                            handleSuccessfulRegistrationCleanup(false);
                         }
                     });
             }
+        }
+
+    };
+
+    const handleSuccessfulRegistrationCleanup = (registroExitoso) => {
+
+        if (registroExitoso) {
+            setRegistroExitoso(true);
+            setRegistroErrorMessage("");
+
+
+            console.log("please2", registroExitoso)
+
+
+            setTimeout(() => {
+                handleClose();
+            }, 3000);
+
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+            setRol('Desempleado');
+            setNombre("");
+            setDescripcion("");
+            setEdad("");
+            setExperienciaLaboral("");
+            setEstudios("");
+            setTags([]);
+            setTagsExperience({});
+            setCurrentStep(1);
+
+        } else {
+            setRegistroExitoso(false);
+            setRegistroErrorMessage("Error en el registro. Inténtalo de nuevo, por favor.");
         }
 
     };
@@ -299,28 +313,18 @@ export const Register = () => {
         }
     };
 
+    const theme = createTheme();
+
     return (
         <ThemeProvider theme={theme}>
 
-            <div sx={{width:'100%' }}>
+            <div>
                 <Button onClick={handleClickOpen}>Registrarse</Button>
-                <Dialog open={open} onClose={handleClose} sx={{ width:'100%' }}>
-                    <Box
-                        sx={{
-                            backgroundImage: `url(${Fondo})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            height: '90px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}
-                    >
-                        <Typography variant="h5" color="white">
-                            ITJobFinder
-                        </Typography>
-                    </Box>
-                    <DialogContent sx={{ backgroundColor: '#302c2c', width:'100%' }}>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogContent>
+                        <DialogContentText textAlign={'center'}>
+                            Por favor, complete el formulario de registro.
+                        </DialogContentText>
 
                         <Box
                             noValidate
@@ -332,8 +336,8 @@ export const Register = () => {
                                 width: 'fit-content',
                             }}
                         >
-                            <FormControl sx={{ mt: 2, minWidth: 120, marginBottom: '15px' }}>
-                                <InputLabel htmlFor="user-type" style={{ color: '#FFFFFF' }}>Usuario</InputLabel>
+                            <FormControl sx={{ mt: 2, minWidth: 120 }}>
+                                <InputLabel htmlFor="user-type">Usuario</InputLabel>
                                 <Select
                                     autoFocus
                                     value={rol}
@@ -343,7 +347,6 @@ export const Register = () => {
                                         name: 'user-type',
                                         id: 'user-type',
                                     }}
-                                    style={{ color: '#FFFFFF' }} // Cambia el color de la letra aquí
                                 >
                                     <MenuItem value="Empresa">Empresa</MenuItem>
                                     <MenuItem value="Desempleado">Desempleado</MenuItem>
@@ -361,14 +364,7 @@ export const Register = () => {
                                     id="nombre"
                                     label="Nombre"
                                     fullWidth
-                                    variant="outlined"
-                                    onKeyDown={(e) => {
-                                        const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
-                                        const isLetter = /^[a-zA-Z\s]$/;
-                                        if (!isLetter.test(e.key) && !allowedKeys.includes(e.key)) {
-                                            e.preventDefault();
-                                        }
-                                    }}
+                                    variant="standard"
                                     error={nombreError}
                                     helperText={nombreError && 'Por favor, ingrese un nombre.'}
                                 />
@@ -380,15 +376,7 @@ export const Register = () => {
                                     id="descripcion"
                                     label="Descripcion de la Empresa"
                                     fullWidth
-                                    variant="outlined"
-                                    onKeyDown={(e) => {
-                                        const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
-                                        const isLetter = /^[a-zA-Z]$/;
-                                        const isDotOrComma = /^[.,]$/;
-                                        if (!isLetter.test(e.key) && !isDotOrComma.test(e.key) && !allowedKeys.includes(e.key)) {
-                                            e.preventDefault();
-                                        }
-                                    }}
+                                    variant="standard"
                                     error={descripcionError}
                                     helperText={descripcionError && 'Por favor, ingrese una descripción.'}
                                 />
@@ -399,7 +387,7 @@ export const Register = () => {
                                     id="email"
                                     label="Correo"
                                     fullWidth
-                                    variant="outlined"
+                                    variant="standard"
                                     error={userError}
                                     helperText={userError && 'Por favor, ingrese un correo válido.'}
                                 />
@@ -411,7 +399,7 @@ export const Register = () => {
                                     label="Contraseña"
                                     type="password"
                                     fullWidth
-                                    variant="outlined"
+                                    variant="standard"
                                     error={passwordError}
                                     helperText={passwordError && 'Por favor, ingrese una contraseña.'}
                                 />
@@ -423,7 +411,7 @@ export const Register = () => {
                                     label="Confirmar Contraseña"
                                     type="password"
                                     fullWidth
-                                    variant="outlined"
+                                    variant="standard"
                                     error={confirmPasswordError}
                                     helperText={confirmPasswordError && 'Las contraseñas no coinciden'}
                                 />
@@ -453,14 +441,7 @@ export const Register = () => {
                                             id="nombre"
                                             label="Nombre"
                                             fullWidth
-                                            variant="outlined"
-                                            onKeyDown={(e) => {
-                                                const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
-                                                const isLetter = /^[a-zA-Z]$/;
-                                                if (!isLetter.test(e.key) && !allowedKeys.includes(e.key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
+                                            variant="standard"
                                             error={nombreError}
                                             helperText={nombreError && 'Por favor, ingrese un nombre.'}
                                         />
@@ -471,18 +452,7 @@ export const Register = () => {
                                             id="descripcion"
                                             label="Descripcion"
                                             fullWidth
-                                            variant="outlined"
-                                            onKeyDown={(e) => {
-                                                const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
-                                                const isLetter = /^[a-zA-Z]$/;
-                                                const isDotOrComma = /^[.,]$/;
-                                                if (!isLetter.test(e.key) && !isDotOrComma.test(e.key) && !allowedKeys.includes(e.key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            inputProps={{ maxLength: 500 }}
-                                            error={descripcionError}
-                                            helperText={descripcionError && 'Por favor, ingrese una descripción.'}
+                                            variant="standard"
                                         />
                                         <TextField
                                             required
@@ -491,15 +461,8 @@ export const Register = () => {
                                             id="edad"
                                             label="Edad"
                                             fullWidth
-                                            variant="outlined"
+                                            variant="standard"
                                             inputProps={{ maxLength: 2 }}
-                                            onKeyDown={(e) => {
-                                                const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
-                                                const isNumber = /^[0-9]$/;
-                                                if (!isNumber.test(e.key) && !allowedKeys.includes(e.key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}  
                                             error={edadError}
                                             helperText={edadError && 'Indique su edad, por favor.'}
                                         />
@@ -510,15 +473,7 @@ export const Register = () => {
                                             id="experienciaLaboral"
                                             label="Años trabajados"
                                             fullWidth
-                                            variant="outlined"
-                                            onKeyDown={(e) => {
-                                                const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
-                                                const isNumber = /^[0-9]$/;
-                                                if (!isNumber.test(e.key) && !allowedKeys.includes(e.key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            inputProps={{ maxLength: 2 }}
+                                            variant="standard"
                                             error={experienciaError}
                                             helperText={experienciaError && 'Indique su Experiencia Laboral, por favor.'}
                                         />
@@ -529,15 +484,7 @@ export const Register = () => {
                                             id="estudios"
                                             label="Estudios"
                                             fullWidth
-                                            variant="outlined"
-                                            onKeyDown={(e) => {
-                                                const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
-                                                const isLetter = /^[a-zA-Z]$/;
-                                                const isDotOrComma = /^[.,]$/;
-                                                if (!isLetter.test(e.key) && !isDotOrComma.test(e.key) && !allowedKeys.includes(e.key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
+                                            variant="standard"
                                             error={estudiosError}
                                             helperText={estudiosError && 'Indique sus Estudios, por favor.'}
                                         />
@@ -546,21 +493,19 @@ export const Register = () => {
                                             <Button
                                                 onClick={handleNextStep}
                                                 variant="contained"
-                                                aria-label="Siguiente"
-                                                sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '20%' }}>
-                                                <ArrowForwardIosIcon />
+                                                sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '30%' }}>
+                                                Siguiente
                                             </Button>
                                         </Box>
                                     </div>
                                 )}
                                 {currentStep === 2 && (
-                                    <div style={{ width: '100%' }}>
+                                    <div>
                                         <Autocomplete
                                             multiple
                                             options={programmingLanguages.map(language => ({ label: language.Nombre, value: language._id }))}
                                             getOptionLabel={option => option.label}
                                             value={tags}
-                                            sx={{ width: '100%'}}
                                             onChange={handleTagsChange}
                                             renderInput={params => (
                                                 <TextField
@@ -568,7 +513,6 @@ export const Register = () => {
                                                     variant="standard"
                                                     label="Tags (Programming Languages)"
                                                     placeholder="Select tags"
-                                                    fullWidth
                                                     error={tagsError}
                                                     helperText={tagsError && 'Por favor, seleccione al menos un tag.'}
                                                 />
@@ -584,27 +528,21 @@ export const Register = () => {
                                                 />
                                             </Box>
                                         ))}
-                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                                            <Button
-                                                onClick={handlePreviousStep}
-                                                variant="contained"
-                                                aria-label="Anterior"
-                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px', marginTop:'10px' }}
-                                            >
-                                                <ArrowBackIosIcon />
-                                            </Button>
-                                            <Button
-                                                onClick={handleNextStep}
-                                                variant="contained"
-                                                aria-label="Siguiente"
-                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px', marginTop:'10px' }}                                            >
-                                                <ArrowForwardIosIcon />
-                                            </Button>
-                                        </Box>
+                                        <Button
+                                            onClick={handlePreviousStep}
+                                            variant="contained"
+                                            sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '40%', marginLeft: '5%', marginRight: '10%' }}>
+                                            Anterior
+                                        </Button>
+                                        <Button onClick={handleNextStep}
+                                            variant="contained"
+                                            sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '40%', marginRight: '5%' }}>
+                                            Siguiente
+                                        </Button>
                                     </div>
                                 )}
                                 {currentStep === 3 && (
-                                    <div style={{ width: '100%' }}>
+                                    <div>
                                         <TextField
                                             required
                                             onChange={(e) => setEmail(e.target.value)}
@@ -612,7 +550,7 @@ export const Register = () => {
                                             id="email"
                                             label="Correo"
                                             fullWidth
-                                            variant="outlined"
+                                            variant="standard"
                                             error={userError}
                                             helperText={userError && 'Por favor, ingrese un correo válido.'}
                                         />
@@ -624,7 +562,7 @@ export const Register = () => {
                                             label="Contraseña"
                                             type="password"
                                             fullWidth
-                                            variant="outlined"
+                                            variant="standard"
                                             error={passwordError}
                                             helperText={passwordError && 'Por favor, ingrese una contraseña.'}
                                         />
@@ -636,16 +574,15 @@ export const Register = () => {
                                             label="Confirmar Contraseña"
                                             type="password"
                                             fullWidth
-                                            variant="outlined"
+                                            variant="standard"
                                             error={confirmPasswordError}
                                             helperText={confirmPasswordError && 'Las contraseñas no coinciden'}
                                         />
                                         <Button
                                             onClick={handlePreviousStep}
                                             variant="contained"
-                                            aria-label="Anterior"
                                             sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '40%', marginLeft: '5%', marginRight: '10%' }}>
-                                            <ArrowBackIosIcon />
+                                            Anterior
                                         </Button>
                                         <Button onClick={performRegister}
                                             variant="contained"
@@ -659,24 +596,6 @@ export const Register = () => {
 
                     </DialogContent>
                 </Dialog>
-                <Snackbar open={registrationSuccess} autoHideDuration={6000} onClose={() => setRegistrationSuccess(false)}>
-                    <Alert onClose={() => setRegistrationSuccess(false)} severity="success" sx={{ width: '100%' }}>
-                        El usuario se ha registrado exitosamente.
-                    </Alert>
-                </Snackbar>
-
-                <Snackbar open={registrationFailure && (registrationStatus.failure && registrationStatus.success)} autoHideDuration={6000} onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }}>
-                    <Alert onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }} severity="error" sx={{ width: '100%' }}>
-                        Este Email ya esta registrado
-                    </Alert>
-                </Snackbar>
-
-                <Snackbar open={registrationFailure && (registrationStatus.failure && !registrationStatus.success)} autoHideDuration={6000} onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }}>
-                    <Alert onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }} severity="error" sx={{ width: '100%' }}>
-                        Error en el registro. Inténtalo de nuevo, por favor.
-                    </Alert>
-                </Snackbar>
-
             </div>
         </ThemeProvider>
 
