@@ -7,6 +7,13 @@ import OfertaEdicion from './Componentes/OfertaEdicion.componente';
 import OfertaVisualizacion from './Componentes/OfertaVisualizacion.componente';
 import Header from '../../components/Header2.component';
 import { Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+
 
 export const Oferta = () => {
     const { idOferta } = useParams();
@@ -14,6 +21,7 @@ export const Oferta = () => {
     const [finishLoading, setFinishLoading] = useState(false);
     const [activeComponent, setActiveComponent] = useState('visualizar');
     const [userId, setUserId] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios({
@@ -37,6 +45,14 @@ export const Oferta = () => {
     const handleMostrarOferta = () => setActiveComponent('visualizar');
     const handleEditarOferta = () => setActiveComponent('editar');
 
+    const handleToggleComponent = (action) => {
+        if (action === 'editar') {
+            setActiveComponent('editar');
+        } else if (action === 'eliminar') {
+            // Agrega aquí la lógica para eliminar la oferta
+        }
+    };
+
     if (!finishLoading) {
         return <div>Loading...</div>;
     }
@@ -46,18 +62,65 @@ export const Oferta = () => {
             <Header
                 onMostrarOferta={handleMostrarOferta}
                 onEditarOferta={handleEditarOferta}
+                onMostrarDesempleado={() => {
+                    navigate('/usuario', { state: { valor: 'desempleado' } });
+                }}
+                onMostrarEmpresa={() => {
+                    navigate('/usuario', { state: { valor: 'empresa' } });
+                }}
+                onMostrarEvento={() => {
+                    navigate('/usuario', { state: { valor: 'evento' } });
+                }}
+                onMostrarUsuarios={() => {
+                    navigate('/usuario', { state: { valor: 'usuarios' } });
+                }}
+                onMostrarOfertas={() => {
+                    navigate('/usuario', { state: { valor: 'ofertas' } });
+                }}
+                onMostrarEventos={() => {
+                    navigate('/usuario', { state: { valor: 'evento' } });
+                }}
+                onMostrarPerfil={() => {
+                    navigate('/usuario', { state: { valor: 'perfil' } });
+                }}
             />
-
             {userType === 'Desempleado' && (
                 <>
                     {activeComponent === 'visualizar' && <OfertaVisualizacion ofertaId={idOferta} userId={userId} userType={userType} />}
                 </>
             )}
             {userType === 'Empresa' && (
-                <>
-                    {activeComponent === 'visualizar' && <OfertaVisualizacion ofertaId={idOferta} userId={userId} userType={userType} />}
-                    {activeComponent === 'editar' && <OfertaEdicion ofertaId={idOferta} userId={userId} userType={userType} />}
-                </>
+                <div>
+                    <div style={{ position: 'fixed', left: '3%', transform: 'translate(-50%, 50%)', zIndex: '1000' }}>
+                    <SpeedDial
+                        ariaLabel="SpeedDial basic example"
+                        icon={<EditIcon />}
+                    >
+                        <SpeedDialAction
+                            key="Editar"
+                            icon={<EditIcon />}
+                            tooltipTitle="Editar"
+                            onClick={() => handleToggleComponent('editar')}
+                        />
+                        <SpeedDialAction
+                            key="Eliminar"
+                            icon={<DeleteIcon />}
+                            tooltipTitle="Eliminar"
+                            onClick={() => handleToggleComponent('eliminar')}
+                        />
+                        <SpeedDialAction
+                            key="Eliminar"
+                            icon={<RemoveRedEyeIcon />}
+                            tooltipTitle="Visualizar"
+                            onClick={() => handleToggleComponent('visualizar')}
+                        />
+                    </SpeedDial>
+                    </div>
+                    <div>
+                        {activeComponent === 'visualizar' && <OfertaVisualizacion ofertaId={idOferta} userId={userId} userType={userType} />}
+                        {activeComponent === 'editar' && <OfertaEdicion ofertaId={idOferta} userId={userId} userType={userType} />}
+                    </div>
+                </div>
             )}
         </>
     );

@@ -25,7 +25,6 @@ const ComponenteDesempleado = ({ userId, userType }) => {
     };
 
     const applyFilters = (ofertas, orderValue) => {
-        console.log("asdasd offers:", ofertas);
 
         let newOfertas = [...ofertas];
         if (orderValue === 'newer') {

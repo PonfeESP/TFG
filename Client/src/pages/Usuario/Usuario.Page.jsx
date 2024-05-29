@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { axiosConfig } from '../../constant/axiosConfig.constant';
 import Inicio from '../../components/Inicio.component';
@@ -13,10 +14,18 @@ import Header from '../../components/Header2.component';
 import { Typography } from '@mui/material';
 
 export const Usuario = () => {
+    const location = useLocation();
+
     const [userType, setUserType] = useState('');
     const [finishLoading, setFinishLoading] = useState(false);
     const [activeComponent, setActiveComponent] = useState('inicio');
     const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        if (location.state && location.state.valor) {
+            setActiveComponent(location.state.valor);
+        }
+    }, [location.key, location.state]);
 
     useEffect(() => {
         axios({
@@ -28,14 +37,18 @@ export const Usuario = () => {
                 setUserType(res.data.userType);
                 setUserId(res.data.id);
                 setFinishLoading(!!res.data && !!res.data.userType);
-                if (userType === 'Desempleado') {
-                    setActiveComponent('desempleado');
-                } else if (userType === 'Empresa') {
-                    setActiveComponent('usuarios');
-                }
             })
             .catch(err => console.log(err));
     }, []);
+
+    /*useEffect(() => {
+        if (userType === 'Desempleado') {
+            setActiveComponent('desempleado');
+        } else if (userType === 'Empresa') {
+            setActiveComponent('usuarios');
+        }
+    }, [userType]);*/
+
 
     const handleMostrarDesempleado = () => setActiveComponent('desempleado');
     const handleMostrarEmpresa = () => setActiveComponent('empresa');
@@ -43,6 +56,7 @@ export const Usuario = () => {
     const handleMostrarUsuarios = () => setActiveComponent('usuarios');
     const handleMostrarOfertas = () => setActiveComponent('ofertas');
     const handleMostrarPerfil = () => setActiveComponent('perfil');
+
 
     if (!finishLoading) {
         return <div>Loading...</div>;

@@ -4,6 +4,8 @@ import { axiosConfig } from '../../../../constant/axiosConfig.constant';
 import { Grid, FormControl, InputLabel, Select, Paper, Box, Typography, MenuItem, Button } from '@mui/material';
 import EventCard from '../../../../components/EventCard.component';
 import SearchComponent from '../../../../components/Search.component';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const SubComponenteEventosEmpresa = ({ userId, userType }) => {
     const [eventosOriginales, setEventosOriginales] = useState([]);
@@ -105,9 +107,13 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                 ))}
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-                <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>Anterior</Button>
+                <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>
+                    <ArrowBackIcon />
+                </Button>
                 <Typography variant="body1">Página {currentPage} de {totalPages}</Typography>
-                <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>Siguiente</Button>
+                <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>
+                    <ArrowForwardIcon />
+                </Button>
             </Box>
         </>
     );

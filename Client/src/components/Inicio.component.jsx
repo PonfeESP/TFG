@@ -83,6 +83,50 @@ const Inicio = ({ userId, userType }) => {
                     </Grid>
                 </div>
             )}
+            {userType === 'Empresa' && (
+                <div style={{ textAlign: 'center' }}>
+                    <Grid container spacing={2} marginTop={'10px'}>
+                        <Grid item xs={12} md={6}>
+                            <div>
+                                <Typography variant="subtitle1">¡Encuentra el talento que necesitas en nuestra plataforma de búsqueda de empleo! Ofrecemos una solución eficiente y efectiva para conectar a las empresas con candidatos calificados en una variedad de industrias. Ya sea que estés buscando cubrir puestos a tiempo completo, medio tiempo o proyectos flexibles, nuestra plataforma te proporciona acceso a una amplia base de datos de profesionales talentosos y motivados.
+                                </Typography>
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} md={6} style={{ backgroundImage: `url(${oferta})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '300px' }}>
+                        </Grid>
+                    </Grid>
+                </div>
+            )}
+
+
+            {userType === 'Empresa' && (
+                <div style={{ textAlign: 'center' }}>
+                    <Grid container spacing={2} marginTop={'10px'}>
+                        <Grid item xs={12} md={6} style={{ backgroundImage: `url(${empresa})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '300px' }}>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <div>
+                                <Typography variant="subtitle1">Facilitamos el proceso de contratación con herramientas avanzadas de filtrado y evaluación, asegurando que encuentres el candidato ideal que se ajuste a tus necesidades y objetivos empresariales. Únete a nosotros y optimiza tu proceso de selección para encontrar el talento perfecto que impulsará el éxito de tu empresa.</Typography>
+                            </div>
+                        </Grid>
+                    </Grid>
+                </div>
+            )}
+
+            {userType === 'Empresa' && (
+                <div style={{ textAlign: 'center' }}>
+                    <Grid container spacing={2} marginTop={'10px'}>
+                        <Grid item xs={12} md={6}>
+                            <div>
+                                <Typography variant="subtitle1">¡Organiza eventos exitosos con nuestra plataforma de gestión de eventos! Ofrecemos una solución integral para planificar, promover y ejecutar eventos de cualquier tamaño y tipo. Desde conferencias a seminarios, nuestra plataforma está diseñada para ayudarte a gestionar todos los aspectos de tu evento de manera eficiente y efectiva. Puedes manejar inscripciones, coordinar la logística y analizar el aforo del evento en tiempo real. Nuestra interfaz intuitiva y amigable te permitirá ahorrar tiempo y reducir el estrés asociado con la organización de eventos.
+                                </Typography>
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} md={6} style={{ backgroundImage: `url(${evento})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '300px' }}>
+                        </Grid>
+                    </Grid>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
-import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, Typography, Chip, MenuItem, Button } from '@mui/material';
+import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, Typography, Chip, MenuItem, Button, Modal } from '@mui/material';
 import OfferCard from '../../../../components/OfferCard.component';
 import SearchComponent from '../../../../components/Search.component';
+import RegistroOferta from './NuevaOferta.componente';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const SubComponenteOfertas = ({ userId, userType }) => {
     const [ofertas, setOfertas] = useState([]);
@@ -13,6 +16,17 @@ const SubComponenteOfertas = ({ userId, userType }) => {
     const pageSize = 25;
     const [order, setOrder] = useState('newer');
     const [searchTerm, setSearchTerm] = useState('');
+    const [openModal, setOpenModal] = useState(false); // Estado para controlar la apertura/cierre de la ventana emergente
+
+    // Función para abrir la ventana emergente
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    // Función para cerrar la ventana emergente
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
 
     const handleChange = (event) => {
         const orderValue = event.target.value;
@@ -25,7 +39,6 @@ const SubComponenteOfertas = ({ userId, userType }) => {
     };
 
     const applyFilters = (ofertas, orderValue) => {
-        console.log("asdasd offers:", ofertas);
 
         let newOfertas = [...ofertas];
         if (orderValue === 'newer') {
@@ -85,15 +98,15 @@ const SubComponenteOfertas = ({ userId, userType }) => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
-    console.log("currenmt:", currentOfertas);
-
-
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography variant="h4" gutterBottom>
                     Ofertas
                 </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Button variant="contained" onClick={handleOpenModal}>Registrar Nueva Oferta</Button>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
                 <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
@@ -114,17 +127,31 @@ const SubComponenteOfertas = ({ userId, userType }) => {
             <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
                 {currentOfertas.map((oferta, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
-                        <OfferCard props={oferta} userId={userId} userType={userType}/>
+                        <OfferCard props={oferta} userId={userId} userType={userType} />
                     </Grid>
                 ))}
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-                <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>Anterior</Button>
+                <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>
+                    <ArrowBackIcon />
+                </Button>
                 <Typography variant="body1">Página {currentPage} de {totalPages}</Typography>
-                <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>Siguiente</Button>
+                <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>
+                    <ArrowForwardIcon />
+                </Button>
             </Box>
+
+            <Modal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <RegistroOferta userId={userId} handleCloseModal={handleCloseModal} />
+            </Modal>
         </>
     );
+
 };
 
 export default SubComponenteOfertas

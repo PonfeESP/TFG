@@ -873,6 +873,7 @@ app.put('/solicitud_oferta', async (req, res) => {
 
     const userId = req.body.userId;
     const ofertaId = req.body.ofertaId;
+
     try {
       const oferta = await Oferta.findById(ofertaId);
       if (!oferta) {

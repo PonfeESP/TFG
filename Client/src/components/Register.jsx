@@ -656,7 +656,6 @@ export const Register = () => {
                                 )}
                             </div>
                         )}
-
                     </DialogContent>
                 </Dialog>
                 <Snackbar open={registrationSuccess} autoHideDuration={6000} onClose={() => setRegistrationSuccess(false)}>

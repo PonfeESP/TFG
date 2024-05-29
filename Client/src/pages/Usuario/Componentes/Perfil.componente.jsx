@@ -7,7 +7,7 @@ import axios from 'axios';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
 
 
-const Perfil = ({ userId, userType }) => {
+export const Perfil = ({ userId, userType }) => {
     const [userData, setUserData] = useState(null);
     const [isEditing, setIsEditing] = useState({});
     const [errors, setErrors] = useState({}); // Cambiado de error a errors
