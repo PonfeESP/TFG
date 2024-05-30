@@ -41,15 +41,6 @@ export const Usuario = () => {
             .catch(err => console.log(err));
     }, []);
 
-    /*useEffect(() => {
-        if (userType === 'Desempleado') {
-            setActiveComponent('desempleado');
-        } else if (userType === 'Empresa') {
-            setActiveComponent('usuarios');
-        }
-    }, [userType]);*/
-
-
     const handleMostrarDesempleado = () => setActiveComponent('desempleado');
     const handleMostrarEmpresa = () => setActiveComponent('empresa');
     const handleMostrarEvento = () => setActiveComponent('evento');

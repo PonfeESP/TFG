@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { Home } from '../pages/Home/Home.page';
 import { Usuario } from '../pages/Usuario/Usuario.Page'; // Asegúrate de que la ruta de importación sea correcta
 import { Oferta } from '../pages/Ofertas/Oferta.page';
+import { Evento } from '../pages/Eventos/Evento.Page';
 import { Admin } from '../pages/Admin/Admin.page';
 import { Desempleado } from '../pages/Desempleado/Desempleado.page';
 import { Empresa } from '../pages/Empresa/Empresa.page';
@@ -81,6 +82,7 @@ const App = () => {
                     </Route>
                     <Route path="/usuario" element={<Usuario />} />
                     <Route path="/oferta/:idOferta" element={<Oferta />} />
+                    <Route path="/evento/:idEvento" element={<Evento />} />
                 </Routes>
             </Router>
         </ThemeProvider>

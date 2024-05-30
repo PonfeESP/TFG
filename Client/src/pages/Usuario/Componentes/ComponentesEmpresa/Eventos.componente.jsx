@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
-import { Grid, FormControl, InputLabel, Select, Paper, Box, Typography, MenuItem, Button } from '@mui/material';
+import { Grid, FormControl, InputLabel, Select, Paper, Box, Card, CardContent, Typography, Chip, MenuItem, Button, Modal } from '@mui/material';
 import EventCard from '../../../../components/EventCard.component';
 import SearchComponent from '../../../../components/Search.component';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import RegistroEvento from './NuevoEvento.componente';
 
 const SubComponenteEventosEmpresa = ({ userId, userType }) => {
     const [eventosOriginales, setEventosOriginales] = useState([]);
@@ -14,6 +15,15 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
     const pageSize = 25;
     const [order, setOrder] = useState('newer');
     const [searchTerm, setSearchTerm] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
 
     const handleChange = (event) => {
         const orderValue = event.target.value;
@@ -82,6 +92,9 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                     Eventos
                 </Typography>
             </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Button variant="contained" onClick={handleOpenModal}>Registrar Nuevo Evento</Button>
+                </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
                 <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
                 <FormControl sx={{ minWidth: 200, maxWidth: 200 }}>
@@ -99,10 +112,10 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                 </FormControl>
             </Box>
             <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
-                
-                {currentEventos.map((evento, index) =>(
+
+                {currentEventos.map((evento, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
-                        <EventCard event={evento} userId={userId} userType={userType}/>
+                        <EventCard event={evento} userId={userId} userType={userType} />
                     </Grid>
                 ))}
             </Grid>
@@ -115,6 +128,14 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                     <ArrowForwardIcon />
                 </Button>
             </Box>
+            <Modal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <RegistroEvento userId={userId} handleCloseModal={handleCloseModal} />
+            </Modal>
         </>
     );
 };

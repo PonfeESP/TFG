@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header2.component';
 import Logo from '../../Imagenes/LogoTransparente.png';
-import Fond from '../../Imagenes/fond.jpg';
 import { axiosConfig } from '../../constant/axiosConfig.constant';
 
 const headerStyle = {
@@ -17,28 +16,17 @@ const headerStyle = {
 
 const paperStyle = {
   padding: '20px',
-  minHeight: '500px', // Altura mínima de cada sección
-  height: '100%', // El papel ocupa toda la altura de su contenedor
-  backgroundColor: '#333', // Fondo negro
-  color: 'white', // Texto blanco
-};
-
-const paperStyle2 = {
-  padding: '20px',
-  minHeight: '500px', // Altura mínima de cada sección
-  height: '100%', // El papel ocupa toda la altura de su contenedor
-};
-
-const paperStyle3 = {
-  padding: '20px',
-  minHeight: '500px', // Altura mínima de cada sección
-  height: '100%', // El papel ocupa toda la altura de su contenedor
+  minHeight: '500px',
+  height: '100%',
+  backgroundColor: '#333',
+  color: 'white',
 };
 
 const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center', // Centrar horizontalmente
+  alignItems: 'center',
+  marginTop: '100px',
 };
 
 export const Home = () => {
@@ -61,19 +49,13 @@ export const Home = () => {
   }, []);
 
   const lines = [
-    '<span style="color: purple;">if</span>( !<span style="color: green;">user </span> ) <span style="color: blue;">{</span>',
+    '<span style="color: purple;">if</span>( !<span style="color: green;">user.isRegistered </span> ) <span style="color: blue;">{</span>',
     '  <span style="color: yellow;">console.log </span>("Bienvenido a ITJobFinder");',
-    '  <span style="color: yellow;">console.log </span>("ITJobFinder es una aplicacion web de busqueda de empleo desarrollada por y para ingenieros informaticos");',
-    '  <span style="color: yellow;">console.log </span>("Contamos con la colaboracion de multiples empresas");',
-  '<span style="color: blue;">}</span>'
+    '  <span style="color: yellow;">console.log </span>("ITJobFinder es una aplicación web de búsqueda de empleo desarrollada por y para ingenieros informáticos.");',
+    '  <span style="color: yellow;">console.log </span>("Contamos con la colaboración de múltiples empresas que ofrecen oportunidades laborales en el sector tecnológico.");',
+    '  <span style="color: yellow;">console.log </span>("Regístrate para descubrir oportunidades laborales y conectar con empresas innovadoras.");',
+    '<span style="color: blue;">}</span>'
   ];
-  
-  <Typography>
-    {lines.map((line, index) => (
-      <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
-    ))}
-  </Typography>
-  
 
   return (
     <>
@@ -83,16 +65,11 @@ export const Home = () => {
       </div>
       <div>
         <Paper style={paperStyle}>
-        <Typography>
-  {lines.map((line, index) => (
-    <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
-  ))}
-</Typography>        </Paper>
-        <Paper style={paperStyle2}>
-          {/* Contenido de la segunda sección */}
-        </Paper>
-        <Paper style={paperStyle3}>
-          {/* Contenido de la tercera sección */}
+          <Typography component="div">
+            {lines.map((line, index) => (
+              <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
+            ))}
+          </Typography>
         </Paper>
       </div>
     </>

@@ -36,12 +36,18 @@ export default function EventCard({ event, userId, userType }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [isInterested, setIsInterested] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [aforoActual, setAforoActual] = useState();
 
   const avatarColor = getRandomColor();
 
   useEffect(() => {
     setIsInterested(event.Interesados?.includes(userId) || false);
   }, [event.Interesados, userId]);
+
+  useEffect(() => {
+    setAforoActual(event.Aforo - event.Interesados.length);
+    console.log("aforo", event.Aforo - event.Interesados.length)
+  }, [event.Aforo, event.Interesados]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -181,7 +187,7 @@ export default function EventCard({ event, userId, userType }) {
             </IconButton>
           }
           title={event.Nombre}
-          subheader={`Fecha: ${dayjs(event.Fecha).format("DD/MM/YYYY")}, Aforo: ${event.Aforo}, Localización: ${event.Localizacion}, Publicada el ${dayjs(event.Fecha_Creacion).format("DD/MM/YYYY")} por ${event.Empresa.Nombre}`}
+          subheader={`Fecha: ${dayjs(event.Fecha).format("DD/MM/YYYY")}, Aforo: ${aforoActual}, Localización: ${event.Localizacion}, Publicada el ${dayjs(event.Fecha_Creacion).format("DD/MM/YYYY")} por ${event.Empresa.Nombre}`}
         />
         <Menu
           id="menu"
@@ -208,7 +214,7 @@ export default function EventCard({ event, userId, userType }) {
               No me interesa
             </Button>
           ) : (
-            <Button variant="contained" onClick={handleInterest}>
+            <Button variant="contained" onClick={handleInterest} disabled={aforoActual === 0}>
               <FavoriteIcon sx={{ mr: 1 }} />
               Me interesa
             </Button>
