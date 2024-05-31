@@ -383,7 +383,7 @@ const Oferta = ({ ofertaId }) => {
                 <Grid item xs={12}>
                     <Box display="flex" alignItems="center" justifyContent="center">
                         <Typography variant="h6">Disponible</Typography>
-                        <Checkbox
+                        <Switch
                             checked={ofertaData.Disponible}
                             onChange={(e) => handleChange(e, 'Disponible')}
                             disabled={!isEditing.Disponible}

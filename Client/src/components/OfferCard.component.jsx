@@ -169,7 +169,7 @@ export default function OfferCard({ props, userId, userType }) {
           <CardContent>
             <Stack direction="row" spacing={1}>
               {oferta.Tags.map((tag, index) => (
-                <Chip key={`${tag.Lenguaje}-${oferta._id}-${index}`} label={tag.Lenguaje} color="primary" variant="outlined" sx={{ margin: 7 }} />
+                <Chip key={`${tag.Lenguaje}-${oferta._id}-${index}`} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} color="primary" variant="outlined" sx={{ margin: 7 }} />
               ))}
             </Stack>
           </CardContent>
@@ -240,7 +240,7 @@ export default function OfferCard({ props, userId, userType }) {
           <CardContent>
             <Stack direction="row" spacing={1}>
               {oferta.Tags.map(tag => (
-                <Chip key={tag.Lenguaje} label={tag.Lenguaje} color="primary" variant="outlined" sx={{ margin: 7 }} />
+                <Chip key={tag.Lenguaje} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} color="primary" variant="outlined" sx={{ margin: 7 }} />
               ))}
             </Stack>
           </CardContent>

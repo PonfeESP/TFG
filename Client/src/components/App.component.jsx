@@ -9,12 +9,13 @@ import { useNavigate } from 'react-router-dom';
 
 
 import { Home } from '../pages/Home/Home.page';
-import { Usuario } from '../pages/Usuario/Usuario.Page'; // Asegúrate de que la ruta de importación sea correcta
+import { Usuario } from '../pages/Usuario/Usuario.Page';
 import { Oferta } from '../pages/Ofertas/Oferta.page';
+import { Empresa } from '../pages/Usuario/Componentes/ComponentesDesempleado/SubComponenteEmpresa/Empresa.componente';
+import { User } from '../pages/Usuario/Componentes/ComponentesEmpresa/SubComponenteUsuario/Usuario.componente';
 import { Evento } from '../pages/Eventos/Evento.Page';
 import { Admin } from '../pages/Admin/Admin.page';
 import { Desempleado } from '../pages/Desempleado/Desempleado.page';
-import { Empresa } from '../pages/Empresa/Empresa.page';
 import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
 import { EventoUnico } from '../pages/Evento/EventoUnico.page';
 import { PaginaDesempleadoOrdenada } from '../pages/Desempleado/Componentes/PaginaDesempleadoOrdenada';
@@ -81,6 +82,8 @@ const App = () => {
                         <Route path="modificacion" element={<PaginaEmpresaModificacion />} />
                     </Route>
                     <Route path="/usuario" element={<Usuario />} />
+                    <Route path="/empresa/:idEmpresa" element={<Empresa />} />
+                    <Route path="/usuario/:idUsuario" element={<User />} />
                     <Route path="/oferta/:idOferta" element={<Oferta />} />
                     <Route path="/evento/:idEvento" element={<Evento />} />
                 </Routes>

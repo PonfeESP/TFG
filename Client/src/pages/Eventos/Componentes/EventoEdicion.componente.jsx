@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Checkbox, Container, Stack, Slider, Autocomplete, Alert, TextField, Typography, IconButton, Box, Grid, Button, Chip, Paper, Drawer, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent, DialogActions
+    Checkbox, Container, Stack, Slider, Switch, Alert, TextField, Typography, IconButton, Box, Grid, Button, Chip, Paper, Drawer, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import { Edit as EditIcon, Save as SaveIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
@@ -11,20 +11,13 @@ const Evento = ({ eventoId }) => {
     const [eventoData, setEventoData] = useState(null);
     const [isEditing, setIsEditing] = useState({});
     const [errors, setErrors] = useState({});
-    const [tagsList, setTagsList] = useState([]);
-    const [newTag, setNewTag] = useState({ Lenguaje: '', Puntuacion: 1 });
-    const [isTagsDrawerOpen, setIsTagsDrawerOpen] = useState(false);
-    const [editTagDialogOpen, setEditTagDialogOpen] = useState(false);
-    const [editedTag, setEditedTag] = useState(null);
     const [confirmChangesDialogOpen, setConfirmChangesDialogOpen] = useState(false);
-    const [isAddingTagFormOpen, setIsAddingTagFormOpen] = useState(false);
     const [openErrorDialog, setOpenErrorDialog] = useState(false);
-    const [tagAlreadyExistsError, setTagAlreadyExistsError] = useState(false);
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/evento_empresa/${eventoId}`,
+            url: `http://localhost:8000/eventoUnicoEmpresa/${eventoId}`,
             method: 'GET'
         })
             .then(res => {
@@ -35,21 +28,6 @@ const Evento = ({ eventoId }) => {
                 setErrors('Error al cargar los datos de la evento');
             });
     }, [eventoId]);
-
-    useEffect(() => {
-        axios({
-            ...axiosConfig,
-            url: `http://localhost:8000/tags`,
-            method: 'GET'
-        })
-            .then(res => {
-                setTagsList(res.data);
-            })
-            .catch(err => {
-                console.error("Error fetching tags:", err);
-                setErrors('Error al cargar los tags');
-            });
-    }, []);
 
     const handleEditClick = (field) => {
         setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));
@@ -97,100 +75,9 @@ const Evento = ({ eventoId }) => {
         }));
     };
 
-    const toggleTagsDrawer = () => {
-        setIsTagsDrawerOpen(!isTagsDrawerOpen);
-    };
-
-
-    const toggleAddingTagForm = () => {
-        setIsAddingTagFormOpen(!isAddingTagFormOpen);
-    };
-
-    const handleEditTag = (tag) => {
-        setEditedTag(tag);
-        setEditTagDialogOpen(true);
-    };
-
-    const handleCloseEditTagDialog = () => {
-        setEditTagDialogOpen(false);
-    };
-
-    const handleSaveEditTag = () => {
-        if (editedTag.Puntuacion < 1 || editedTag.Puntuacion > 5) {
-            alert('La puntuación debe estar entre 1 y 5');
-            return;
-        }
-        setEventoData((prev) => ({
-            ...prev,
-            Tags: prev.Tags.map(tag => tag.Lenguaje === editedTag.Lenguaje ? editedTag : tag)
-        }));
-        setEditTagDialogOpen(false);
-    };
-
-    const handleDeleteTag = (tag) => {
-        setEventoData((prev) => ({
-            ...prev,
-            Tags: prev.Tags.filter(t => t.Lenguaje !== tag.Lenguaje)
-        }));
-    };
-
-    const handleTagChange = (e, value) => {
-        if (!value) return;
-        const tagExists = eventoData.Tags.some(tag => tag.Lenguaje === value.Lenguaje);
-        if (tagExists) {
-            setErrors('Este tag ya está registrado para el usuario');
-        } else {
-            setNewTag(value);
-        }
-    };
-
-    const handleAddNewTag = () => {
-        if (!newTag.Lenguaje || newTag.Puntuacion < 1 || newTag.Puntuacion > 5) {
-            setErrors('Por favor, complete todos los campos adecuadamente');
-            setOpenErrorDialog(true);
-            return;
-        }
-        const tagExists = eventoData.Tags.some(tag => tag.Lenguaje === newTag.Lenguaje);
-        if (tagExists) {
-            setTagAlreadyExistsError(true); // Setear el estado de error
-            return;
-        }
-        setEventoData(prevEventoData => ({
-            ...prevEventoData,
-            Tags: [
-                ...prevEventoData.Tags,
-                newTag
-            ]
-        }));
-
-        setIsAddingTagFormOpen(false);
-
-        setNewTag({ Lenguaje: '', Puntuacion: '' });
-    };
-
     const handleCloseErrorDialog = () => {
         setOpenErrorDialog(false);
     };
-
-    const handleConfirmChangesTags = () => {
-
-        console.log("opop", eventoData.Tags)
-
-        axios({
-            ...axiosConfig,
-            url: `http://localhost:8000/evento/${eventoId}`,
-            method: 'PUT',
-            data: { Tags: eventoData.Tags }
-        })
-            .then(res => {
-                console.log("Cambios guardados en los tags del usuario:", res.data);
-                setConfirmChangesDialogOpen(false);
-            })
-            .catch(err => {
-                console.error("Error al guardar cambios en los tags del usuario:", err);
-            });
-    };
-
 
     const handleConfirmChanges = () => {
         axios({
@@ -209,6 +96,7 @@ const Evento = ({ eventoId }) => {
     };
 
     if (!eventoData) return <div>Loading...</div>;
+    console.log("Evento", eventoData)
 
     return (
         <Container>
@@ -263,216 +151,9 @@ const Evento = ({ eventoId }) => {
                         </IconButton>
                     </Box>
                 </Grid>
-                <Grid item xs={12}>
-                    <Box mb={2} textAlign="center">
-                        <Typography variant="h5" gutterBottom textAlign={'center'}>
-                            Tags de la Evento
-                        </Typography>
-                        <div style={{ alignSelf: 'center' }}>
-                            <Stack direction="row" spacing={1} justifyContent="center">
-                                {eventoData.Tags.map(tag => (
-                                    <Chip key={tag.Lenguaje} label={`${tag.Lenguaje} (${tag.Puntuacion})`} color="primary" variant="outlined" sx={{ margin: 7 }} />
-                                ))}
-                            </Stack>
-                        </div>
-                        <IconButton size="large" onClick={toggleTagsDrawer}>
-                            <EditIcon fontSize="large" />
-                        </IconButton>
-                    </Box>
-                    <Drawer anchor="right" open={isTagsDrawerOpen} onClose={toggleTagsDrawer}>
-                        <Box p={2} width={400}>
-                            <Typography variant="h6" gutterBottom textAlign={'center'}>
-                                Lista de Tags
-                            </Typography>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                startIcon={<AddIcon />}
-                                onClick={toggleAddingTagForm}
-                                style={{ marginBottom: '10px' }}
-                            >
-                                Nuevo Tag
-                            </Button>
-                            <List>
-                                {eventoData.Tags.map((tag, index) => (
-                                    <ListItem key={index}>
-                                        <ListItemText primary={`${tag.Lenguaje}: ${tag.Puntuacion}`} />
-                                        <ListItemSecondaryAction>
-                                            <IconButton edge="end" onClick={() => handleEditTag(tag)}>
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton edge="end" onClick={() => handleDeleteTag(tag)}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                ))}
-                            </List>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => setConfirmChangesDialogOpen(true)}
-                            >
-                                Confirmar Cambios
-                            </Button>
-                        </Box>
-                    </Drawer>
-                    <Dialog open={isAddingTagFormOpen} onClose={toggleAddingTagForm}>
-                        <Box p={2} width={400}>
-                            <Typography variant="h6" gutterBottom marginBottom={'15px'} textAlign={'center'}>
-                                Nuevo Tag
-                            </Typography>
-                            <Box mb={2}>
-                                <Autocomplete
-                                    options={tagsList.map(tag => ({ label: tag.Nombre }))}
-                                    getOptionLabel={(option) => option.label}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Lenguaje"
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                    )}
-                                    onChange={(event, newValue) => {
-                                        if (!newValue) {
-                                            setNewTag(prevTag => ({ ...prevTag, Lenguaje: '' }));
-                                        } else {
-                                            setNewTag(prevTag => ({ ...prevTag, Lenguaje: newValue.label }));
-                                        }
-                                    }}
-                                />
-                            </Box>
-                            <Box mb={2}>
-                                <Slider
-                                    value={newTag.Puntuacion}
-                                    onChange={(event, newValue) => {
-                                        setNewTag(prevTag => ({ ...prevTag, Puntuacion: newValue }));
-                                    }}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    step={1}
-                                    marks
-                                    min={1}
-                                    max={5}
-                                />
-                            </Box>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleAddNewTag}
-                                style={{ marginTop: '10px' }}
-                            >
-                                Añadir Tag
-                            </Button>
 
-                            <Dialog open={tagAlreadyExistsError} onClose={() => setTagAlreadyExistsError(false)}>
-                                <DialogTitle>Error</DialogTitle>
-                                <DialogContent>
-                                    <Alert severity="error">{'Este tag ya está registrado para el usuario'}</Alert>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={() => setTagAlreadyExistsError(false)} color="primary" autoFocus>
-                                        OK
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
-                        </Box>
-                    </Dialog>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box display="flex" alignItems="center" justifyContent="center">
-                        <Typography variant="h6">Disponible</Typography>
-                        <Checkbox
-                            checked={eventoData.Disponible}
-                            onChange={(e) => handleChange(e, 'Disponible')}
-                            disabled={!isEditing.Disponible}
-                        />
-                        <IconButton onClick={() => handleEditClick('Disponible')}>
-                            {isEditing.Disponible ? <SaveIcon /> : <EditIcon />}
-                        </IconButton>
-                    </Box>
-                </Grid>
-                <Grid item xs={12} textAlign="center">
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setConfirmChangesDialogOpen(true)}
-                    >
-                        Confirmar cambios
-                    </Button>
-                </Grid>
             </Grid>
-            <Dialog open={confirmChangesDialogOpen} onClose={() => setConfirmChangesDialogOpen(false)}>
-                <DialogTitle>Confirmar cambios</DialogTitle>
-                <DialogContent>
-                    <Typography>¿Está seguro de que desea guardar los cambios?</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setConfirmChangesDialogOpen(false)} color="secondary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={handleConfirmChanges} color="primary">
-                        Confirmar
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={openErrorDialog} onClose={handleCloseErrorDialog}>
-                <DialogTitle>Error</DialogTitle>
-                <DialogContent>
-                    <Alert severity="error">{errors}</Alert>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseErrorDialog} color="primary">
-                        Cerrar
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={editTagDialogOpen} onClose={handleCloseEditTagDialog}>
-                <DialogTitle>Editar Tag</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Lenguaje"
-                        value={editedTag ? editedTag.Lenguaje : ''}
-                        disabled
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Puntuación"
-                        type="number"
-                        value={editedTag ? editedTag.Puntuacion : ''}
-                        onChange={(e) => setEditedTag({ ...editedTag, Puntuacion: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                        inputProps={{ min: 1, max: 5 }}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseEditTagDialog} color="primary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={handleSaveEditTag} color="primary">
-                        Guardar
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={confirmChangesDialogOpen} onClose={() => setConfirmChangesDialogOpen(false)}>
-                <DialogTitle>Confirmar Cambios</DialogTitle>
-                <DialogContent>
-                    <Typography variant="body1">
-                        ¿Estás seguro de que quieres guardar los cambios?
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setConfirmChangesDialogOpen(false)} color="primary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={handleConfirmChangesTags} color="primary">
-                        Guardar
-                    </Button>
-                </DialogActions>
-            </Dialog>
+
         </Container>
     );
 };

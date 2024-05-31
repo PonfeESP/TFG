@@ -6,7 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Menu, MenuItem, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography } from '@mui/material';
+import { Menu, MenuItem, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography, Stack, Chip } from '@mui/material';
 import dayjs from 'dayjs';
 import { blueGrey } from '@mui/material/colors';
 
@@ -80,8 +80,11 @@ export default function UsersCard({ user }) {
                 </MenuItem>
             </Menu>
             <CardContent>
-                <Typography paragraph>{user.Descripcion}</Typography>
-                <Typography paragraph>{user.Estudios}</Typography>
+                <Stack direction="row" spacing={1}>
+                    {user.Tags.map((tag, index) => (
+                        <Chip key={`${tag.Lenguaje}-${user._id}-${index}`} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} color="primary" variant="outlined" sx={{ margin: 7 }} />
+                    ))}
+                </Stack>
             </CardContent>
             <CardActions sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Button variant="text" onClick={handleShare}>

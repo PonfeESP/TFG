@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { ThemeProvider } from '@mui/material/styles';
 import { Button, TextField, Dialog, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box } from '@mui/material';
 import theme from '../../../../components/Theme.js';
 import Fondo from '../../../../Imagenes/HeaderDefinitivo2.jpg';
-import dayjs from 'dayjs';
+
 
 const RegistroEvento = ({ userId, handleCloseModal }) => {
     const [open, setOpen] = useState(true);
@@ -14,12 +13,15 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
     const [descripcion, setDescripcion] = useState("");
     const [localizacion, setLocalizacion] = useState("");
     const [fecha, setFecha] = useState("");
+    const [hora, setHora] = useState("");
+    const [fechaHoraFormato, setFechaHoraFormato] = useState('');
     const [aforo, setAforo] = useState("");
     const [error, setError] = useState('');
     const [nombreError, setNombreError] = useState(false);
     const [localizacionError, setLocalizacionError] = useState(false);
     const [aforoError, setAforoError] = useState(false);
     const [fechaError, setFechaError] = useState(false);
+    const [errorHora, setErrorHora] = useState('');
     const [descripcionError, setDescripcionError] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -37,6 +39,24 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    useEffect(() => {
+        if (fecha && hora && !errorHora) {
+            const fechaHora = new Date(`${fecha}T${hora}:00.000Z`);
+            setFechaHoraFormato(fechaHora.toISOString());
+        }
+    }, [fecha, hora, errorHora]);
+
+    const handleChangeHora = (e) => {
+        const inputHora = e.target.value;
+        const regexHora = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!regexHora.test(inputHora)) {
+            setErrorHora('Formato de hora inválido');
+        } else {
+            setErrorHora('');
+        }
+        setHora(inputHora);
     };
 
 
@@ -59,7 +79,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
             Nombre: nombre,
             Descripcion: descripcion,
             Localizacion: localizacion,
-            Fecha: fecha,
+            Fecha: fechaHoraFormato,
             Aforo: aforo,
             Empresa: userId
         };
@@ -79,13 +99,6 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                 setDescripcion("");
                 handleModalClose();
                 handleCloseModal();
-                setNuevaEventoData({
-                    Nombre: '',
-                    Descripcion: '',
-                    Disponible: true,
-                    Empresa: userId,
-                    Interesados: []
-                });
             })
             .catch(err => {
                 console.error('Error al registrar la evento:', err);
@@ -172,13 +185,28 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             error={aforoError}
                             helperText={aforoError && 'Por favor, ingrese el aforo.'}
                         />
-                        
-
-
+                        <TextField
+                            name="Fecha"
+                            type="date"
+                            value={fecha}
+                            onChange={(e) => setFecha(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            name="Hora"
+                            type="text"
+                            value={hora}
+                            onChange={handleChangeHora}
+                            fullWidth
+                            margin="normal"
+                            error={!!errorHora}
+                            helperText={errorHora}
+                        />
                         <TextField
                             required
                             value={localizacion}
-                            onChange={(e) => setLocalizacion(e.target.value)} // Actualiza el estado 'descripcion'
+                            onChange={(e) => setLocalizacion(e.target.value)}
                             margin="dense"
                             id="localizacion"
                             label="Localizacion"

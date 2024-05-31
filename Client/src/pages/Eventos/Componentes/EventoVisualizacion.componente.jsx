@@ -38,6 +38,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                     setEventoData(res.data);
                 } else if (userType === 'Empresa') {
                     setEventoData2(res.data);
+                    console.log("PPPP", eventoData2)
                 }
             })
             .catch(err => {
@@ -48,6 +49,16 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
     const handleShare = () => {
         const eventoid = eventoData._id;
+        const shareUrl = `${window.location.origin}/evento/${eventoid}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('Enlace copiado al portapapeles');
+        }).catch(err => {
+            console.error('Error al copiar el enlace: ', err);
+        });
+    };
+
+    const handleShare2 = () => {
+        const eventoid = eventoData2._id;
         const shareUrl = `${window.location.origin}/evento/${eventoid}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             alert('Enlace copiado al portapapeles');
@@ -329,7 +340,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                             <div style={{ position: 'relative', textAlign: 'right' }}>
                                 <Button
                                     variant="contained"
-                                    onClick={handleShare}
+                                    onClick={handleShare2}
                                     style={{ position: 'absolute', top: 0, right: 0 }}
                                 >
                                     <ShareIcon sx={{ mr: 1 }} />
@@ -349,23 +360,38 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                         </Typography>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
-                                        <Typography variant="h5" gutterBottom align="center">
-                                            Tags
-                                        </Typography>
-                                        <Box display="flex" justifyContent="center" flexWrap="wrap">
-                                            {eventoData2.Tags.map(tag => (
-                                                <Chip
-                                                    key={tag.Lenguaje}
-                                                    label={`${tag.Lenguaje} (${tag.Puntuacion})`}
-                                                    color="primary"
-                                                    variant="outlined"
-                                                    style={{ margin: '5px' }}
-                                                />
-                                            ))}
+
+                                <Grid container spacing={2} marginTop={'3px'}>
+                                    <Grid item xs={6}>
+                                        <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                            <Typography variant="h5" gutterBottom align="center">
+                                                Aforo
+                                            </Typography>
+                                            <Typography variant="body1" align="center">
+                                                {eventoData2.Aforo}
+                                            </Typography>
                                         </Box>
-                                    </Box>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                            <Typography variant="h5" gutterBottom align="center">
+                                                Plazas restantes
+                                            </Typography>
+                                            <Typography variant="body1" align="center">
+                                                {eventoData2.Aforo - eventoData2.Interesados.length}
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                            <Typography variant="h5" gutterBottom align="center">
+                                                Localización
+                                            </Typography>
+                                            <Typography variant="body1" align="center">
+                                                {eventoData2.Localizacion}
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </CardContent>
