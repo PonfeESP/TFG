@@ -53,15 +53,19 @@ export default function UsersCard({ user }) {
         <Card sx={{ maxWidth: 750 }}>
             <CardHeader
                 avatar={
-                    <Avatar aria-label="user" sx={{ bgcolor: red[500] }}>
-                        {user.Nombre.charAt(0)}
-                    </Avatar>
-                }
-                action={
+                    user.FotoPerfil ? (
+                      <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${user.FotoPerfil}` } />
+                    ) : (
+                      <Avatar aria-label="business" >
+                        {`${user.Nombre.charAt(0).toUpperCase()}`}
+                      </Avatar>
+                    )
+                  }
+                  action={
                     <IconButton aria-label="settings" onClick={handleClick}>
-                        <MoreVertIcon />
+                      <MoreVertIcon />
                     </IconButton>
-                }
+                  }
                 title={user.Nombre}
                 subheader={`Edad: ${user.Edad}, Experiencia Laboral: ${user.Experiencia_Laboral}`}
             />

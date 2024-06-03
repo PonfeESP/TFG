@@ -100,15 +100,13 @@ const SubComponenteOfertas = ({ userId, userType }) => {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', paddingTop: 4, width: '100%', justifyContent: 'space-between' }}>
                 <Typography variant="h4" gutterBottom>
                     Ofertas
                 </Typography>
+                <Button variant="contained" onClick={handleOpenModal} sx={{ height: 45 }}>Nueva Oferta</Button>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Button variant="contained" onClick={handleOpenModal}>Registrar Nueva Oferta</Button>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
+            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, width: '100%', justifyContent: 'space-between' }}>
                 <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
                 <FormControl sx={{ minWidth: 200, maxWidth: 200 }}>
                     <InputLabel id="demo-simple-select-label">Ordenar por</InputLabel>
@@ -124,7 +122,7 @@ const SubComponenteOfertas = ({ userId, userType }) => {
                     </Select>
                 </FormControl>
             </Box>
-            <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
+            <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="flex-start">
                 {currentOfertas.map((oferta, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
                         <OfferCard props={oferta} userId={userId} userType={userType} />

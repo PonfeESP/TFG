@@ -113,10 +113,22 @@ export default function OfferCard({ props, userId, userType }) {
     setAnchorEl(null);
   };
 
+  const getColor = () => {
+    if (affinityPercentage >= 70) {
+      return '#4caf50';
+    } else if (affinityPercentage >= 50) {
+      return '#ff9800';
+    } else {
+      return '#f44336';
+    }
+  };
+
   const oferta = props;
   let affinityPercentage = Number(oferta.PorcentajeConcordancia);
 
   if (isNaN(affinityPercentage)) affinityPercentage = 0;
+
+  console.log(props, "AA")
 
   return (
     <>
@@ -125,7 +137,12 @@ export default function OfferCard({ props, userId, userType }) {
           <CardHeader
             avatar={
               <Paper elevation={10} sx={{ position: 'relative', display: 'inline-flex', borderRadius: 50, backgroundColor: color }}>
-                <CircularProgress size="3rem" color="success" thickness={5} variant="determinate" value={affinityPercentage} />
+                <CircularProgress size="3rem" color="success" thickness={5} variant="determinate" value={affinityPercentage} sx={{
+                  color: getColor(),
+                  '& .MuiCircularProgress-circle': {
+                    stroke: getColor(),
+                  },
+                }} />
                 <Box
                   sx={{
                     top: 0,
@@ -211,9 +228,13 @@ export default function OfferCard({ props, userId, userType }) {
         <Card sx={{ maxWidth: 750 }}>
           <CardHeader
             avatar={
-              <Avatar aria-label="oferta" sx={{ bgcolor: red[500] }}>
-                {props.Nombre.charAt(0)}
-              </Avatar>
+              props.Empresa.FotoPerfil ? (
+                <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${props.Empresa.FotoPerfil}` } />
+              ) : (
+                <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
+                  {`${props.Nombre.charAt(0).toUpperCase()}`}
+                </Avatar>
+              )
             }
             action={
               <IconButton aria-label="settings" onClick={handleClick}>

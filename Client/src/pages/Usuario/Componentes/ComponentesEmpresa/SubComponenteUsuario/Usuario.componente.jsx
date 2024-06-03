@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Card, CardContent, CardMedia, Typography, Grid, Box, List } from '@mui/material';
+import { Container, TextField, Chip, Button, Card, CardContent, CardMedia, Typography, Grid, Box, List } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Header from '../../../../../components/Header2.component';
 import { useNavigate } from 'react-router-dom';
@@ -58,8 +58,6 @@ export const User = () => {
             <Box
                 display="flex"
                 justifyContent="center"
-                alignItems="center"
-                height="80vh"
                 padding={2}
             >
                 <Card style={{ maxWidth: 800, width: '100%', backgroundColor: '#f5f5f5' }}>
@@ -124,6 +122,64 @@ export const User = () => {
                                     <Typography variant="body1" align="center">
                                         {userData.Email}
                                     </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Edad
+                                    </Typography>
+                                    <Typography variant="body1" align="center">
+                                        {userData.Edad} años
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Experiencia Laboral
+                                    </Typography>
+                                    <Typography variant="body1" align="center">
+                                        {userData.Experiencia_Laboral} años
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Box border={1} borderColor="grey.300" borderRadius={4} p={2}>
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Tags
+                                    </Typography>
+                                    {userData.Tags.map((tag, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={`${tag.Lenguaje}: ${tag.Puntuacion}`}
+                                            variant="outlined"
+                                            style={{ margin: '5px' }}
+                                        />
+                                    ))}
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Box border={1} borderColor="grey.300" borderRadius={4} p={2}>
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Curriculum
+                                    </Typography>
+                                    {userData.CurriculumPDF ? (
+                                        <div style={{ marginTop: '40px', marginBottom: '20px', minWidth: '500px' }}>
+                                            <iframe
+                                                src={`http://localhost:8000/pdfs/${userData.CurriculumPDF}`}
+                                                width="100%"
+                                                height="500px"
+                                                title="Curriculum PDF"
+                                                onClick={() => window.open(`http://localhost:8000/pdfs/${userData.CurriculumPDF}`, '_blank')}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <Typography variant="body1" align="center">
+                                            El usuario no tiene un currículum.
+                                        </Typography>
+                                    )}
                                 </Box>
                             </Grid>
                         </Grid>

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Typography, Box, Grid, Chip, Card, CardContent, CardMedia, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
+    Typography, Box, Grid, Chip, Avatar, Card, CardContent, CardMedia, SpeedDial, SpeedDialAction, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
 } from '@mui/material';
+import { Link } from 'react-router-dom';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import axios from 'axios';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
 import Fondo from '../../../Imagenes/HeaderDefinitivo2.jpg';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -18,6 +21,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
     const [showFloatingPanel, setShowFloatingPanel] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isInterested, setIsInterested] = useState(false);
+    const [datosUsuarios, setDatosUsuarios] = useState([]);
 
     useEffect(() => {
         const url =
@@ -44,6 +48,31 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
             });
     }, [userType, ofertaId]);
 
+    useEffect(() => {
+        if (userType === 'Empresa' && ofertaData2) {
+            async function fetchData() {
+                try {
+                    const promesasDatosUsuarios = ofertaData2.Interesados.map(async (idUsuario) => {
+                        const respuesta = await axios({
+                            ...axiosConfig,
+                            url: `http://localhost:8000/usuarios/${idUsuario}`,
+                            method: 'GET'
+                        });
+                        return respuesta.data;
+                    });
+
+                    const arregloDatosUsuarios = await Promise.all(promesasDatosUsuarios);
+                    setDatosUsuarios(arregloDatosUsuarios);
+                } catch (error) {
+                    console.error('Error al obtener los datos de usuario:', error);
+                    setErrors('Error al cargar los datos de la oferta');
+                }
+            }
+
+            fetchData();
+        }
+    }, [userType, ofertaData2]);
+
     const handleShare = () => {
         const ofertaid = ofertaData.oferta._id;
         const shareUrl = `${window.location.origin}/oferta/${ofertaid}`;
@@ -56,33 +85,35 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
 
     const handleInterest = () => {
         const idOferta = ofertaData.oferta._id;
-        axios({
-            ...axiosConfig,
-            url: 'http://localhost:8000/solicitud_oferta',
-            method: 'PUT',
-            data: {
-                userId: userId,
-                ofertaId: idOferta
-            }
-        })
-            .then(res => {
-                console.log('Solicitud enviada con éxito');
-                setIsRegistrado(true);
-                setIsInterested(true);
-            })
-            .catch(err => {
-                console.log(err);
-                if (err.response && err.response.status === 400) {
-                    setErrorMessage(err.response.data.error);
-                } else {
-                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+        if (isInterested) {
+            handleDisinterest();
+        } else {
+            axios({
+                ...axiosConfig,
+                url: 'http://localhost:8000/solicitud_oferta',
+                method: 'PUT',
+                data: {
+                    userId: userId,
+                    ofertaId: idOferta
                 }
-            });
+            })
+                .then(res => {
+                    console.log('Solicitud enviada con éxito');
+                    setIsInterested(true);
+                })
+                .catch(err => {
+                    console.log(err);
+                    if (err.response && err.response.status === 400) {
+                        setErrorMessage(err.response.data.error);
+                    } else {
+                        setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                    }
+                });
+        }
     };
 
     const handleDisinterest = () => {
-        const oferta = props;
-        const idOferta = oferta._id;
+        const idOferta = ofertaData.oferta._id;
         axios({
             ...axiosConfig,
             url: `http://localhost:8000/solicitud_oferta/${idOferta}`,
@@ -93,8 +124,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
         })
             .then(res => {
                 console.log('Usuario eliminado de la lista de interesados con éxito');
-                setIsRegistrado(false);
-                setIsInterested(false); // Actualizar el estado para reflejar el desinterés del usuario
+                setIsInterested(false);
             })
             .catch(err => {
                 console.error(err);
@@ -106,50 +136,17 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
             });
     };
 
+    console.log("WAKLS", datosUsuarios)
+
     if (!ofertaData && userType === 'Desempleado') return <div>Loading...</div>;
     if (!ofertaData2 && userType === 'Empresa') return <div>Loading...</div>;
 
     if (userType === 'Desempleado') {
         return (
             <Box>
-                {userType === 'Desempleado' && window.innerWidth > 700 && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: '50%',
-                            right: 0,
-                            transform: 'translateY(-50%)',
-                            backgroundColor: 'white',
-                            padding: '10px',
-                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-                            zIndex: 999
-                        }}
-                    >
-                        <Box display="flex" flexDirection="column" alignItems="center">
-                            <Button variant="contained" onClick={handleShare}>
-                                <ShareIcon sx={{ mr: 1 }} />
-                                Compartir
-                            </Button>
-                            {ofertaData.isInterested ? (
-                                <Button variant="contained" onClick={handleDisinterest}>
-                                    <FavoriteIcon sx={{ mr: 1 }} />
-                                    No me interesa
-                                </Button>
-                            ) : (
-                                <Button variant="contained" onClick={handleInterest}>
-                                    <FavoriteIcon sx={{ mr: 1 }} />
-                                    Me interesa
-                                </Button>
-                            )}
-                        </Box>
-
-                    </Box>
-                )}
                 <Box
                     display="flex"
                     justifyContent="center"
-                    alignItems="center"
-                    height="80vh" // Ajusta la altura según sea necesario
                     padding={2}
                 >
                     <Card style={{ maxWidth: 800, width: '100%', backgroundColor: '#f5f5f5' }}>
@@ -166,7 +163,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                                     top: '50%',
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
-                                    width: '80%', // Ajusta esto según sea necesario
+                                    width: '80%',
                                     textAlign: 'center',
                                 }}
                             >
@@ -183,9 +180,38 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                             </Box>
                         </Box>
                         <CardContent>
+                            <div style={{ position: 'relative', textAlign: 'right' }}>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleShare}
+                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    <ShareIcon sx={{ mr: 1 }} />
+                                </Button>
+                                <Button
+                                    sx={{ marginRight: 9 }}
+                                    variant="contained"
+                                    onClick={ofertaData.isInterested ? handleDisinterest : handleInterest}
+                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    {isInterested ? <FavoriteIcon sx={{ mr: 1 }} /> : <FavoriteBorderIcon sx={{ mr: 1 }} />}
+                                </Button>
+                            </div>
                             <Typography variant="h4" gutterBottom align="center">
-                                Detalles de la Oferta
+                                Detalles
                             </Typography>
+                            <Grid container spacing={2} marginTop={'4px'}>
+                                <Grid item xs={12}>
+                                    <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto" textAlign="center">
+                                        <Typography variant="h5" gutterBottom align="center">
+                                            Empresa Organizadora
+                                        </Typography>
+                                        <Link to={`/empresa/${ofertaData.oferta.Empresa._id}`} underline="none" color="inherit">
+                                            {ofertaData.oferta.Empresa.Nombre}
+                                        </Link>
+                                    </Box>
+                                </Grid>
+                            </Grid>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
@@ -229,7 +255,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                                                         variant="determinate"
                                                         value={Math.min(ofertaData.porcentajeConcordancia, 100)}
                                                         color={
-                                                            ofertaData.porcentajeConcordancia >= 80 ? "success" :
+                                                            ofertaData.porcentajeConcordancia >= 70 ? "success" :
                                                                 ofertaData.porcentajeConcordancia >= 50 ? "warning" : "error"
                                                         }
                                                         size={120}
@@ -270,25 +296,6 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                         </CardContent>
                     </Card>
                 </Box>
-                {userType === 'Desempleado' && window.innerWidth < 700 && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: '50%',
-                            right: 0,
-                            transform: 'translateY(-50%)',
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            color: 'white',
-                            padding: '10px',
-                            borderRadius: '50%',
-                            cursor: 'pointer',
-                            zIndex: 999
-                        }}
-                        onClick={() => setShowFloatingPanel(!showFloatingPanel)}
-                    >
-                        <KeyboardArrowLeftIcon />
-                    </Box>
-                )}
             </Box>
         );
     } else if (userType === 'Empresa') {
@@ -297,8 +304,6 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                 <Box
                     display="flex"
                     justifyContent="center"
-                    alignItems="center"
-                    height="80vh" // Ajusta la altura según sea necesario
                     padding={2}
                 >
                     <Card style={{ maxWidth: 800, width: '100%', backgroundColor: '#f5f5f5' }}>
@@ -372,6 +377,39 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                                             ))}
                                         </Box>
                                     </Box>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Usuarios interesados
+                                    </Typography>
+                                    <Grid container spacing={2}>
+                                        {datosUsuarios.map((usuario, index) => (
+                                            <Grid item xs={12} sm={6} key={index}>
+                                                <Box display="flex" alignItems="center" border={1} borderColor="grey.300" borderRadius={4} p={2} mb={2}>
+                                                    {usuario.FotoPerfil ? (
+                                                        <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${usuario.FotoPerfil}`} />
+                                                    ) : (
+                                                        <Avatar aria-label="business">
+                                                            {`${usuario.Nombre.charAt(0).toUpperCase()}`}
+                                                        </Avatar>
+                                                    )}
+                                                    <Box ml={2}>
+                                                        <Typography variant="h6" gutterBottom>
+                                                            <Link to={`/usuario/${usuario._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                {usuario.Nombre}
+                                                            </Link>
+                                                        </Typography>
+                                                        <Typography variant="body2" mt={1}>
+                                                            Tags:
+                                                            {usuario.Tags.map((tag, index) => (
+                                                                <Chip key={index} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} style={{ marginLeft: '5px' }} />
+                                                            ))}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </CardContent>

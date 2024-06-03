@@ -46,6 +46,7 @@ export const theme = createTheme({
                         color: '#FFFFFF', // Cambia el color del texto de los campos de texto
                     },
                     '& .MuiOutlinedInput-input': {
+                        height: '68%',
                         backgroundColor: '#818181', // Cambia el color de fondo del campo de texto
                         '&:focus': {
                             backgroundColor: '#A6C0B4', // Cambia el color de fondo cuando el campo está enfocado
@@ -82,6 +83,19 @@ export const theme = createTheme({
                         borderColor: '#4caf50', // Cambia el borde a verde cuando está enfocado
                         borderWidth: '2px', // Cambia el ancho del borde a 2px
                     },
+                },
+            },
+        },MuiFormControl: {
+            styleOverrides: {
+                root: {
+                    height: '100%',
+                },
+            },
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    height: '100%',
                 },
             },
         },

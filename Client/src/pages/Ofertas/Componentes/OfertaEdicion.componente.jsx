@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Checkbox, Container, Stack, Slider, Autocomplete, Alert, TextField, Typography, IconButton, Box, Grid, Button, Chip, Paper, Drawer, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent, DialogActions
+    Checkbox, Container, Stack, Slider, Switch, Autocomplete, Alert, TextField, Typography, IconButton, Box, Grid, Button, Chip, Paper, Drawer, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import { Edit as EditIcon, Save as SaveIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
@@ -90,7 +90,7 @@ const Oferta = ({ ofertaId }) => {
     };
 
     const handleChange = (e, field) => {
-        const value = e.target.value;
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setOfertaData(prevOfertaData => ({
             ...prevOfertaData,
             [field]: value

@@ -9,6 +9,8 @@ import SubComponenteEventos from './Componentes/ComponentesDesempleado/Evento.co
 import SubComponenteUsuarios from './Componentes/ComponentesEmpresa/Usuarios.componente';
 import SubComponenteOfertas from './Componentes/ComponentesEmpresa/Ofertas.componente';
 import SubComponenteEventosEmpresa from './Componentes/ComponentesEmpresa/Eventos.componente';
+import ComponenteAdminEmpresas from './Componentes/ComponentesAdmin/Empresas.componente';
+import ComponenteAdminTags from './Componentes/ComponentesAdmin/Tags.componente';
 import Perfil from './Componentes/Perfil.componente';
 import Header from '../../components/Header2.component';
 import { Typography } from '@mui/material';
@@ -47,6 +49,8 @@ export const Usuario = () => {
     const handleMostrarUsuarios = () => setActiveComponent('usuarios');
     const handleMostrarOfertas = () => setActiveComponent('ofertas');
     const handleMostrarPerfil = () => setActiveComponent('perfil');
+    const handleMostrarEmpresas = () => setActiveComponent('inicio');
+    const handleMostrarTags = () => setActiveComponent('tags');
 
 
     if (!finishLoading) {
@@ -63,6 +67,8 @@ export const Usuario = () => {
                 onMostrarOfertas={handleMostrarOfertas}
                 onMostrarEventos={handleMostrarEvento}
                 onMostrarPerfil={handleMostrarPerfil}
+                onMostrarEmpresas={handleMostrarEmpresas}
+                onMostrarTags={handleMostrarTags}
             />
 
             {userType === 'Desempleado' && (
@@ -83,8 +89,11 @@ export const Usuario = () => {
                     {activeComponent === 'perfil' && <Perfil userId={userId} userType={userType} />}
                 </>
             )}
-            {userType === 'tipo3' && (
-                <Typography>Rusia</Typography>
+            {userType === 'Admin' && (
+                <>
+                {activeComponent === 'inicio' && <ComponenteAdminEmpresas userId={userId} userType={userType} />}
+                {activeComponent === 'tags' && <ComponenteAdminTags userId={userId} userType={userType} />}
+            </>
             )}
         </>
     );

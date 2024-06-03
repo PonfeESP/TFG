@@ -22,6 +22,7 @@ export const Evento = () => {
     const [activeComponent, setActiveComponent] = useState('visualizar');
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         axios({
@@ -45,11 +46,42 @@ export const Evento = () => {
     const handleMostrarEvento = () => setActiveComponent('visualizar');
     const handleEditarEvento = () => setActiveComponent('editar');
 
+    const deleteEvento = async (idEvento, userId) => {
+        try {
+            axios({
+                ...axiosConfig,
+                url: `http://localhost:8000/evento/${idEvento}`,
+                method: 'DELETE',
+                data: {
+                    userId: userId,
+                }
+            })
+            .then(res => {
+                console.log('Solicitud enviada con éxito');
+                navigate(-1);
+            })
+            .catch(err => {
+                console.log(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                }
+            });
+        } catch (error) {
+            console.error('Error al eliminar la oferta:', error.message);
+        }
+    };
+
     const handleToggleComponent = (action) => {
         if (action === 'editar') {
             setActiveComponent('editar');
         } else if (action === 'eliminar') {
-            // Agrega aquí la lógica para eliminar la Evento
+            const confirmed = window.confirm('¿Estás seguro de que quieres eliminar esta oferta?');
+            if (confirmed) {
+                deleteEvento(idEvento, userId);
+            }        } else if (action === 'visualizar') {
+            setActiveComponent('visualizar');
         }
     };
 
@@ -91,30 +123,30 @@ export const Evento = () => {
             )}
             {userType === 'Empresa' && (
                 <div>
-                    <div style={{ position: 'fixed', left: '3%', transform: 'translate(-50%, 50%)', zIndex: '1000' }}>
-                    <SpeedDial
-                        ariaLabel="SpeedDial basic example"
-                        icon={<EditIcon />}
-                    >
-                        <SpeedDialAction
-                            key="Editar"
+                    <div style={{ position: 'fixed', right: '3%', bottom: '3%', zIndex: '1000' }}>
+                        <SpeedDial
+                            ariaLabel="SpeedDial basic example"
                             icon={<EditIcon />}
-                            tooltipTitle="Editar"
-                            onClick={() => handleToggleComponent('editar')}
-                        />
-                        <SpeedDialAction
-                            key="Eliminar"
-                            icon={<DeleteIcon />}
-                            tooltipTitle="Eliminar"
-                            onClick={() => handleToggleComponent('eliminar')}
-                        />
-                        <SpeedDialAction
-                            key="Eliminar"
-                            icon={<RemoveRedEyeIcon />}
-                            tooltipTitle="Visualizar"
-                            onClick={() => handleToggleComponent('visualizar')}
-                        />
-                    </SpeedDial>
+                        >
+                            <SpeedDialAction
+                                key="Editar"
+                                icon={<EditIcon />}
+                                tooltipTitle="Editar"
+                                onClick={() => handleToggleComponent('editar')}
+                            />
+                            <SpeedDialAction
+                                key="Eliminar"
+                                icon={<DeleteIcon />}
+                                tooltipTitle="Eliminar"
+                                onClick={() => handleToggleComponent('eliminar', idEvento, userId)}
+                            />
+                            <SpeedDialAction
+                                key="Eliminar"
+                                icon={<RemoveRedEyeIcon />}
+                                tooltipTitle="Visualizar"
+                                onClick={() => handleToggleComponent('visualizar')}
+                            />
+                        </SpeedDial>
                     </div>
                     <div>
                         {activeComponent === 'visualizar' && <EventoVisualizacion eventoId={idEvento} userId={userId} userType={userType} />}

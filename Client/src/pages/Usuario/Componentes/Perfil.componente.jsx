@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Slider, Container, Autocomplete, Alert, TextField, Typography, IconButton, Box, Grid, Button, Chip, Paper, Drawer, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent, DialogActions
+    Slider, Container, Avatar, Autocomplete, Alert, TextField, Typography, IconButton, Box, Grid, Button, Chip, Paper, Drawer, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import { Edit as EditIcon, Description as DescriptionIcon, Save as SaveIcon, Upload as UploadIcon, Visibility as VisibilityIcon, Close as CloseIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { axiosConfig } from '../../../constant/axiosConfig.constant';
+import { Rating } from '@mui/lab';
 
 
 export const Perfil = ({ userId, userType }) => {
@@ -21,6 +22,9 @@ export const Perfil = ({ userId, userType }) => {
     const [confirmChangesDialogOpen, setConfirmChangesDialogOpen] = useState(false);
     const [isAddingTagFormOpen, setIsAddingTagFormOpen] = useState(false);
     const [openErrorDialog, setOpenErrorDialog] = useState(false);
+    const [profileImage, setProfileImage] = useState(null);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+
 
     useEffect(() => {
         axios({
@@ -118,6 +122,11 @@ export const Perfil = ({ userId, userType }) => {
         }));
     };
 
+    const toggleImageModal = () => {
+        setIsImageModalOpen(!isImageModalOpen);
+    };
+
+
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -153,7 +162,7 @@ export const Perfil = ({ userId, userType }) => {
                 setIsTagsDrawerOpen(false);
             })
             .catch(err => {
-                console.error("Error uploading PDF:", err);
+                console.error("Error al subir el PDF:", err);
                 setErrors('Error al subir el archivo PDF');
             });
     };
@@ -180,24 +189,46 @@ export const Perfil = ({ userId, userType }) => {
         setEditTagDialogOpen(false);
     };
 
-    const handleSaveEditTag = () => {
+    const saveTags = async (tags) => {
+        try {
+            await axios({
+                ...axiosConfig,
+                url: `http://localhost:8000/usuarios/${userId}`,
+                method: 'PUT',
+                data: { Tags: tags }
+            });
+            console.log("Cambios guardados en los tags del usuario");
+        } catch (err) {
+            console.error("Error al guardar cambios en los tags del usuario:", err);
+        }
+    };
+
+
+    const handleSaveEditTag = async () => {
         if (editedTag.Puntuacion < 1 || editedTag.Puntuacion > 5) {
             alert('La puntuación debe estar entre 1 y 5');
             return;
         }
-        setUserData((prev) => ({
-            ...prev,
-            Tags: prev.Tags.map(tag => tag.Lenguaje === editedTag.Lenguaje ? editedTag : tag)
+        const updatedTags = userData.Tags.map(tag => tag.Lenguaje === editedTag.Lenguaje ? editedTag : tag);
+        setUserData(prevUserData => ({
+            ...prevUserData,
+            Tags: updatedTags
         }));
         setEditTagDialogOpen(false);
+        await saveTags(updatedTags);
     };
 
-    const handleDeleteTag = (tag) => {
-        setUserData((prev) => ({
-            ...prev,
-            Tags: prev.Tags.filter(t => t.Lenguaje !== tag.Lenguaje)
+
+
+    const handleDeleteTag = async (tag) => {
+        const updatedTags = userData.Tags.filter(t => t.Lenguaje !== tag.Lenguaje);
+        setUserData(prevUserData => ({
+            ...prevUserData,
+            Tags: updatedTags
         }));
+        await saveTags(updatedTags);
     };
+
 
     const handleTagChange = (e, value) => {
         if (!value) return;
@@ -213,9 +244,8 @@ export const Perfil = ({ userId, userType }) => {
         window.open(`http://localhost:8000/pdfs/${userData.CurriculumPDF}`, '_blank');
     };
 
-    const handleAddNewTag = () => {
+    const handleAddNewTag = async () => {
         if (!newTag.Lenguaje || newTag.Puntuacion < 1 || newTag.Puntuacion > 5) {
-            console.log("FUFUF", newTag.Lenguaje, newTag.Puntuacion)
             setErrors('Por favor, complete todos los campos adecuadamente');
             setOpenErrorDialog(true);
             return;
@@ -225,18 +255,17 @@ export const Perfil = ({ userId, userType }) => {
             setErrors('Este tag ya está registrado para el usuario');
             return;
         }
+        const updatedTags = [...userData.Tags, newTag];
         setUserData(prevUserData => ({
             ...prevUserData,
-            Tags: [
-                ...prevUserData.Tags,
-                newTag
-            ]
+            Tags: updatedTags
         }));
-
         setIsAddingTagFormOpen(false);
-
         setNewTag({ Lenguaje: '', Puntuacion: '' });
+
+        await saveTags(updatedTags);
     };
+
 
     const handleCloseErrorDialog = () => {
         setOpenErrorDialog(false);
@@ -276,12 +305,51 @@ export const Perfil = ({ userId, userType }) => {
     };
 
 
+    const handleProfileImageChange = (e) => {
+        const imageFile = e.target.files[0];
+        setProfileImage(imageFile);
+    };
+
+    const handleUploadProfileImage = () => {
+        if (!profileImage) {
+            alert('Por favor, seleccione una imagen.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('profileImage', profileImage);
+
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/usuarios/${userId}/fotoPerfil`,
+            method: 'PUT',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+            .then(res => {
+                setUserData(prevUserData => ({
+                    ...prevUserData,
+                    fotoPerfil: res.data.fotoPerfil
+                }));
+                setProfileImage(null);
+                toggleImageModal();
+            })
+            .catch(err => {
+                console.error("Error", err);
+            });
+    };
+
+
     if (!userData) return <div>Loading...</div>;
+
+    console.log(userData.FotoPerfil)
 
     if (userType === 'Desempleado') {
         return (
             <Container>
-                <Typography variant="h4" gutterBottom textAlign={"center"} marginTop={'25px'} marginBottom={'20px'}>
+                <Typography variant="h4" gutterBottom textAlign={"center"} marginTop={'25px'} marginBottom={'20px'} >
                     Tu Perfil
                 </Typography>
                 <Grid container spacing={2}>
@@ -324,47 +392,44 @@ export const Perfil = ({ userId, userType }) => {
                             </IconButton>
                         </Box>
                         <Drawer anchor="right" open={isTagsDrawerOpen} onClose={toggleTagsDrawer}>
-                            <Box p={2} width={400}>
+                            <IconButton onClick={toggleTagsDrawer} style={{ position: 'absolute', top: 0, right: 0 }}>
+                                <CloseIcon />
+                            </IconButton>
+                            <Box p={2} width={400} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '30px' }}>
                                 <Typography variant="h6" gutterBottom>
                                     Lista de tus Tags
                                 </Typography>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<AddIcon />}
-                                    onClick={toggleAddingTagForm}
-                                    style={{ marginBottom: '10px' }}
-                                >
-                                    Nuevo Tag
-                                </Button>
-                                <List>
-                                    {userData.Tags.map((tag, index) => (
-                                        <ListItem key={index}>
-                                            <ListItemText primary={`${tag.Lenguaje}: ${tag.Puntuacion}`} />
-                                            <ListItemSecondaryAction>
-                                                <IconButton edge="end" onClick={() => handleEditTag(tag)}>
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton edge="end" onClick={() => handleDeleteTag(tag)}>
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    ))}
-                                </List>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => setConfirmChangesDialogOpen(true)}
-                                >
-                                    Confirmar Cambios
-                                </Button>
+                                <div style={{ marginLeft: 'auto' }}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<AddIcon />}
+                                        onClick={toggleAddingTagForm}
+                                    >
+                                        Nuevo Tag
+                                    </Button>
+                                </div>
                             </Box>
+                            <List>
+                                {userData.Tags.map((tag, index) => (
+                                    <ListItem key={index}>
+                                        <ListItemText primary={`${tag.Lenguaje}: ${tag.Puntuacion}`} />
+                                        <ListItemSecondaryAction>
+                                            <IconButton edge="end" onClick={() => handleEditTag(tag)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton edge="end" onClick={() => handleDeleteTag(tag)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                ))}
+                            </List>
                         </Drawer>
                         <Dialog open={isAddingTagFormOpen} onClose={toggleAddingTagForm}>
                             <Box p={2} width={400}>
                                 <Typography variant="h6" gutterBottom marginBottom={'15px'} textAlign={'center'}>
-                                    Nuevo Tag
+                                    Nuevo Tagd
                                 </Typography>
                                 <Box mb={2}>
                                     <Autocomplete
@@ -386,41 +451,38 @@ export const Perfil = ({ userId, userType }) => {
                                             }
                                         }}
                                     />
-                                </Box>
-                                <Box mb={2}>
-                                    <Slider
+                                    <Rating
+                                        name="new-tag-rating"
                                         value={newTag.Puntuacion}
                                         onChange={(event, newValue) => {
-                                            setNewTag(prevTag => ({ ...prevTag, Puntuacion: newValue }));
+                                            console.log("New Value:", newValue);
+                                            setNewTag((prevTag) => ({ ...prevTag, Puntuacion: newValue }));
                                         }}
-                                        aria-labelledby="discrete-slider"
-                                        valueLabelDisplay="auto"
-                                        step={1}
-                                        marks
+                                        precision={1}
                                         min={1}
                                         max={5}
                                     />
-                                </Box>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleAddNewTag}
-                                    style={{ marginTop: '10px' }}
-                                >
-                                    Añadir Tag
-                                </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleAddNewTag}
+                                        style={{ marginTop: '10px' }}
+                                    >
+                                        Añadir Tag
+                                    </Button>
 
-                                <Dialog open={openErrorDialog} onClose={handleCloseErrorDialog}>
-                                    <DialogTitle>Error</DialogTitle>
-                                    <DialogContent>
-                                        <Alert severity="error">{'Asegurese de completar los campos y de no repetir los tags'}</Alert>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleCloseErrorDialog} color="primary" autoFocus>
-                                            OK
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
+                                    <Dialog open={openErrorDialog} onClose={handleCloseErrorDialog}>
+                                        <DialogTitle>Error</DialogTitle>
+                                        <DialogContent>
+                                            <Alert severity="error">{'Asegurese de completar los campos y de no repetir los tags'}</Alert>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseErrorDialog} color="primary" autoFocus>
+                                                OK
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                </Box>
                             </Box>
                         </Dialog>
                         <Box mt={4} textAlign="center" marginTop={'60px'}>
@@ -465,6 +527,19 @@ export const Perfil = ({ userId, userType }) => {
                                     </Box>
                                 </>
                             )}
+                        </Box>
+                        <Box mt={4} textAlign="center" display="flex" flexDirection="column" alignItems="center">
+                            <Typography variant="h5" gutterBottom>
+                                Mini Perfil
+                            </Typography>
+                            <Avatar
+                                alt="Profile Picture"
+                                src={userData.FotoPerfil ? `http://localhost:8000/profileImages/${userData.FotoPerfil}` : ''}
+                                sx={{ width: 56, height: 56, cursor: 'pointer' }}
+                                onClick={toggleImageModal}
+                            >
+                                {userData.fotoPerfil ? null : userData.Nombre.charAt(0).toUpperCase()}
+                            </Avatar>
                         </Box>
                         <Drawer anchor="right" open={isPdfDrawerOpen} onClose={togglePdfDrawer}>
                             <Box p={2} textAlign={'center'}>
@@ -549,14 +624,74 @@ export const Perfil = ({ userId, userType }) => {
                         </Button>
                     </DialogActions>
                 </Dialog>
+                <Dialog open={isImageModalOpen} onClose={toggleImageModal}>
+                    <Box mt={4} textAlign="center" display="flex" flexDirection="column" alignItems="center">
+
+                        <DialogTitle>Foto de Perfil</DialogTitle>
+                        <DialogContent>
+                            <Box display="flex" justifyContent="center">
+                                {userData.FotoPerfil ? (
+                                    <Avatar
+                                        alt="Profile Picture"
+                                        src={`http://localhost:8000/profileImages/${userData.FotoPerfil}`}
+                                        sx={{ width: 200, height: 200 }}
+                                    />
+                                ) : (
+                                    <Avatar
+                                        alt="Default Profile"
+                                        sx={{ width: 200, height: 200 }}
+                                    >
+                                        {userData.Nombre.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                )}
+                            </Box>
+                            <Box mt={2} marginTop={'30px'}>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleProfileImageChange}
+                                />
+                            </Box>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<UploadIcon />}
+                                onClick={handleUploadProfileImage}
+                                disabled={!profileImage}
+                                style={{ marginTop: '30px' }}
+                            >
+                                Subir Foto
+                            </Button>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={toggleImageModal} color="primary">
+                                Cerrar
+                            </Button>
+                        </DialogActions>
+                    </Box>
+                </Dialog>
+
             </Container>
         );
     } else if (userType === 'Empresa') {
         return (
             <Container>
-                <Typography variant="h4" gutterBottom>
+                <Typography variant="h4" gutterBottom textAlign={"center"} marginTop={'25px'} marginBottom={'20px'} >
                     Tu Perfil
                 </Typography>
+                <Box mt={4} textAlign="center" display="flex" flexDirection="column" alignItems="center" marginBottom={'30px'}>
+                            <Typography variant="h5" gutterBottom>
+                                Avatar
+                            </Typography>
+                            <Avatar
+                                alt="Profile Picture"
+                                src={userData.FotoPerfil ? `http://localhost:8000/profileImages/${userData.FotoPerfil}` : ''}
+                                sx={{ width: 150, height: 150, cursor: 'pointer' }}
+                                onClick={toggleImageModal}
+                            >
+                                {userData.fotoPerfil ? null : userData.Nombre.charAt(0).toUpperCase()}
+                            </Avatar>
+                        </Box>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center">
@@ -619,6 +754,52 @@ export const Perfil = ({ userId, userType }) => {
                         </Box>
                     </Grid>
                 </Grid>
+                <Dialog open={isImageModalOpen} onClose={toggleImageModal}>
+                    <Box mt={4} textAlign="center" display="flex" flexDirection="column" alignItems="center">
+
+                        <DialogTitle>Foto de Perfil</DialogTitle>
+                        <DialogContent>
+                            <Box display="flex" justifyContent="center">
+                                {userData.FotoPerfil ? (
+                                    <Avatar
+                                        alt="Profile Picture"
+                                        src={`http://localhost:8000/profileImages/${userData.FotoPerfil}`}
+                                        sx={{ width: 200, height: 200 }}
+                                    />
+                                ) : (
+                                    <Avatar
+                                        alt="Default Profile"
+                                        sx={{ width: 200, height: 200 }}
+                                    >
+                                        {userData.Nombre.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                )}
+                            </Box>
+                            <Box mt={2} marginTop={'30px'}>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleProfileImageChange}
+                                />
+                            </Box>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<UploadIcon />}
+                                onClick={handleUploadProfileImage}
+                                disabled={!profileImage}
+                                style={{ marginTop: '30px' }}
+                            >
+                                Subir Foto
+                            </Button>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={toggleImageModal} color="primary">
+                                Cerrar
+                            </Button>
+                        </DialogActions>
+                    </Box>
+                </Dialog>
             </Container>
         );
     }

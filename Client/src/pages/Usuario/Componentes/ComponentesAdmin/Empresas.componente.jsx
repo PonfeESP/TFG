@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
 import { Grid, FormControl, InputLabel, Select, Paper, Box, Typography, MenuItem, Button } from '@mui/material';
-import UsersCard from '../../../../components/UsersCard.component';
+import BusinessCard from '../../../../components/BusinessCard.component';
 import SearchComponent from '../../../../components/Search.component';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export const SubComponenteUsuarios = ({ userId }) => {
-    const [usuariosOriginales, setUsuariosOriginales] = useState([]);
-    const [usuariosFiltradas, setUsuariosFiltradas] = useState([]);
+const ComponenteAdminEmpresas = ({ userId }) => {
+    const [empresasOriginales, setEmpresasOriginales] = useState([]);
+    const [empresasFiltradas, setEmpresasFiltradas] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 25;
     const [order, setOrder] = useState('newer');
@@ -18,52 +16,52 @@ export const SubComponenteUsuarios = ({ userId }) => {
     const handleChange = (event) => {
         const orderValue = event.target.value;
         setOrder(orderValue);
-        applyFilters(usuariosOriginales, orderValue);
+        applyFilters(empresasOriginales, orderValue);
     };
 
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
     };
 
-    const applyFilters = (usuarios, orderValue) => {
-        let newUsuarios = [...usuarios];
+    const applyFilters = (empresas, orderValue) => {
+        let newEmpresas = [...empresas];
         if (orderValue === 'newer') {
-            newUsuarios.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
+            newEmpresas.sort((a, b) => new Date(b.Fecha_Creacion) - new Date(a.Fecha_Creacion));
         }
         if (orderValue === 'older') {
-            newUsuarios.sort((a, b) => new Date(a.Fecha_Creacion) - new Date(b.Fecha_Creacion));
+            newEmpresas.sort((a, b) => new Date(a.Fecha_Creacion) - new Date(b.Fecha_Creacion));
         }
         if (orderValue === 'favorites') {
-            newUsuarios = usuariosOriginales.filter(elem => elem.Interesados.includes(userId));
+            newEmpresas = empresasOriginales.filter(elem => elem.Interesados.includes(userId));
         }
         if (searchTerm) {
-            newUsuarios = newUsuarios.filter(usuario =>
-                usuario.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+            newEmpresas = newEmpresas.filter(empresa =>
+                empresa.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-        setUsuariosFiltradas(newUsuarios);
+        setEmpresasFiltradas(newEmpresas);
     };
 
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/usuarios`,
+            url: `http://localhost:8000/empresas`,
             method: 'GET'
         })
             .then(res => {
-                setUsuariosOriginales(res.data);
+                setEmpresasOriginales(res.data);
                 applyFilters(res.data, order);
             })
             .catch(err => console.error("Error fetching data:", err));
     }, [userId, order]);
 
     useEffect(() => {
-        applyFilters(usuariosOriginales, order, searchTerm);
-    }, [usuariosOriginales, order, searchTerm]);
+        applyFilters(empresasOriginales, order, searchTerm);
+    }, [empresasOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(usuariosFiltradas.length / pageSize);
+    const totalPages = Math.ceil(empresasFiltradas.length / pageSize);
 
-    const currentUsuarios = usuariosFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const currentEmpresas = empresasFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const goToPage = (page) => {
         setCurrentPage(page);
@@ -79,14 +77,14 @@ export const SubComponenteUsuarios = ({ userId }) => {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center', paddingTop: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography variant="h4" gutterBottom>
-                    Usuarios
+                    Empresas
                 </Typography>
             </Box>
-            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, width: '100%', justifyContent: 'space-between' }}>
-                <SearchComponent handleSearch={handleSearch} sx={{ display: 'flex', justifyContent: 'left' }} />
-                <FormControl sx={{ minWidth: 200, maxWidth: 200, display: 'flex', justifyContent: 'right' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
+                <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
+                <FormControl sx={{ minWidth: 200, maxWidth: 200 }}>
                     <InputLabel id="demo-simple-select-label">Ordenar por</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -100,24 +98,20 @@ export const SubComponenteUsuarios = ({ userId }) => {
                     </Select>
                 </FormControl>
             </Box>
-            <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="flex-start">
-                {currentUsuarios.map((usuario, index) => (
+            <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
+                {currentEmpresas.map((empresa, index) => (
                     <Grid item xs={3} sm={4} md={4} key={index}>
-                        <UsersCard user={usuario} />
+                        <BusinessCard business={empresa} userId={userId} />
                     </Grid>
                 ))}
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-                <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>
-                    <ArrowBackIcon />
-                </Button>
+                <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>Anterior</Button>
                 <Typography variant="body1">Página {currentPage} de {totalPages}</Typography>
-                <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>
-                    <ArrowForwardIcon />
-                </Button>
+                <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>Siguiente</Button>
             </Box>
         </>
     );
 };
 
-export default SubComponenteUsuarios;
+export default ComponenteAdminEmpresas;

@@ -68,6 +68,7 @@ export const Register = () => {
         confirmPasswordError: false,
         registroError: ""
     });
+    const [duplicateTagError, setDuplicateTagError] = useState(false);
 
 
 
@@ -122,8 +123,12 @@ export const Register = () => {
     };
 
     const handleTagsChange = (event, value) => {
-        setTags(value);
+        const uniqueTags = [...new Set(value.map(tag => tag.label))].map(label => {
+            return value.find(tag => tag.label === label);
+        });
+        setTags(uniqueTags);
     };
+
 
     const handleExperienceChange = (event, value, tag) => {
         setTagsExperience({ ...tagsExperience, [tag]: value });
@@ -202,17 +207,17 @@ export const Register = () => {
     const registerDesempleado = () => {
         switch (currentStep) {
             case 1:
-                if (nombre === '' || descripcion === '') {
+                if (nombre === '' || descripcion === '' || edad === '' || experiencia_Laboral === '' || estudios === '') {
                     setNombreError(nombre === '');
                     setDescripcionError(descripcion === '');
+                    setEdadError(edad === '');
+                    setExperienciaError(experiencia_Laboral === '');
+                    setEstudiosError(estudios === '');
                     return;
                 }
                 break;
             case 2:
-                if (edad === '' || experiencia_Laboral === '' || estudios === '' || tags.length === 0) {
-                    setEdadError(edad === '');
-                    setExperienciaError(experiencia_Laboral === '');
-                    setEstudiosError(estudios === '');
+                if (tags.length === 0) {
                     setTagsError(tags.length === 0);
                     return;
                 }
@@ -228,6 +233,16 @@ export const Register = () => {
                 break;
             default:
                 break;
+        }
+
+        const tagLabels = tags.map(tag => tag.label);
+        const hasDuplicates = new Set(tagLabels).size !== tagLabels.length;
+
+        if (hasDuplicates) {
+            setDuplicateTagError(true);
+            return;
+        } else {
+            setDuplicateTagError(false);
         }
 
         if (!!nombre && !!email && !!password && !!confirmPassword && !!descripcion && !!edad && !!experiencia_Laboral && !!estudios && !!tags.length) {
@@ -302,15 +317,15 @@ export const Register = () => {
     return (
         <ThemeProvider theme={theme}>
 
-            <div sx={{width:'100%' }}>
-                <Button onClick={handleClickOpen}>Registrarse</Button>
-                <Dialog open={open} onClose={handleClose} sx={{ width:'100%' }}>
+            <Button onClick={handleClickOpen}>Registrarse</Button>
+            <Dialog open={open} onClose={handleClose}>
+                <Box sx={{ width: '100%', minWidth: '500px', maxWidth: '500px', maxHeight: '600px', display: 'flex', flexDirection: 'column' }}>
                     <Box
                         sx={{
                             backgroundImage: `url(${Fondo})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
-                            height: '90px',
+                            height: '80px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -320,7 +335,7 @@ export const Register = () => {
                             ITJobFinder
                         </Typography>
                     </Box>
-                    <DialogContent sx={{ backgroundColor: '#302c2c', width:'100%' }}>
+                    <DialogContent sx={{ backgroundColor: '#302c2c', width: '100%' }}>
 
                         <Box
                             noValidate
@@ -362,6 +377,7 @@ export const Register = () => {
                                     label="Nombre"
                                     fullWidth
                                     variant="outlined"
+                                    sx={{ height: '50px' }}
                                     onKeyDown={(e) => {
                                         const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                         const isLetter = /^[a-zA-Z\s]$/;
@@ -381,6 +397,7 @@ export const Register = () => {
                                     label="Descripcion de la Empresa"
                                     fullWidth
                                     variant="outlined"
+                                    sx={{ height: '50px' }}
                                     onKeyDown={(e) => {
                                         const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                         const isLetter = /^[a-zA-Z]$/;
@@ -400,6 +417,7 @@ export const Register = () => {
                                     label="Correo"
                                     fullWidth
                                     variant="outlined"
+                                    sx={{ height: '50px' }}
                                     error={userError}
                                     helperText={userError && 'Por favor, ingrese un correo válido.'}
                                 />
@@ -454,6 +472,7 @@ export const Register = () => {
                                             label="Nombre"
                                             fullWidth
                                             variant="outlined"
+                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                                 const isLetter = /^[a-zA-Z]$/;
@@ -472,6 +491,7 @@ export const Register = () => {
                                             label="Descripcion"
                                             fullWidth
                                             variant="outlined"
+                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                                 const isLetter = /^[a-zA-Z]$/;
@@ -492,6 +512,7 @@ export const Register = () => {
                                             label="Edad"
                                             fullWidth
                                             variant="outlined"
+                                            sx={{ height: '50px' }}
                                             inputProps={{ maxLength: 2 }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -499,7 +520,7 @@ export const Register = () => {
                                                 if (!isNumber.test(e.key) && !allowedKeys.includes(e.key)) {
                                                     e.preventDefault();
                                                 }
-                                            }}  
+                                            }}
                                             error={edadError}
                                             helperText={edadError && 'Indique su edad, por favor.'}
                                         />
@@ -511,6 +532,7 @@ export const Register = () => {
                                             label="Años trabajados"
                                             fullWidth
                                             variant="outlined"
+                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
                                                 const isNumber = /^[0-9]$/;
@@ -530,6 +552,7 @@ export const Register = () => {
                                             label="Estudios"
                                             fullWidth
                                             variant="outlined"
+                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                                 const isLetter = /^[a-zA-Z]$/;
@@ -560,7 +583,7 @@ export const Register = () => {
                                             options={programmingLanguages.map(language => ({ label: language.Nombre, value: language._id }))}
                                             getOptionLabel={option => option.label}
                                             value={tags}
-                                            sx={{ width: '100%'}}
+                                            sx={{ width: '100%' }}
                                             onChange={handleTagsChange}
                                             renderInput={params => (
                                                 <TextField
@@ -589,7 +612,7 @@ export const Register = () => {
                                                 onClick={handlePreviousStep}
                                                 variant="contained"
                                                 aria-label="Anterior"
-                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px', marginTop:'10px' }}
+                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px', marginTop: '10px' }}
                                             >
                                                 <ArrowBackIosIcon />
                                             </Button>
@@ -597,7 +620,7 @@ export const Register = () => {
                                                 onClick={handleNextStep}
                                                 variant="contained"
                                                 aria-label="Siguiente"
-                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px', marginTop:'10px' }}                                            >
+                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px', marginTop: '10px' }}                                            >
                                                 <ArrowForwardIosIcon />
                                             </Button>
                                         </Box>
@@ -613,6 +636,7 @@ export const Register = () => {
                                             label="Correo"
                                             fullWidth
                                             variant="outlined"
+                                            sx={{ height: '50px' }}
                                             error={userError}
                                             helperText={userError && 'Por favor, ingrese un correo válido.'}
                                         />
@@ -657,26 +681,37 @@ export const Register = () => {
                             </div>
                         )}
                     </DialogContent>
-                </Dialog>
-                <Snackbar open={registrationSuccess} autoHideDuration={6000} onClose={() => setRegistrationSuccess(false)}>
-                    <Alert onClose={() => setRegistrationSuccess(false)} severity="success" sx={{ width: '100%' }}>
-                        El usuario se ha registrado exitosamente.
-                    </Alert>
-                </Snackbar>
+                </Box>
+            </Dialog>
+            <Snackbar open={registrationSuccess} autoHideDuration={6000} onClose={() => setRegistrationSuccess(false)}>
+                <Alert onClose={() => setRegistrationSuccess(false)} severity="success" sx={{ width: '100%' }}>
+                    El usuario se ha registrado exitosamente.
+                </Alert>
+            </Snackbar>
 
-                <Snackbar open={registrationFailure && (registrationStatus.failure && registrationStatus.success)} autoHideDuration={6000} onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }}>
-                    <Alert onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }} severity="error" sx={{ width: '100%' }}>
-                        Este Email ya esta registrado
-                    </Alert>
-                </Snackbar>
+            <Snackbar open={registrationFailure && (registrationStatus.failure && registrationStatus.success)} autoHideDuration={6000} onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }}>
+                <Alert onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }} severity="error" sx={{ width: '100%' }}>
+                    Este Email ya esta registrado
+                </Alert>
+            </Snackbar>
 
-                <Snackbar open={registrationFailure && (registrationStatus.failure && !registrationStatus.success)} autoHideDuration={6000} onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }}>
-                    <Alert onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }} severity="error" sx={{ width: '100%' }}>
-                        Error en el registro. Inténtalo de nuevo, por favor.
-                    </Alert>
-                </Snackbar>
+            <Snackbar open={registrationFailure && (registrationStatus.failure && !registrationStatus.success)} autoHideDuration={6000} onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }}>
+                <Alert onClose={() => { setRegistrationSuccess(false); setRegistrationStatus({ failure: false, success: false }); }} severity="error" sx={{ width: '100%' }}>
+                    Error en el registro. Inténtalo de nuevo, por favor.
+                </Alert>
+            </Snackbar>
 
-            </div>
+            <Snackbar
+                open={duplicateTagError}
+                autoHideDuration={6000}
+                onClose={() => setDuplicateTagError(false)}
+            >
+                <Alert onClose={() => setDuplicateTagError(false)} severity="error">
+                    No se pueden añadir etiquetas duplicadas.
+                </Alert>
+            </Snackbar>
+
+
         </ThemeProvider>
 
     );

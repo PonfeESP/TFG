@@ -55,13 +55,19 @@ export default function BusinessCard({ business, userId }) {
     setAnchorEl(null);
   };
 
+  console.log("aaa", business.FotoPerfil)
+
   return (
     <Card sx={{ maxWidth: 750, minHeigh: 200}}>
       <CardHeader
         avatar={
-          <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
-          {`${business.Nombre.charAt(0).toUpperCase()}`}
-          </Avatar>
+          business.FotoPerfil ? (
+            <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${business.FotoPerfil}` } />
+          ) : (
+            <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
+              {`${business.Nombre.charAt(0).toUpperCase()}`}
+            </Avatar>
+          )
         }
         action={
           <IconButton aria-label="settings" onClick={handleClick}>

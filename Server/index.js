@@ -21,18 +21,34 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const pdfDirectory = path.join(__dirname, '', 'PDF');
-const storage = multer.diskStorage({
+const imageDirectory = path.join(__dirname, 'FotosPerfil');
+
+const pdfStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, pdfDirectory);
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    const uniqueFilename = Date.now() + '-' + file.originalname;
+    cb(null, uniqueFilename);  }
+});
+
+const imageStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, imageDirectory);
+  },
+  filename: function (req, file, cb) {
+    const uniqueFilename = Date.now() + '-' + file.originalname;
+    cb(null, uniqueFilename);
   }
 });
-const upload = multer({ storage: storage });
-app.use(express.json())
+
+const uploadPDF = multer({ storage: pdfStorage });
+const uploadImage = multer({ storage: imageStorage });
+
+app.use(express.json());
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use('/pdfs', express.static('./PDF'));
+app.use('/profileImages', express.static('./FotosPerfil'));
 
 let db;
 
@@ -73,6 +89,26 @@ app.get('/usuarios', async (req, res) => {
     res.status(401).send('Sesión no iniciada!');
   }
 });
+
+app.get('/foto/:id', async (req, res) => {
+  if (req.isAuthenticated()) {
+    const userId = req.params.id;
+    console.log(userId)
+    try {
+      const usuario = await User.findById(userId).select('FotoPerfil');
+      if (usuario) {
+        res.json(usuario);
+      } else {
+        res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
 
 app.get('/usuarios/:id', async (req, res) => {
   if (req.isAuthenticated()) {
@@ -160,7 +196,7 @@ app.get('/eventos', async (req, res) => {
       const eventosFuturos = await Evento.find({
         Fecha: { $gte: fechaLimite }
       })
-        .populate('Empresa', 'Nombre')
+        .populate('Empresa', 'Nombre FotoPerfil')
         .sort({ Fecha_Creacion: -1 });
 
       const eventosFormateados = eventosFuturos.map(evento => {
@@ -313,7 +349,7 @@ app.get('/eventos_empresa/:id', async (req, res) => {
     try {
       const eventos = await Evento.find({
         Empresa: req.params.id
-      });
+      }).populate('Empresa', 'FotoPerfil');
 
       const eventosConAforoRestante = eventos.map(evento => {
         const aforoRestante = evento.Aforo - evento.Interesados.length;
@@ -361,7 +397,7 @@ app.get('/empresa_unica/:id', async (req, res) => {
 
 app.get('/ofertaUnicaEmpresa/:id', async (req, res) => {
   try {
-    const oferta = await Oferta.findById(req.params.id);
+    const oferta = await Oferta.findById(req.params.id).populate('Interesados', 'Nombre');
 
     if (!oferta) {
       return res.status(404).json({ error: 'Oferta no encontrada' });
@@ -375,7 +411,7 @@ app.get('/ofertaUnicaEmpresa/:id', async (req, res) => {
 
 app.get('/ofertaUnicaDesempleado/:id', async (req, res) => {
   try {
-    const oferta = await Oferta.findById(req.params.id);
+    const oferta = await Oferta.findById(req.params.id).populate('Empresa', 'Nombre');
     if (!oferta) {
       return res.status(404).json({ error: 'Oferta no encontrada' });
     }
@@ -423,8 +459,8 @@ app.get('/ofertas_empresa/:id', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const idEmpresa = req.params.id;
-      
-      const ofertas = await Oferta.find({ Empresa: idEmpresa });
+
+      const ofertas = await Oferta.find({ Empresa: idEmpresa }).populate('Empresa', 'FotoPerfil');;
 
       if (ofertas.length === 0) {
         return res.status(404).json({ error: 'No hay ofertas para esta empresa' });
@@ -514,27 +550,6 @@ app.get('/interesado_ofertas/:userId', async (req, res) => {
   }
 });
 
-
-
-app.get('/ofertas_empresa/:id', async (req, res) => {
-  if (req.isAuthenticated()) {
-
-    try {
-      const ofertas = await Oferta.find({
-        Empresa: { $gte: req.params.id }
-      });
-
-      if (!ofertas) {
-        return res.status(404).json({ error: 'Oferta no encontrada' });
-      }
-      res.json(ofertas);
-    } catch (error) {
-      res.status(500).json({ error: 'Fallo' });
-    }
-  } else {
-    res.status(401).send('Sesión no iniciada!');
-  }
-});
 
 app.get('/ofertas_ordenadas/:id', async (req, res) => {
   if (req.isAuthenticated()) {
@@ -810,8 +825,39 @@ app.put('/usuarios/:id', async (req, res) => {
   }
 });
 
+app.put('/usuarios/:id/fotoPerfil', uploadImage.single('profileImage'), async (req, res) => {
+  if (req.isAuthenticated()) {
 
-app.put('/usuarios/:id/pdf', upload.single('pdf'), async (req, res) => {
+    const userId = req.params.id;
+    const foto = req.file;
+    console.log(foto.filename)
+
+    try {
+      const usuario = await User.findById(userId);
+      if (!usuario) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      if (foto) {
+        usuario.FotoPerfil = foto.filename;
+        console.log("ASAS", usuario)
+      } else {
+        usuario.FotoPerfil = null;
+        console.log("sssssss")
+      }
+
+      await usuario.save();
+
+      res.status(200).json(usuario);
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
+app.put('/usuarios/:id/pdf', uploadPDF.single('pdf'), async (req, res) => {
   if (req.isAuthenticated()) {
 
     const userId = req.params.id;
@@ -958,13 +1004,68 @@ app.put('/solicitud_evento', async (req, res) => {
   }
 });
 
+app.put('/solicitud_registro', async (req, res) => {
+  if (req.isAuthenticated()) {
+    const userId = req.body.userId;
+    const eventId = req.body.eventId;
+    try {
+      const evento = await Evento.findById(eventId);
+      if (!evento) {
+        return res.status(404).json({ error: 'evento no encontrada' });
+      }
+
+      evento.Registrados.push(userId);
+      await evento.save();
+
+      res.status(200).json({ message: 'Registro realizado correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
 
 // DELETE
 
-app.delete('/oferta/:id', async (req, res) => {
+app.delete('/tags/:nombre', async (req, res) => {
+  if (req.isAuthenticated()) {
+    const nombreTag = req.params.nombre;
+    try {
+      await User.updateMany(
+        { "Rol": "Desempleado", "Tags.Nombre": nombreTag },
+        { $pull: { "Tags": { Lenguaje: nombreTag } } }
+      );
+      console.log("WHAT2", nombreTag)
+
+
+      await Oferta.updateMany({ "Tags.Lenguaje": nombreTag }, { $pull: { "Tags": { Lenguaje: nombreTag } } });
+
+      console.log("WHAT32", nombreTag)
+
+
+      await Tags.deleteOne({ Nombre: nombreTag });
+
+      console.log("WHATsadad2", nombreTag)
+
+
+      res.status(200).json({ status: 'OK', message: 'Tag eliminado exitosamente' });
+    } catch (error) {
+      res.status(500).json({ error: 'Fallo al eliminar el tag' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
+
+
+app.delete('/oferta/:idOferta', async (req, res) => {
   if (req.isAuthenticated()) {
 
-    const ofertaId = req.params.id;
+    const ofertaId = req.params.idOferta;
+    console.log(ofertaId)
     try {
       const oferta = await Oferta.findById(ofertaId);
       if (!oferta) {
@@ -1005,7 +1106,29 @@ app.delete('/evento/:id', async (req, res) => {
   }
 });
 
+app.delete('/empresa/:id', async (req, res) => {
+  if (req.isAuthenticated()) {
 
+    const empresaId = req.params.id;
+    try {
+      const empresa = await User.findById(empresaId);
+      if (!empresa) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      await User.findByIdAndDelete(empresaId);
+      await Evento.deleteMany({ Empresa: empresaId });
+      await Oferta.deleteMany({ Empresa: empresaId });
+
+      res.status(200).json({ message: 'Empresa, Oferta y Eventos eliminados correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+})
 
 app.delete('/solicitud_evento/:eventoId', async (req, res) => {
   if (req.isAuthenticated()) {
@@ -1024,6 +1147,36 @@ app.delete('/solicitud_evento/:eventoId', async (req, res) => {
       }
 
       evento.Interesados.splice(index, 1);
+      await evento.save();
+
+      res.status(200).json({ message: 'Usuario retirado del evento correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al procesar la solicitud' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
+
+app.delete('/registro_evento/:eventoId', async (req, res) => {
+  if (req.isAuthenticated()) {
+
+    const userId = req.body.userId;
+    const eventoId = req.params.eventoId;
+    try {
+      const evento = await Evento.findById(eventoId);
+      if (!evento) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      const index = evento.Registrados.indexOf(userId);
+      if (index === -1) {
+        return res.status(400).json({ error: 'El usuario no está registrado para este evento' });
+      }
+
+      evento.Registrados.splice(index, 1);
       await evento.save();
 
       res.status(200).json({ message: 'Usuario retirado del evento correctamente' });

@@ -78,12 +78,12 @@ const SubComponenteEventos = ({ userId, userType }) => {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', paddingTop: 4, paddingLeft:3,  paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <Typography variant="h4" gutterBottom>
                     Eventos
                 </Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, paddingBottom: 2 }}>
+            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, paddingLeft:3, paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
                 <FormControl sx={{ minWidth: 200, maxWidth: 200 }}>
                     <InputLabel id="demo-simple-select-label">Ordenar por</InputLabel>
@@ -100,7 +100,7 @@ const SubComponenteEventos = ({ userId, userType }) => {
                     </Select>
                 </FormControl>
             </Box>
-            <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="center">
+            <Grid container sx={{ pl: '1.5rem' }} spacing={{ xs: 3, md: 6 }} columns={{ xs: 1, sm: 6, md: 12 }} justifyContent="flex-start">
                 
                 {currentEventos.map((evento, index) =>(
                     <Grid item xs={3} sm={4} md={4} key={index}>
@@ -108,7 +108,7 @@ const SubComponenteEventos = ({ userId, userType }) => {
                     </Grid>
                 ))}
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+            <Box sx={{ display: 'flex', paddingTop: 4, paddingLeft:3,  paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>Anterior</Button>
                 <Typography variant="body1">Página {currentPage} de {totalPages}</Typography>
                 <Button variant="contained" onClick={nextPage} disabled={currentPage === totalPages}>Siguiente</Button>

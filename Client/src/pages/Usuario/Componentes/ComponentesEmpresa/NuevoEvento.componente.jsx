@@ -134,6 +134,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             id="nombre"
                             label="Nombre"
                             fullWidth
+                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
@@ -154,6 +155,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             id="descripcion"
                             label="Descripcion"
                             fullWidth
+                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
@@ -174,6 +176,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             id="aforo"
                             label="Aforo"
                             fullWidth
+                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -199,6 +202,8 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             value={hora}
                             onChange={handleChangeHora}
                             fullWidth
+                            label="Hora"
+                            sx={{ height: '50px' }}
                             margin="normal"
                             error={!!errorHora}
                             helperText={errorHora}
@@ -211,6 +216,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             id="localizacion"
                             label="Localizacion"
                             fullWidth
+                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];

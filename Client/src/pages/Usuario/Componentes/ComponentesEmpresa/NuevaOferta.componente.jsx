@@ -165,6 +165,7 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
                             id="nombre"
                             label="Nombre"
                             fullWidth
+                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
@@ -184,6 +185,7 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
                             id="descripcion"
                             label="Descripcion"
                             fullWidth
+                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];

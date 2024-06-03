@@ -4,6 +4,7 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import dayjs from 'dayjs';
 import axios from 'axios';
@@ -20,6 +21,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
     const [showFloatingPanel, setShowFloatingPanel] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isInterested, setIsInterested] = useState(false);
+    const [isRegistered, setIsRegistered] = useState(false);
 
     useEffect(() => {
         const url =
@@ -47,6 +49,12 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
             });
     }, [userType, eventoId]);
 
+    useEffect(() => {
+        if (userType === 'Desempleado' && eventoData && eventoData.Registrados) {
+            setIsRegistered(eventoData.Registrados.includes(userId));
+        }
+    }, [userType, eventoData, userId]);
+
     const handleShare = () => {
         const eventoid = eventoData._id;
         const shareUrl = `${window.location.origin}/evento/${eventoid}`;
@@ -69,45 +77,48 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
     const handleInterest = () => {
         const idEvento = eventoData._id;
+        console.log(idEvento)
+        if (isInterested) {
+            handleDisinterest();
+        } else {
+            axios({
+                ...axiosConfig,
+                url: 'http://localhost:8000/solicitud_evento',
+                method: 'PUT',
+                data: {
+                    userId: userId,
+                    eventId: idEvento
+                }
+            })
+                .then(res => {
+                    console.log('Solicitud enviada con éxito');
+                    setIsInterested(true);
+                })
+                .catch(err => {
+                    console.log(err);
+                    if (err.response && err.response.status === 400) {
+                        setErrorMessage(err.response.data.error);
+                    } else {
+                        setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                    }
+                });
+        }
+    };
+
+    const handleRegister = () => {
+        const idEvento = eventoData._id;
         axios({
             ...axiosConfig,
-            url: 'http://localhost:8000/solicitud_evento',
+            url: 'http://localhost:8000/solicitud_registro',
             method: 'PUT',
             data: {
                 userId: userId,
-                eventoId: idEvento
+                eventId: idEvento
             }
         })
             .then(res => {
-                console.log('Solicitud enviada con éxito');
-                setIsRegistrado(true);
-                setIsInterested(true);
-            })
-            .catch(err => {
-                console.log(err);
-                if (err.response && err.response.status === 400) {
-                    setErrorMessage(err.response.data.error);
-                } else {
-                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
-                }
-            });
-    };
-
-    const handleDisinterest = () => {
-        const evento = props;
-        const idEvento = evento._id;
-        axios({
-            ...axiosConfig,
-            url: `http://localhost:8000/solicitud_evento/${idEvento}`,
-            method: 'DELETE',
-            data: {
-                userId: userId,
-            }
-        })
-            .then(res => {
-                console.log('Usuario eliminado de la lista de interesados con éxito');
-                setIsRegistrado(false);
-                setIsInterested(false); // Actualizar el estado para reflejar el desinterés del usuario
+                console.log('Registro realizado con éxito');
+                setIsRegistered(true); // Actualizar el estado para reflejar el registro exitoso
             })
             .catch(err => {
                 console.error(err);
@@ -119,89 +130,136 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
             });
     };
 
+    const handleCancelRegistration = () => {
+        const idEvento = eventoData._id;
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/registro_evento/${idEvento}`,
+            method: 'DELETE',
+            data: {
+                userId: userId,
+            }
+        })
+            .then(res => {
+                console.log('Cancelación de registro exitosa');
+                setIsRegistered(false); // Actualizar el estado para reflejar la cancelación exitosa
+            })
+            .catch(err => {
+                console.error(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al cancelar el registro. Por favor, inténtelo de nuevo.');
+                }
+            });
+    };
+
+
+    const handleDisinterest = () => {
+        const idEvento = eventoData._id;
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/solicitud_evento/${idEvento}`,
+            method: 'DELETE',
+            data: {
+                userId: userId,
+            }
+        })
+            .then(res => {
+                console.log('Usuario eliminado de la lista de interesados con éxito');
+                setIsInterested(false);
+            })
+            .catch(err => {
+                console.error(err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                }
+            });
+    };
+
+
     if (!eventoData && userType === 'Desempleado') return <div>Loading...</div>;
     if (!eventoData2 && userType === 'Empresa') return <div>Loading...</div>;
 
     if (userType === 'Desempleado') {
         return (
-            <Box>
-                {userType === 'Desempleado' && window.innerWidth > 700 && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: '50%',
-                            right: 0,
-                            transform: 'translateY(-50%)',
-                            backgroundColor: 'white',
-                            padding: '10px',
-                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-                            zIndex: 999
-                        }}
-                    >
-                        <Box display="flex" flexDirection="column" alignItems="center">
-                            <Button variant="contained" onClick={handleShare}>
-                                <ShareIcon sx={{ mr: 1 }} />
-                                Compartir
-                            </Button>
-                            {eventoData.isInterested ? (
-                                <Button variant="contained" onClick={handleDisinterest}>
-                                    <FavoriteIcon sx={{ mr: 1 }} />
-                                    No me interesa
-                                </Button>
-                            ) : (
-                                <Button variant="contained" onClick={handleInterest}>
-                                    <FavoriteIcon sx={{ mr: 1 }} />
-                                    Me interesa
-                                </Button>
-                            )}
-                        </Box>
-
-                    </Box>
-                )}
+            <Box >
                 <Box
                     display="flex"
                     justifyContent="center"
-                    alignItems="center"
-                    minHeight="80vh" // Ajusta la altura según sea necesario
                     padding={2}
                 >
                     <Card style={{ maxWidth: 800, width: '100%', backgroundColor: '#f5f5f5' }}>
-                        <Grid>
+                        <Box position="relative">
                             <CardMedia
-                                component="div"
+                                component="img"
+                                height="150"
                                 image={Fondo}
                                 alt="Imagen de cabecera"
+                            />
+                            <Box
                                 sx={{
-                                    position: 'relative',
-                                    width: '100%', // Esto asegura que el CardMedia tome todo el ancho del contenedor padre
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: '80%',
+                                    textAlign: 'center',
                                 }}
                             >
-                                <Box
+                                <Typography
+                                    variant="h4"
                                     sx={{
-                                        position: 'relative',
-                                        padding: '16px', // Agrega algo de padding para que el texto no toque los bordes
-                                        textAlign: 'center',
-                                        backgroundImage: `url(${Fondo})`, // Asegura que la imagen de fondo esté aplicada
-                                        backgroundSize: 'cover',
-                                        backgroundPosition: 'center',
+                                        color: 'white',
+                                        textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                                        wordWrap: 'break-word',
                                     }}
                                 >
-                                    <Typography
-                                        variant="h4"
-                                        sx={{
-                                            color: 'white',
-                                            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-                                            wordWrap: 'break-word',
-                                        }}
-                                    >
-                                        {eventoData.Nombre}
-                                    </Typography>
-                                </Box>
-                            </CardMedia>
-                        </Grid>
+                                    {eventoData.Nombre}
+                                </Typography>
+                            </Box>
+                        </Box>
                         <CardContent>
+                            <div style={{ position: 'relative', textAlign: 'left' }}>
+                                {isRegistered ? (
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleCancelRegistration}
+                                        style={{ position: 'absolute', top: 0, left: 0 }}
+                                    >
+                                        Cancelar Registro
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleRegister}
+                                        style={{ position: 'absolute', top: 0, left: 0 }}
+                                    >
+                                        Registrarse
+                                    </Button>
+                                )}
+                            </div>
+                            <div style={{ position: 'relative', textAlign: 'right' }}>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleShare}
+                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    <ShareIcon sx={{ mr: 1 }} />
+                                </Button>
+                                <Button
+                                    sx={{ marginRight: 9 }}
+                                    variant="contained"
+                                    onClick={eventoData.isInterested ? handleDisinterest : handleInterest}
+                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    {isInterested ? <FavoriteIcon sx={{ mr: 1 }} /> : <FavoriteBorderIcon sx={{ mr: 1 }} />}
+                                </Button>
+                            </div>
                             <Typography variant="h4" gutterBottom align="center">
-                                Detalles de el Evento
+                                Detalles
                             </Typography>
                             <Grid item xs={12}>
                                 <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
@@ -222,7 +280,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                         <Typography variant="h5" gutterBottom align="center">
                                             Empresa Organizadora
                                         </Typography>
-                                        <Link to={`/evento/${eventoData.Empresa._id}`} underline="none" color="inherit">
+                                        <Link to={`/empresa/${eventoData.Empresa._id}`} underline="none" color="inherit">
                                             {eventoData.Empresa.Nombre}
                                         </Link>
                                     </Box>
@@ -257,7 +315,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                             Plazas restantes
                                         </Typography>
                                         <Typography variant="body1" align="center">
-                                            {eventoData.Aforo - eventoData.Interesados.length}
+                                            {eventoData.Aforo - eventoData.Registrados.length}
                                         </Typography>
                                     </Box>
                                 </Grid>
@@ -275,25 +333,6 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                         </CardContent>
                     </Card>
                 </Box>
-                {userType === 'Desempleado' && window.innerWidth < 700 && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: '50%',
-                            right: 0,
-                            transform: 'translateY(-50%)',
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            color: 'white',
-                            padding: '10px',
-                            borderRadius: '50%',
-                            cursor: 'pointer',
-                            zIndex: 999
-                        }}
-                        onClick={() => setShowFloatingPanel(!showFloatingPanel)}
-                    >
-                        <KeyboardArrowLeftIcon />
-                    </Box>
-                )}
             </Box>
         );
     } else if (userType === 'Empresa') {
@@ -302,8 +341,6 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                 <Box
                     display="flex"
                     justifyContent="center"
-                    alignItems="center"
-                    height="80vh"
                     padding={2}
                 >
                     <Card style={{ maxWidth: 800, width: '100%', backgroundColor: '#f5f5f5' }}>

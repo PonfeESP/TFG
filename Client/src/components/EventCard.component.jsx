@@ -37,12 +37,14 @@ export default function EventCard({ event, userId, userType }) {
   const [isInterested, setIsInterested] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [aforoActual, setAforoActual] = useState();
+  const [userData, setUserData] = useState();
 
   const avatarColor = getRandomColor();
 
   useEffect(() => {
     setIsInterested(event.Interesados?.includes(userId) || false);
   }, [event.Interesados, userId]);
+
 
   useEffect(() => {
     setAforoActual(event.Aforo - event.Interesados.length);
@@ -99,7 +101,7 @@ export default function EventCard({ event, userId, userType }) {
       .then(res => {
         console.log('Usuario eliminado de la lista de interesados con éxito');
         setIsRegistered(false);
-        setIsInterested(false); // Actualizar el estado para reflejar el desinterés del usuario
+        setIsInterested(false);
       })
       .catch(err => {
         console.error(err);
@@ -112,21 +114,28 @@ export default function EventCard({ event, userId, userType }) {
   };
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget); // Fix here: use event.currentTarget instead of props.currentTarget
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  console.log("vvvvaaaaa", event)
+
+
   if (userType === 'Empresa') {
     return (
       <Card sx={{ maxWidth: 750 }}>
         <CardHeader
           avatar={
-            <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
-              {`${event.Nombre.charAt(0).toUpperCase()}`}
-            </Avatar>
+            event.Empresa.FotoPerfil ? (
+              <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}` } />
+            ) : (
+              <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
+                {`${event.Empresa.Nombre.charAt(0).toUpperCase()}`}
+              </Avatar>
+            )
           }
           action={
             <IconButton aria-label="settings" onClick={handleClick}>
@@ -177,9 +186,13 @@ export default function EventCard({ event, userId, userType }) {
       <Card sx={{ maxWidth: 750 }}>
         <CardHeader
           avatar={
-            <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
-              {`${event.Nombre.charAt(0).toUpperCase()}`}
-            </Avatar>
+            event.Empresa.FotoPerfil ? (
+              <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}` } />
+            ) : (
+              <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
+                {`${event.Empresa.Nombre.charAt(0).toUpperCase()}`}
+              </Avatar>
+            )
           }
           action={
             <IconButton aria-label="settings" onClick={handleClick}>

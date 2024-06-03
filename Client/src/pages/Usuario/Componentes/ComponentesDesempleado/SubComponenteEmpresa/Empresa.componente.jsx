@@ -1,20 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Card, CardContent, CardMedia, Typography, Grid, Box, List } from '@mui/material';
+import { Container, TextField, Button, Chip, Card, CardContent, CardMedia, Typography, Grid, Box, List } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Header from '../../../../../components/Header2.component';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { axiosConfig } from '../../../../../constant/axiosConfig.constant';
 import Fondo from '../../../../../Imagenes/HeaderDefinitivo2.jpg';
 import ShareIcon from '@mui/icons-material/Share';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const Empresa = () => {
     const { idEmpresa } = useParams();
     const [userData, setUserData] = useState(null);
+    const [userType, setUserType] = useState(null);
     const [companyOffers, setCompanyOffers] = useState([]);
     const navigate = useNavigate();
 
     console.log("dAD", idEmpresa)
+
+    useEffect(() => {
+        axios({
+            ...axiosConfig,
+            url: 'http://localhost:8000/user',
+            method: 'GET'
+        })
+            .then(res => {
+                setUserType(res.data.userType);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
 
     useEffect(() => {
         axios({
@@ -53,8 +69,27 @@ export const Empresa = () => {
         });
     };
 
-    if (!userData) return <div>Loading...</div>;
+    const handleDelete = async () => {
 
+        try {
+            await axios({
+                ...axiosConfig,
+                url: `http://localhost:8000/empresa/${idEmpresa}`,
+                method: 'DELETE'
+            })
+                .then(res => {
+                    alert(res.data.message);
+                })
+                .catch(err => {
+                    console.error("Error:", err);
+                });
+        } catch (err) {
+            console.error('Error al enviar la solicitud de eliminación: ', err);
+            alert('Ocurrió un error al intentar eliminar la empresa');
+        }
+    };
+
+    if (!userData) return <div>Loading...</div>;
 
     return (
         <>
@@ -68,12 +103,16 @@ export const Empresa = () => {
                 onMostrarEvento={() => {
                     navigate('/usuario', { state: { valor: 'evento' } });
                 }}
+                onMostrarEmpresas={() => {
+                    navigate('/usuario', { state: { valor: 'inicio' } });
+                }}
+                onMostrarTags={() => {
+                    navigate('/usuario', { state: { valor: 'tags' } });
+                }}
             />
             <Box
                 display="flex"
                 justifyContent="center"
-                alignItems="center"
-                height="80vh"
                 padding={2}
             >
                 <Card style={{ maxWidth: 800, width: '100%', backgroundColor: '#f5f5f5' }}>
@@ -107,17 +146,30 @@ export const Empresa = () => {
                         </Box>
                     </Box>
                     <CardContent>
-                        <div style={{ position: 'relative', textAlign: 'right' }}>
-                            <Button
-                                variant="contained"
-                                onClick={handleShare}
-                                style={{ position: 'absolute', top: 0, right: 0 }}
-                            >
-                                <ShareIcon sx={{ mr: 1 }} />
-                            </Button>
-                        </div>
+                        {userType === 'Admin' && (
+                            <div style={{ position: 'relative', textAlign: 'left' }}>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleDelete}
+                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    <DeleteIcon sx={{ mr: 1 }} />
+                                </Button>
+                            </div>
+                        )}
+                        {userType === 'Desempleado' && (
+                            <div style={{ position: 'relative', textAlign: 'right' }}>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleShare}
+                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    <ShareIcon sx={{ mr: 1 }} />
+                                </Button>
+                            </div>
+                        )}
                         <Typography variant="h4" gutterBottom align="center">
-                            Perfil de la Empresa
+                            Perfil
                         </Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -144,14 +196,22 @@ export const Empresa = () => {
                                 <Typography variant="h5" gutterBottom align="center">
                                     Ofertas de la Empresa
                                 </Typography>
-                                <Box>
+                                <Box sx={{ width: '100%' }}>
                                     {companyOffers.map((offer, index) => (
                                         <Box key={index} border={1} borderColor="grey.300" borderRadius={4} p={2} mb={2}>
                                             <Typography variant="h6" gutterBottom>
-                                                {offer.Titulo}
+                                                <Link to={`/oferta/${offer._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                    {offer.Nombre}
+                                                </Link>
                                             </Typography>
                                             <Typography variant="body2">
                                                 {offer.Descripcion}
+                                            </Typography>
+                                            <Typography variant="body2" mt={1}>
+                                                Tags:
+                                                {offer.Tags.map((tag, index) => (
+                                                    <Chip key={index} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} style={{ marginLeft: '5px' }} />
+                                                ))}
                                             </Typography>
                                         </Box>
                                     ))}

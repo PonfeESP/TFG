@@ -33,6 +33,9 @@ const eventoSchema = new Schema({
     },
     Interesados: {
         type: [ObjectId]
+    },
+    Registrados: {
+        type: [ObjectId]
     }
 });
 

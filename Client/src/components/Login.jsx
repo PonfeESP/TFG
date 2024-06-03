@@ -125,6 +125,7 @@ export const Login = () => {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            sx={{ height: '50px' }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />

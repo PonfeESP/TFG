@@ -54,6 +54,9 @@ const userSchema = new Schema({
     },
     CurriculumPDF: {
         type: String,
+    },
+    FotoPerfil: {
+        type: String,
     }
 });
 
