@@ -1,280 +1,29 @@
 [{
   "_id": {
-    "$oid": "6638e68bc4c2149c4f6b21d9"
+    "$oid": "665b604943dcf4c92e342b10"
   },
-  "Nombre": "1",
-  "Descripcion": "aaa",
+  "Nombre": "Oferta de técnico informático",
+  "Descripcion": "Buscamos personas que esten interesadas en formar parte de nuestra empresa, con conocimientos de Java y JavaScript",
   "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 2
-    },
-    {
-      "Lenguaje": "Python",
-      "Puntuacion": 4
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-06T14:17:47.041Z"
-  },
-  "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Interesados": [],
-  "__v": 4
-},
-{
-  "_id": {
-    "$oid": "6638e69ac4c2149c4f6b21db"
-  },
-  "Nombre": "Desarrollador web con experiencia en Salesforce",
-  "Descripcion": "Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal, Algo muy guay y largo que me ayude a ver el contexto y tal",
-  "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 2
-    },
-    {
-      "Lenguaje": "Python",
-      "Puntuacion": 4
-    },
     {
       "Lenguaje": "Java",
-      "Puntuacion": 5
-    },
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 4
-    },
-    {
-      "Lenguaje": "C++",
-      "Puntuacion": 2
-    },
-    {
-      "Lenguaje": "Salesforce",
-      "Puntuacion": 4
+      "Puntuacion": 3
     }
   ],
   "Disponible": true,
   "Fecha_Creacion": {
-    "$date": "2024-05-06T14:18:02.990Z"
+    "$date": "2024-06-01T17:54:17.903Z"
   },
   "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
+    "$oid": "665b601043dcf4c92e342af4"
   },
   "Interesados": [
     {
-      "$oid": "6617d6a3039fcee9cf9b1ef9"
-    }
-  ],
-  "__v": 8
-},
-{
-  "_id": {
-    "$oid": "6638e6a1c4c2149c4f6b21dd"
-  },
-  "Nombre": "3",
-  "Descripcion": "adada",
-  "Tags": [
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 5
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-06T14:18:09.213Z"
-  },
-  "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Interesados": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "6638e6a9c4c2149c4f6b21df"
-  },
-  "Nombre": "4",
-  "Descripcion": "asdada",
-  "Tags": [
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 5
+      "$oid": "665c71ae750bbdb05282ed22"
     },
     {
-      "Lenguaje": "C++",
-      "Puntuacion": 3
+      "$oid": "665c6fb4750bbdb05282ecea"
     }
   ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-06T14:18:17.202Z"
-  },
-  "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Interesados": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "6638e6b0c4c2149c4f6b21e1"
-  },
-  "Nombre": "5",
-  "Descripcion": "sdadad",
-  "Tags": [
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 5
-    },
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 2
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-06T14:18:24.804Z"
-  },
-  "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Interesados": [
-    {
-      "$oid": "6617d6a3039fcee9cf9b1ef9"
-    }
-  ],
-  "__v": 1
-},
-{
-  "_id": {
-    "$oid": "6640d2daadd981e80b5bf32b"
-  },
-  "Nombre": "imagine",
-  "Descripcion": "asdad",
-  "Tags": [
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 5
-    },
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 2
-    },
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 5
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-12T14:31:54.365Z"
-  },
-  "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Interesados": [
-    {
-      "$oid": "664b4bc796ef437630f79b63"
-    }
-  ],
-  "__v": 1
-},
-{
-  "_id": {
-    "$oid": "6640d57782770616e8dc526e"
-  },
-  "Nombre": "asd",
-  "Descripcion": "s",
-  "Tags": [
-    {
-      "Lenguaje": "C++",
-      "Puntuacion": 3
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-12T14:43:03.071Z"
-  },
-  "Empresa": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Interesados": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "664b53de28ce957e291e6d4a"
-  },
-  "Nombre": "ada",
-  "Descripcion": "adad",
-  "Tags": [
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 0
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-20T13:45:02.558Z"
-  },
-  "Empresa": {
-    "$oid": "664b520a18139e8cfa1fcbaf"
-  },
-  "Interesados": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "664b53fb28ce957e291e6d4d"
-  },
-  "Nombre": "adasada",
-  "Descripcion": "adad",
-  "Tags": [
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 4
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-20T13:45:31.199Z"
-  },
-  "Empresa": {
-    "$oid": "664b520a18139e8cfa1fcbaf"
-  },
-  "Interesados": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "664b540b28ce957e291e6d60"
-  },
-  "Nombre": "pepe",
-  "Descripcion": "a",
-  "Tags": [
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 3
-    },
-    {
-      "Lenguaje": "Node",
-      "Puntuacion": 5
-    },
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 3
-    }
-  ],
-  "Disponible": true,
-  "Fecha_Creacion": {
-    "$date": "2024-05-20T13:45:47.899Z"
-  },
-  "Empresa": {
-    "$oid": "664b520a18139e8cfa1fcbaf"
-  },
-  "Interesados": [],
-  "__v": 1
+  "__v": 10
 }]

@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Paper, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Header from '../../components/Header2.component';
 import Logo from '../../Imagenes/LogoTransparente.png';
-import { axiosConfig } from '../../constant/axiosConfig.constant';
 
 const headerStyle = {
   position: 'absolute',
@@ -16,64 +13,56 @@ const headerStyle = {
 
 const paperStyle = {
   padding: '20px',
-  minHeight: '500px',
-  height: '100%',
+  minHeight: '50px',
   backgroundColor: '#333',
   color: 'white',
-};
-
-const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  marginTop: '100px',
+  justifyContent: 'center',
+  marginLeft: '20px',
+  marginRight: '20px'
+};
+
+const paperStyle2 = {
+  padding: '20px',
+  minHeight: '50px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginLeft: '20px',
+  marginRight: '20px'
 };
 
 export const Home = () => {
-  const [userData, setUserData] = useState({});
-  const [finishLoading, setFinishLoading] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    document.title = "ITJobFinder";
-    axios({
-      ...axiosConfig,
-      url: 'http://localhost:8000/user',
-      method: 'GET'
-    })
-      .then(res => {
-        setUserData(res.data);
-        setFinishLoading(!!res.data && !!res.data.userType);
-      })
-      .catch(err => console.log(err))
-  }, []);
-
-  const lines = [
-    '<span style="color: purple;">if</span>( !<span style="color: green;">user.isRegistered </span> ) <span style="color: blue;">{</span>',
-    '  <span style="color: yellow;">console.log </span>("Bienvenido a ITJobFinder");',
-    '  <span style="color: yellow;">console.log </span>("ITJobFinder es una aplicación web de búsqueda de empleo desarrollada por y para ingenieros informáticos.");',
-    '  <span style="color: yellow;">console.log </span>("Contamos con la colaboración de múltiples empresas que ofrecen oportunidades laborales en el sector tecnológico.");',
-    '  <span style="color: yellow;">console.log </span>("Regístrate para descubrir oportunidades laborales y conectar con empresas innovadoras.");',
-    '<span style="color: blue;">}</span>'
-  ];
-
   return (
     <>
       <Header style={headerStyle} />
-      <div style={containerStyle}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '60px' }}>
         <img src={Logo} alt="Logo" />
       </div>
-      <div>
+      <div style={{ marginTop: '50px' }}>
         <Paper style={paperStyle}>
-          <Typography component="div">
-            {lines.map((line, index) => (
-              <div key={index} dangerouslySetInnerHTML={{ __html: line }} />
-            ))}
-          </Typography>
+          <Typography variant="h5">¿Por que usar ITJobFinder?</Typography>
         </Paper>
-      </div>
+        <Paper style={paperStyle2}>
+          <Typography variant="body1">
+            En el competitivo mercado laboral actual, encontrar la oportunidad perfecta puede ser un desafío. Las aplicaciones de búsqueda de empleo pueden ser una herramienta valiosa para agilizar su búsqueda y aumentar sus posibilidades de conseguir el trabajo de sus sueños. Éstos son algunos de los beneficios clave:
+          </Typography>
+          <Typography>
+            <ul>
+              <li>Búsqueda de empleo más amplia: acceda a una gama más amplia de ofertas de trabajo de diversas empresas e industrias.</li>
+              <li>Filtros de búsqueda específicos: utilice filtros para refinar su búsqueda según habilidades específicas, experiencia, ubicación y salario deseado.</li>
+              <li>Investigación de empresas: obtenga más información sobre posibles empleadores a través de perfiles y reseñas de empresas.</li>
+              <li>Proceso de solicitud simplificado: solicite empleo directamente a través de la aplicación, a menudo con sistemas simplificados.</li>
+            </ul>
+          </Typography>
+        </Paper >
+      </div >
     </>
   );
 };
 
 export default Home;
+

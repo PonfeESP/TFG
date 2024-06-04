@@ -1,507 +1,64 @@
 [{
   "_id": {
-    "$oid": "660c2e9309f2a66a29b1ba67"
+    "$oid": "665b601043dcf4c92e342af4"
   },
-  "Nombre": "Nuevo Nombre",
-  "Email": "ponfe@gmail.com",
-  "Contraseña": "123",
-  "Rol": "desempleado",
-  "Descripcion": "asdsadad",
-  "Edad": 12,
-  "Experiencia_Laboral": 1,
-  "Estudios": "sdada",
-  "Tags": [
-    {
-      "Lenguaje": "JavaScript",
-      "Puntuacion": 2
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "660c2f44ceff45911d92bc3b"
-  },
-  "Nombre": "fawiooo oooo ooooooooooooooooooooooooooooo hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh aaaaaaaaa",
-  "Email": "correo@empresa.com",
-  "Contraseña": "contraseña123",
+  "Nombre": "American Job Lanes",
+  "Email": "Empresa1@gmail.com",
+  "Contraseña": "$2a$10$nTD2ystrlJoOzX1.03unR.i1nKP0oX4koIDtaEXn1VVVmMU9JltnO",
   "Rol": "Empresa",
-  "Descripcion": "Descripción de la empresa, Descripción de la empresa, Descripción de la empresa, Descripción de la empresa, Descripción de la empresa, Descripción de la empresa,"
-},
-{
-  "_id": {
-    "$oid": "660c301bddfbc78e22ee2bcc"
-  },
-  "Nombre": "Nombre de la empresa",
-  "Email": "empresa@example.com",
-  "Contraseña": "password123",
-  "Rol": "Empresa",
-  "Descripcion": "Descripción de la empresa",
+  "Descripcion": "Empresa destinada a la fabricacion de componentes software para la mejora de instituciones y servicios",
   "Tags": [],
-  "__v": 0
+  "__v": 0,
+  "FotoPerfil": "1717425986759-200w.gif"
 },
 {
   "_id": {
-    "$oid": "660c32b4ddfbc78e22ee2bcf"
+    "$oid": "665c6fb4750bbdb05282ecea"
   },
-  "Nombre": "ma",
-  "Email": "qweqeq",
-  "Contraseña": "123",
+  "Nombre": "Usuario",
+  "Email": "Usuario1@gmail.com",
+  "Contraseña": "$2a$10$z4WBiFSlNUofUwjfRippf.IHDbtt/skUNGqWMylp86VB28RXjo5SC",
   "Rol": "Desempleado",
-  "Descripcion": "dasdasd",
-  "Edad": 12,
-  "Experiencia_Laboral": 31,
-  "Estudios": "dsad",
-  "Tags": [
-    {
-      "Lenguaje": "javascript",
-      "Puntuacion": 3
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "660c34f1ddfbc78e22ee2bd2"
-  },
-  "Nombre": "adadad",
-  "Email": "1dsadad",
-  "Contraseña": "123",
-  "Rol": "Desempleado",
-  "Descripcion": "asda",
-  "Edad": 12,
-  "Experiencia_Laboral": 123,
-  "Estudios": "asdasd",
-  "Tags": [
-    {
-      "Lenguaje": "python",
-      "Puntuacion": 2
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "660c3526ddfbc78e22ee2bd6"
-  },
-  "Nombre": "adadad",
-  "Email": "1dsddddadad",
-  "Contraseña": "123",
-  "Rol": "Empresa",
-  "Descripcion": "asdasda",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "660c36deddfbc78e22ee2bdd"
-  },
-  "Nombre": "sada",
-  "Email": "1dsddddadads",
-  "Contraseña": "123",
-  "Rol": "Empresa",
-  "Descripcion": "asdasda",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "660fd902eec000cbb2821424"
-  },
-  "Nombre": "Nombre de la empresa",
-  "Email": "admin",
-  "Contraseña": "1",
-  "Rol": "Admin"
-},
-{
-  "_id": {
-    "$oid": "6617d6a3039fcee9cf9b1ef9"
-  },
-  "Nombre": "Sergio Canedo Castro mas largo",
-  "Email": "PruebaD",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "aaaaaaa aaaaaassssss sssss ssssssss sss sss sssss ssssssss sssssss adadasda",
-  "Edad": 19,
-  "Experiencia_Laboral": 1,
-  "Estudios": "Ingenieriaaaa",
-  "Tags": [
-    {
-      "Lenguaje": "C++",
-      "Puntuacion": 1
-    },
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 5
-    },
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 4
-    },
-    {
-      "Lenguaje": "Salesforce",
-      "Puntuacion": 2
-    },
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 5
-    },
-    {
-      "Lenguaje": "Node",
-      "Puntuacion": 2
-    },
-    {
-      "Lenguaje": "Python",
-      "Puntuacion": 3
-    }
-  ],
-  "__v": 34,
-  "CurriculumPDF": "CV.pdf"
-},
-{
-  "_id": {
-    "$oid": "6622a404ff59d188c2d1fe42"
-  },
-  "Nombre": "a",
-  "Email": "xdporfina",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "a",
-  "Edad": 1,
-  "Experiencia_Laboral": 1,
-  "Estudios": "a",
-  "Tags": [
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 3
-    },
-    {
-      "Lenguaje": "Node",
-      "Puntuacion": 4
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662684d26c11b0bbe7f92b54"
-  },
-  "Nombre": "sda",
-  "Email": "ret",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "dasda",
-  "Edad": 12,
-  "Experiencia_Laboral": 1,
-  "Estudios": "asda",
-  "Tags": [
-    {
-      "Lenguaje": "Java",
-      "Puntuacion": 3
-    },
-    {
-      "Lenguaje": "Node",
-      "Puntuacion": 2
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662684fa6c11b0bbe7f92b57"
-  },
-  "Nombre": "f",
-  "Email": "xdd",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "s",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662685ec6c11b0bbe7f92b5c"
-  },
-  "Nombre": "zaasdad",
-  "Email": "pruebaEdds",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "c",
-  "Edad": 3,
-  "Experiencia_Laboral": 3,
-  "Estudios": "asdada",
-  "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 2
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662685f56c11b0bbe7f92b60"
-  },
-  "Nombre": "zaasdad",
-  "Email": "pruebaEddsd",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "s",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "6626882e6c11b0bbe7f92b74"
-  },
-  "Nombre": "asda",
-  "Email": "cxcx",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "sdadad",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "66268a016c11b0bbe7f92b78"
-  },
-  "Nombre": "asda",
-  "Email": "pruebaE",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": " nosdaz",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662d0e624c75fd77019e85e9"
-  },
-  "Nombre": "empresa",
-  "Email": "empresa",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "a",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662d0e8c4c75fd77019e8606"
-  },
-  "Nombre": "usuario",
-  "Email": "usuario",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "a",
-  "Edad": 12,
+  "Descripcion": "something pa tener aqui",
+  "Edad": 54,
   "Experiencia_Laboral": 12,
   "Estudios": "Ingenieria",
   "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 1
-    },
     {
       "Lenguaje": "Node",
       "Puntuacion": 4
     },
     {
       "Lenguaje": "C++",
-      "Puntuacion": 3
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662e6b946ee4f8b1020f5e22"
-  },
-  "Nombre": "a",
-  "Email": "sss",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "a",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "663905df5da33ec34c736575"
-  },
-  "Nombre": "admin",
-  "Email": "admin",
-  "Contraseña": "1",
-  "Rol": "admin"
-},
-{
-  "_id": {
-    "$oid": "663b6b23a557cb266dde1b76"
-  },
-  "Nombre": "Progaafa",
-  "Email": "12121",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "swdfaf",
-  "Edad": 12,
-  "Experiencia_Laboral": 12,
-  "Estudios": "Ingenieria",
-  "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 2
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "663b7105284e5bae9732ac26"
-  },
-  "Nombre": "asdadadad",
-  "Email": "rrr",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "asdadadasdadasda",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "663b712f284e5bae9732ac29"
-  },
-  "Nombre": "asfasfa",
-  "Email": "no",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "safsafaf",
-  "Edad": 12,
-  "Experiencia_Laboral": 3,
-  "Estudios": "qywead",
-  "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 2
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "663b751ecc5d4ed7eac3d370"
-  },
-  "Nombre": "asfasfa",
-  "Email": "pdfprueba",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "safsafaf",
-  "Edad": 12,
-  "Experiencia_Laboral": 3,
-  "Estudios": "qywead",
-  "Tags": [
-    {
-      "Lenguaje": "Javascript",
-      "Puntuacion": 2
-    }
-  ],
-  "CurriculumPDF": "jaja",
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "663b77fc28fb1bbd3bf728ac"
-  },
-  "Nombre": "asda",
-  "Email": "u",
-  "Contraseña": "1",
-  "Rol": "Empresa",
-  "Descripcion": "ddddddddddd",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "663b783b28fb1bbd3bf728b2"
-  },
-  "Nombre": "cccccccccccccccc",
-  "Email": "uu",
-  "Contraseña": "1",
-  "Rol": "Desempleado",
-  "Descripcion": "ccccccccccccccccccc",
-  "Edad": 60,
-  "Experiencia_Laboral": 31,
-  "Estudios": "Ingenieria",
-  "Tags": [
-    {
-      "Lenguaje": "Javascript",
       "Puntuacion": 4
     }
   ],
-  "__v": 0
+  "__v": 1,
+  "CurriculumPDF": "1717448865377-CV.pdf"
 },
 {
   "_id": {
-    "$oid": "663bbc9cc1bfa081f3c1efe2"
+    "$oid": "665c71ae750bbdb05282ed22"
   },
-  "Nombre": "Caca",
-  "Email": "p",
-  "Contraseña": "1",
+  "Nombre": "Numeros",
+  "Email": "Usuario2@gmail.com",
+  "Contraseña": "$2a$10$vU5ClWvys3E8h45yx4qhYO8NdNlHLIbLKgJUk56fklyDve3d3xvAW",
   "Rol": "Desempleado",
-  "Descripcion": "cacaca",
-  "Edad": 51,
+  "Descripcion": "asddad",
+  "Edad": 32,
   "Experiencia_Laboral": 12,
-  "Estudios": "Ingenieria",
+  "Estudios": "algunos",
   "Tags": [
     {
       "Lenguaje": "Node",
-      "Puntuacion": 3
+      "Puntuacion": 2
     },
     {
-      "Lenguaje": "Javascript",
+      "Lenguaje": "Java",
       "Puntuacion": 1
     }
   ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "664b4bc796ef437630f79b63"
-  },
-  "Nombre": "olalal",
-  "Email": "pruebaencriptado",
-  "Contraseña": "$2b$10$AxT98IH3Snajs.M0ZIOJ0uVqki0AXxzm9ePwQ1woAS1R7T2FxTUwW",
-  "Rol": "Desempleado",
-  "Descripcion": "sadadad",
-  "Edad": 19,
-  "Experiencia_Laboral": 1,
-  "Estudios": "Ingenieria",
-  "Tags": [
-    {
-      "Lenguaje": "C",
-      "Puntuacion": 3
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "664b520a18139e8cfa1fcbaf"
-  },
-  "Nombre": "papapga",
-  "Email": "pruevaencriptado",
-  "Contraseña": "$2b$10$APsdIKYwGXDm/tEUijefMOk3skRE2hIWrQRNXK2DKX/LBpSV25HuS",
-  "Rol": "Empresa",
-  "Descripcion": "sdaa",
-  "Tags": [],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "664b588f28ce957e291e6df6"
-  },
-  "Nombre": "ADMIN",
-  "Email": "ADMIN1",
-  "Contraseña": "$2b$10$wXC8UeqL7p/xNUU/k0ihfOMjRXZqoEysjH1VNFC5PABChIYgVmDba",
-  "Rol": "Admin"
+  "__v": 8,
+  "CurriculumPDF": "1717360228502-CV.pdf",
+  "FotoPerfil": "1717425617343-1555f644-4a98-483f-a75e-09b9c0c1cec7.jpg"
 }]

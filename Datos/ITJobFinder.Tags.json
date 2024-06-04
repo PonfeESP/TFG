@@ -6,33 +6,14 @@
 },
 {
   "_id": {
-    "$oid": "6622851d234dbd99922761b0"
-  },
-  "Nombre": "Javascript"
-},
-{
-  "_id": {
     "$oid": "6622852c234dbd99922761b2"
   },
   "Nombre": "Node"
 },
 {
   "_id": {
-    "$oid": "66228535234dbd99922761b4"
-  },
-  "Nombre": "Python"
-},
-{
-  "_id": {
-    "$oid": "662286cdc65d0af4b1e03228"
+    "$oid": "665b5ebbdb8ddc34e2c1c2bb"
   },
   "Nombre": "C++",
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "662286e7ff59d188c2d1fdf0"
-  },
-  "Nombre": "C",
   "__v": 0
 }]

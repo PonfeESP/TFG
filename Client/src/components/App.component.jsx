@@ -14,20 +14,6 @@ import { Oferta } from '../pages/Ofertas/Oferta.page';
 import { Empresa } from '../pages/Usuario/Componentes/ComponentesDesempleado/SubComponenteEmpresa/Empresa.componente';
 import { User } from '../pages/Usuario/Componentes/ComponentesEmpresa/SubComponenteUsuario/Usuario.componente';
 import { Evento } from '../pages/Eventos/Evento.Page';
-import { Admin } from '../pages/Admin/Admin.page';
-import { Desempleado } from '../pages/Desempleado/Desempleado.page';
-import { OfertaUnica } from '../pages/Oferta/OfertaUnica.page';
-import { EventoUnico } from '../pages/Evento/EventoUnico.page';
-import { PaginaDesempleadoOrdenada } from '../pages/Desempleado/Componentes/PaginaDesempleadoOrdenada';
-import { PaginaDesempleadoEmpresa } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresa';
-import { PaginaDesempleadoEvento } from '../pages/Desempleado/Componentes/PaginaDesempleadoEvento';
-import { PaginaDesempleadoEventoInteres } from '../pages/Desempleado/Componentes/PaginaDesempleadoEventoInteres';
-import { PaginaDesempleadoModificacion } from '../pages/Desempleado/Componentes/PaginaDesempleadoModificacion';
-import { PaginaDesempleadoEmpresaUnica } from '../pages/Desempleado/Componentes/PaginaDesempleadoEmpresaUnica';
-import { PaginaEmpresaUsuario } from '../pages/Empresa/Componentes/PaginaEmpresaUsuario';
-import { PaginaEmpresaUsuarioUnico } from '../pages/Empresa/Componentes/PaginaEmpresaUsuarioUnico';
-import { PaginaEmpresaEvento } from '../pages/Empresa/Componentes/PaginaEmpresaEvento';
-import { PaginaEmpresaModificacion } from '../pages/Empresa/Componentes/PaginaEmpresaModificacion';
 
 
 
@@ -66,21 +52,6 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route exact path="/" element={<Home />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="/desempleado" element={<Desempleado />}>
-                        <Route path="ofertas" element={<PaginaDesempleadoOrdenada />} />
-                        <Route path="empresas" element={<PaginaDesempleadoEmpresa />} />
-                        <Route path="empresas/:idEmpresa" element={<PaginaDesempleadoEmpresaUnica />} />
-                        <Route path="eventos" element={<PaginaDesempleadoEvento />} />
-                        <Route path="eventos_Interesado" element={<PaginaDesempleadoEventoInteres />} />
-                        <Route path="modificacion" element={<PaginaDesempleadoModificacion />} />
-                    </Route>
-                    <Route path="/empresa" element={<Empresa />} >
-                        <Route path="usuarios" element={<PaginaEmpresaUsuario />} />
-                        <Route path="usuarios/:idUsuario" element={<PaginaEmpresaUsuarioUnico />} />
-                        <Route path="eventos" element={<PaginaEmpresaEvento />} />
-                        <Route path="modificacion" element={<PaginaEmpresaModificacion />} />
-                    </Route>
                     <Route path="/usuario" element={<Usuario />} />
                     <Route path="/empresa/:idEmpresa" element={<Empresa />} />
                     <Route path="/usuario/:idUsuario" element={<User />} />
