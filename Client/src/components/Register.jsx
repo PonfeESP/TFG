@@ -377,7 +377,6 @@ export const Register = () => {
                                     label="Nombre"
                                     fullWidth
                                     variant="outlined"
-                                    sx={{ height: '50px' }}
                                     onKeyDown={(e) => {
                                         const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                         const isLetter = /^[a-zA-Z\s]$/;
@@ -397,7 +396,6 @@ export const Register = () => {
                                     label="Descripcion de la Empresa"
                                     fullWidth
                                     variant="outlined"
-                                    sx={{ height: '50px' }}
                                     onKeyDown={(e) => {
                                         const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                         const isLetter = /^[a-zA-Z]$/;
@@ -417,7 +415,6 @@ export const Register = () => {
                                     label="Correo"
                                     fullWidth
                                     variant="outlined"
-                                    sx={{ height: '50px' }}
                                     error={userError}
                                     helperText={userError && 'Por favor, ingrese un correo válido.'}
                                 />
@@ -472,7 +469,6 @@ export const Register = () => {
                                             label="Nombre"
                                             fullWidth
                                             variant="outlined"
-                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                                 const isLetter = /^[a-zA-Z]$/;
@@ -491,7 +487,6 @@ export const Register = () => {
                                             label="Descripcion"
                                             fullWidth
                                             variant="outlined"
-                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                                 const isLetter = /^[a-zA-Z]$/;
@@ -512,7 +507,6 @@ export const Register = () => {
                                             label="Edad"
                                             fullWidth
                                             variant="outlined"
-                                            sx={{ height: '50px' }}
                                             inputProps={{ maxLength: 2 }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -532,7 +526,6 @@ export const Register = () => {
                                             label="Años trabajados"
                                             fullWidth
                                             variant="outlined"
-                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
                                                 const isNumber = /^[0-9]$/;
@@ -552,7 +545,6 @@ export const Register = () => {
                                             label="Estudios"
                                             fullWidth
                                             variant="outlined"
-                                            sx={{ height: '50px' }}
                                             onKeyDown={(e) => {
                                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
                                                 const isLetter = /^[a-zA-Z]$/;
@@ -636,7 +628,6 @@ export const Register = () => {
                                             label="Correo"
                                             fullWidth
                                             variant="outlined"
-                                            sx={{ height: '50px' }}
                                             error={userError}
                                             helperText={userError && 'Por favor, ingrese un correo válido.'}
                                         />
