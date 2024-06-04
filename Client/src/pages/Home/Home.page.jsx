@@ -52,9 +52,9 @@ export const Home = () => {
           </Typography>
           <Typography>
             <ul>
-              <li>Búsqueda de empleo más amplia: acceda a una gama más amplia de ofertas de trabajo de diversas empresas e industrias.</li>
-              <li>Filtros de búsqueda específicos: utilice filtros para refinar su búsqueda según habilidades específicas, experiencia, ubicación y salario deseado.</li>
-              <li>Investigación de empresas: obtenga más información sobre posibles empleadores a través de perfiles y reseñas de empresas.</li>
+              <li>Búsqueda de empleo más amplia: acceda a una gama más amplia de ofertas de trabajo de diversas empresas y subsectores de informatica.</li>
+              <li>Filtros de búsqueda específicos: utilice filtros para refinar su búsqueda según habilidades específicas, experiencia.</li>
+              <li>Investigación de empresas: obtenga más información sobre posibles empleadores a través de perfiles</li>
               <li>Proceso de solicitud simplificado: solicite empleo directamente a través de la aplicación, a menudo con sistemas simplificados.</li>
             </ul>
           </Typography>
