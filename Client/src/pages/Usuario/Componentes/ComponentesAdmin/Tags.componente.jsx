@@ -74,7 +74,7 @@ const TagsPage = () => {
     );
 
     return (
-        <Container>
+        <Container >
             <Typography variant="h4" gutterBottom>
                 Tags
             </Typography>
