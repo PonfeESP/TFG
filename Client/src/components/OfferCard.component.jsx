@@ -231,7 +231,7 @@ export default function OfferCard({ props, userId, userType }) {
               props.Empresa.FotoPerfil ? (
                 <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${props.Empresa.FotoPerfil}` } />
               ) : (
-                <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
+                <Avatar aria-label="business" sx={{ bgcolor: 'gray' }}>
                   {`${props.Nombre.charAt(0).toUpperCase()}`}
                 </Avatar>
               )

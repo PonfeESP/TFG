@@ -48,7 +48,6 @@ export default function EventCard({ event, userId, userType }) {
 
   useEffect(() => {
     setAforoActual(event.Aforo - event.Interesados.length);
-    console.log("aforo", event.Aforo - event.Interesados.length)
   }, [event.Aforo, event.Interesados]);
 
   const handleExpandClick = () => {
@@ -65,6 +64,7 @@ export default function EventCard({ event, userId, userType }) {
   };
 
   const handleInterest = () => {
+  console.log("ppp", userId, event._id)
     axios({
       ...axiosConfig,
       url: 'http://localhost:8000/solicitud_evento',
@@ -76,7 +76,6 @@ export default function EventCard({ event, userId, userType }) {
     })
       .then(res => {
         console.log('Solicitud enviada con éxito');
-        setIsRegistered(true);
         setIsInterested(true);
       })
       .catch(err => {
@@ -100,7 +99,6 @@ export default function EventCard({ event, userId, userType }) {
     })
       .then(res => {
         console.log('Usuario eliminado de la lista de interesados con éxito');
-        setIsRegistered(false);
         setIsInterested(false);
       })
       .catch(err => {
@@ -121,9 +119,6 @@ export default function EventCard({ event, userId, userType }) {
     setAnchorEl(null);
   };
 
-  console.log("vvvvaaaaa", event)
-
-
   if (userType === 'Empresa') {
     return (
       <Card sx={{ maxWidth: 750 }}>
@@ -132,8 +127,9 @@ export default function EventCard({ event, userId, userType }) {
             event.Empresa.FotoPerfil ? (
               <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}` } />
             ) : (
-              <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
-                {`${event.Empresa.Nombre.charAt(0).toUpperCase()}`}
+              <Avatar aria-label="business" sx={{ bgcolor: 'gray'
+               }}>
+                {`${event.Nombre.charAt(0).toUpperCase()}`}
               </Avatar>
             )
           }
@@ -189,8 +185,8 @@ export default function EventCard({ event, userId, userType }) {
             event.Empresa.FotoPerfil ? (
               <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}` } />
             ) : (
-              <Avatar aria-label="business" sx={{ bgcolor: avatarColor }}>
-                {`${event.Empresa.Nombre.charAt(0).toUpperCase()}`}
+              <Avatar aria-label="business" sx={{ bgcolor: 'gray' }}>
+                {`${event.Nombre.charAt(0).toUpperCase()}`}
               </Avatar>
             )
           }
@@ -200,7 +196,7 @@ export default function EventCard({ event, userId, userType }) {
             </IconButton>
           }
           title={event.Nombre}
-          subheader={`Fecha: ${dayjs(event.Fecha).format("DD/MM/YYYY")}, Aforo: ${aforoActual}, Localización: ${event.Localizacion}, Publicada el ${dayjs(event.Fecha_Creacion).format("DD/MM/YYYY")} por ${event.Empresa.Nombre}`}
+          subheader={`Fecha: ${dayjs(event.Fecha).format("DD/MM/YYYY")}, Aforo: ${event.Aforo - event.Registrados.length}, Localización: ${event.Localizacion}, Publicada el ${dayjs(event.Fecha_Creacion).format("DD/MM/YYYY")} por ${event.Empresa.Nombre}`}
         />
         <Menu
           id="menu"
@@ -227,7 +223,7 @@ export default function EventCard({ event, userId, userType }) {
               No me interesa
             </Button>
           ) : (
-            <Button variant="contained" onClick={handleInterest} disabled={aforoActual === 0}>
+            <Button variant="contained" onClick={handleInterest} >
               <FavoriteIcon sx={{ mr: 1 }} />
               Me interesa
             </Button>

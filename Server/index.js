@@ -987,10 +987,6 @@ app.put('/solicitud_evento', async (req, res) => {
         return res.status(400).json({ error: 'El usuario ya está registrado para esta oferta' });
       }
 
-      if (evento.Interesados.length >= evento.Aforo) {
-        return res.status(400).json({ error: 'El evento ha alcanzado su límite de interesados' });
-      }
-
       evento.Interesados.push(userId);
       await evento.save();
 

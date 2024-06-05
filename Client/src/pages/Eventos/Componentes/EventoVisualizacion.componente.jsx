@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Typography, Box, Grid, Chip, Card, CardContent, CardMedia, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
+    Typography, Box, Grid, Dialog, DialogActions, DialogContent, DialogTitle, Chip, Card, CardContent, CardMedia, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -22,6 +22,8 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isInterested, setIsInterested] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
+    const [errorMessageOpen, setErrorMessageOpen] = useState(false);
+    const [errorMessageContent, setErrorMessageContent] = useState('');
 
     useEffect(() => {
         const url =
@@ -77,7 +79,6 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
     const handleInterest = () => {
         const idEvento = eventoData._id;
-        console.log(idEvento)
         if (isInterested) {
             handleDisinterest();
         } else {
@@ -107,27 +108,32 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
     const handleRegister = () => {
         const idEvento = eventoData._id;
-        axios({
-            ...axiosConfig,
-            url: 'http://localhost:8000/solicitud_registro',
-            method: 'PUT',
-            data: {
-                userId: userId,
-                eventId: idEvento
-            }
-        })
-            .then(res => {
-                console.log('Registro realizado con éxito');
-                setIsRegistered(true); // Actualizar el estado para reflejar el registro exitoso
-            })
-            .catch(err => {
-                console.error(err);
-                if (err.response && err.response.status === 400) {
-                    setErrorMessage(err.response.data.error);
-                } else {
-                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+        if (eventoData.Aforo - eventoData.Interesados.length > 0) {
+            axios({
+                ...axiosConfig,
+                url: 'http://localhost:8000/solicitud_registro',
+                method: 'PUT',
+                data: {
+                    userId: userId,
+                    eventId: idEvento
                 }
-            });
+            })
+                .then(res => {
+                    console.log('Registro realizado con éxito');
+                    setIsRegistered(true);
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (err.response && err.response.status === 400) {
+                        setErrorMessage(err.response.data.error);
+                    } else {
+                        setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                    }
+                });
+        } else {
+            setErrorMessageContent('No hay plazas disponibles');
+            setErrorMessageOpen(true);
+        }
     };
 
     const handleCancelRegistration = () => {
@@ -332,8 +338,19 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                             </Grid>
                         </CardContent>
                     </Card>
+                    <Dialog open={errorMessageOpen} onClose={() => setErrorMessageOpen(false)}>
+                        <DialogTitle>Error</DialogTitle>
+                        <DialogContent dividers>
+                            <Typography>{errorMessageContent}</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setErrorMessageOpen(false)}>Cerrar</Button>
+                        </DialogActions>
+                    </Dialog>
+
                 </Box>
             </Box>
+
         );
     } else if (userType === 'Empresa') {
         return (

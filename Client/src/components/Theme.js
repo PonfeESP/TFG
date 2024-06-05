@@ -46,7 +46,7 @@ export const theme = createTheme({
                         color: '#FFFFFF', // Cambia el color del texto de los campos de texto
                     },
                     '& .MuiOutlinedInput-input': {
-                        height: '68%',
+                        height: '35%',
                         backgroundColor: '#818181', // Cambia el color de fondo del campo de texto
                         '&:focus': {
                             backgroundColor: '#A6C0B4', // Cambia el color de fondo cuando el campo está enfocado

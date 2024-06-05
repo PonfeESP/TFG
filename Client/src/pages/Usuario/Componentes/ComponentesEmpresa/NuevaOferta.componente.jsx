@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
 import { ThemeProvider } from '@mui/material/styles';
-import { Button, Autocomplete, Rating, TextField, Dialog, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box } from '@mui/material';
+import { Button, Autocomplete, Rating, Chip, TextField, Dialog, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box } from '@mui/material';
 import theme from '../../../../components/Theme.js';
 import Fondo from '../../../../Imagenes/HeaderDefinitivo2.jpg';
 
@@ -20,7 +20,7 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
     const [descripcion, setDescripcion] = useState("");
     const [tags, setTags] = useState([]);
     const [tagsExperience, setTagsExperience] = useState({});
-    const [tagsError, setTagsError] = useState({});
+    const [tagsError, setTagsError] = useState(false);
     const [error, setError] = useState('');
     const [nombreError, setNombreError] = useState(false);
     const [descripcionError, setDescripcionError] = useState(false);
@@ -165,7 +165,6 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
                             id="nombre"
                             label="Nombre"
                             fullWidth
-                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
@@ -185,7 +184,6 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
                             id="descripcion"
                             label="Descripcion"
                             fullWidth
-                            sx={{ height: '50px' }}
                             variant="outlined"
                             onKeyDown={(e) => {
                                 const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
@@ -209,21 +207,26 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
                                 <TextField
                                     {...params}
                                     variant="standard"
-                                    label="Tags (Programming Languages)"
+                                    label="Tags"
                                     placeholder="Select tags"
                                     fullWidth
                                     error={tagsError}
                                     helperText={tagsError && 'Por favor, seleccione al menos un tag.'}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        sx: { background: 'white' }
+                                    }}
                                 />
                             )}
                         />
                         {tags.map(tag => (
-                            <Box key={tag.value}>
-                                <span>{tag.label}</span>
+                            <Box key={tag.value} sx={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                                <Chip style={{ color: 'white', backgroundColor: 'green', marginRight: '10px' }} label={tag.label} />
                                 <Rating
-                                    name={tag.value}
-                                    value={tagsExperience[tag.value] || 0}
+                                    name={`rating-${tag.value}`}
+                                    value={tagsExperience[tag.value] || 1}
                                     onChange={(event, value) => handleExperienceChange(event, value, tag.value)}
+                                    sx={{ '& .MuiRating-icon': { height: '24px', width: '24px' } }} // Ajusta el tamaño de las estrellas
                                 />
                             </Box>
                         ))}
