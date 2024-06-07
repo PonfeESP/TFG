@@ -26,14 +26,9 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
     const [errorMessageContent, setErrorMessageContent] = useState('');
 
     useEffect(() => {
-        const url =
-            userType === 'Desempleado'
-                ? `http://localhost:8000/eventoUnicoDesempleado/${eventoId}`
-                : `http://localhost:8000/eventoUnicoEmpresa/${eventoId}`;
-
         axios({
             ...axiosConfig,
-            url: url,
+            url: `http://localhost:8000/eventoUnico/${eventoId}`,
             method: 'GET'
         })
             .then(res => {
@@ -42,7 +37,6 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                     setEventoData(res.data);
                 } else if (userType === 'Empresa') {
                     setEventoData2(res.data);
-                    console.log("PPPP", eventoData2)
                 }
             })
             .catch(err => {

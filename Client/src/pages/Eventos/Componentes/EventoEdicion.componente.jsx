@@ -17,7 +17,7 @@ const Evento = ({ eventoId }) => {
     useEffect(() => {
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/eventoUnicoEmpresa/${eventoId}`,
+            url: `http://localhost:8000/eventoUnico/${eventoId}`,
             method: 'GET'
         })
             .then(res => {

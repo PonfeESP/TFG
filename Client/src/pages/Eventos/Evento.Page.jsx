@@ -22,26 +22,41 @@ export const Evento = () => {
     const [activeComponent, setActiveComponent] = useState('visualizar');
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
+    const [isOwner, setIsOwner] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        axios({
-            ...axiosConfig,
-            url: 'http://localhost:8000/user',
-            method: 'GET'
-        })
-            .then(res => {
+        const fetchUserData = async () => {
+            try {
+                const res = await axios({
+                    ...axiosConfig,
+                    url: 'http://localhost:8000/user',
+                    method: 'GET'
+                });
                 setUserType(res.data.userType);
                 setUserId(res.data.id);
-                setFinishLoading(!!res.data && !!res.data.userType);
-                if (userType === 'Desempleado') {
-                    setActiveComponent('visualizar');
-                } else if (userType === 'Empresa') {
-                    setActiveComponent('visualizar');
-                }
-            })
-            .catch(err => console.log(err));
-    }, []);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        const fetchEventoData = async () => {
+            try {
+                const res = await axios({
+                    ...axiosConfig,
+                    url: `http://localhost:8000/eventoUnico/${idEvento}`,
+                    method: 'GET'
+                });
+                setIsOwner(res.data.Empresa._id === userId);
+                setFinishLoading(true);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchUserData();
+        fetchEventoData();
+    }, [idEvento, userId]);
 
     const handleMostrarEvento = () => setActiveComponent('visualizar');
     const handleEditarEvento = () => setActiveComponent('editar');
@@ -116,12 +131,12 @@ export const Evento = () => {
                     navigate('/usuario', { state: { valor: 'perfil' } });
                 }}
             />
-            {userType === 'Desempleado' && (
+            {userType === 'Desempleado' || userType === 'Empresa' && !isOwner && (
                 <>
                     {activeComponent === 'visualizar' && <EventoVisualizacion eventoId={idEvento} userId={userId} userType={userType} />}
                 </>
             )}
-            {userType === 'Empresa' && (
+            {userType === 'Empresa' && isOwner && (
                 <div>
                     <div style={{ position: 'fixed', right: '3%', bottom: '3%', zIndex: '1000' }}>
                         <SpeedDial

@@ -358,7 +358,6 @@ export const Register = () => {
         localStorage.setItem('confirm-password', nuevopass); // Guarda el nuevo valor en el almacenamiento
     };
 
-    // Cargar el valor inicial del nombre cuando el componente se monte
     useEffect(() => {
         const nombreGuardado = localStorage.getItem('nombre');
         if (nombreGuardado) {

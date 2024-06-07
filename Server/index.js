@@ -285,7 +285,7 @@ app.get('/interesado_evento/:userId', async (req, res) => {
   }
 });
 
-app.get('/eventoUnicoDesempleado/:id', async (req, res) => {
+app.get('/eventoUnico/:id', async (req, res) => {
   try {
     const evento = await Evento.findById(req.params.id).populate('Empresa', 'Nombre');
 
@@ -294,20 +294,6 @@ app.get('/eventoUnicoDesempleado/:id', async (req, res) => {
     }
 
     console.log("QUE", evento)
-
-    res.json(evento);
-  } catch (error) {
-    res.status(500).json({ error: 'Fallo del servidor' });
-  }
-});
-
-app.get('/eventoUnicoEmpresa/:id', async (req, res) => {
-  try {
-    const evento = await Evento.findById(req.params.id);
-
-    if (!evento) {
-      return res.status(404).json({ error: 'Evento no encontrado' });
-    }
 
     res.json(evento);
   } catch (error) {
