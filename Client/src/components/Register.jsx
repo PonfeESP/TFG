@@ -125,6 +125,12 @@ export const Register = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const isValidEmail = (email) => {
+        console.log("Hewllo")
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };    
+
     const handleTagsChange = (event, value) => {
         const uniqueTags = [...new Set(value.map(tag => tag.label))].map(label => {
             return value.find(tag => tag.label === label);
@@ -154,18 +160,19 @@ export const Register = () => {
         setUserError(false);
         setEmailError(false);
         setPasswordError(false);
+        setConfirmPasswordError(false);
         setRegistroError('');
         setNombreError(false);
         setDescripcionError(false);
 
-        if (email === '') setUserError(true);
+        if (email === '' || !isValidEmail(email)) setUserError(true);
         if (password === '') setPasswordError(true);
         if (descripcion === '') setDescripcionError(true);
         if (nombre === '') setNombreError(true);
-        setConfirmPasswordError(confirmPassword === '' || confirmPassword !== password);
+        if (password !== confirmPassword) setConfirmPasswordError(true);
 
 
-        if (!!nombre && !!email && !!password && !!descripcion) {
+        if (nombre && descripcion && isValidEmail(email) && password && password === confirmPassword) {
             const userData = {
                 Nombre: nombre,
                 Email: email,
@@ -226,11 +233,10 @@ export const Register = () => {
                 }
                 break;
             case 3:
-                if (email === '' || password === '' || confirmPassword === '') {
-                    setUserError(email === '');
+                if (!isValidEmail(email) || !password || !confirmPassword || password !== confirmPassword) {
+                    setUserError(!isValidEmail(email));
                     setPasswordError(password === '');
-                    setConfirmPasswordError(confirmPassword === '' || confirmPassword !== password);
-                    console.log("WHY", confirmPasswordError)
+                    setConfirmPasswordError(!confirmPassword || password !== confirmPassword);
                     return;
                 }
                 break;
