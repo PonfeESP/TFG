@@ -71,18 +71,18 @@ export const Evento = () => {
                     userId: userId,
                 }
             })
-            .then(res => {
-                console.log('Solicitud enviada con éxito');
-                navigate(-1);
-            })
-            .catch(err => {
-                console.log(err);
-                if (err.response && err.response.status === 400) {
-                    setErrorMessage(err.response.data.error);
-                } else {
-                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
-                }
-            });
+                .then(res => {
+                    console.log('Solicitud enviada con éxito');
+                    navigate(-1);
+                })
+                .catch(err => {
+                    console.log(err);
+                    if (err.response && err.response.status === 400) {
+                        setErrorMessage(err.response.data.error);
+                    } else {
+                        setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                    }
+                });
         } catch (error) {
             console.error('Error al eliminar la oferta:', error.message);
         }
@@ -95,7 +95,8 @@ export const Evento = () => {
             const confirmed = window.confirm('¿Estás seguro de que quieres eliminar esta oferta?');
             if (confirmed) {
                 deleteEvento(idEvento, userId);
-            }        } else if (action === 'visualizar') {
+            }
+        } else if (action === 'visualizar') {
             setActiveComponent('visualizar');
         }
     };
@@ -103,6 +104,7 @@ export const Evento = () => {
     if (!finishLoading) {
         return <div>Loading...</div>;
     }
+
 
     return (
         <>
@@ -131,7 +133,12 @@ export const Evento = () => {
                     navigate('/usuario', { state: { valor: 'perfil' } });
                 }}
             />
-            {userType === 'Desempleado' || userType === 'Empresa' && !isOwner && (
+            {userType === 'Desempleado' && (
+                <>
+                    {activeComponent === 'visualizar' && <EventoVisualizacion eventoId={idEvento} userId={userId} userType={userType} />}
+                </>
+            )}
+            {userType === 'Empresa' && !isOwner && (
                 <>
                     {activeComponent === 'visualizar' && <EventoVisualizacion eventoId={idEvento} userId={userId} userType={userType} />}
                 </>

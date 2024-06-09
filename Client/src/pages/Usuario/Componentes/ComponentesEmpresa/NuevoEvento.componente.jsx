@@ -22,6 +22,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
     const [aforoError, setAforoError] = useState(false);
     const [fechaError, setFechaError] = useState(false);
     const [errorHora, setErrorHora] = useState('');
+    const [horaError, setHoraError] = useState(false);
     const [descripcionError, setDescripcionError] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -41,45 +42,43 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
         setOpen(false);
     };
 
-    useEffect(() => {
-        if (fecha && hora && !errorHora) {
-            const fechaHora = new Date(`${fecha}T${hora}:00.000Z`);
-            setFechaHoraFormato(fechaHora.toISOString());
-        }
-    }, [fecha, hora, errorHora]);
-
-    const handleChangeHora = (e) => {
-        const inputHora = e.target.value;
-        const regexHora = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!regexHora.test(inputHora)) {
-            setErrorHora('Formato de hora inválido');
-        } else {
-            setErrorHora('');
-        }
-        setHora(inputHora);
-    };
-
 
     const handleRegistrarNuevaEvento = () => {
 
+        const regexHora = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!regexHora.test(hora)) {
+            setHoraError(true);
+        }
         if (nombre === '') {
             setNombreError(true);
         }
-
         if (descripcion === '') {
             setDescripcionError(true);
         }
+        if (aforo === '') {
+            setAforoError(true);
+        }
+        if (fecha === '') {
+            setFechaError(true);
+        }
+        if (hora === '') {
+            setHoraError(true);
+        }
+        if (localizacion === '') {
+            setLocalizacionError(true);
+        }
 
-        if (!nombre || !descripcion) {
+        if (!nombre || !descripcion || !aforo || !fecha || !hora || !localizacion) {
             setError("Por favor, completa todos los campos y asigna una experiencia no nula a todos los tags.");
             return;
         }
+        const fechaHora = new Date(`${fecha}T${hora}:00.000Z`);
 
         const eventoData = {
             Nombre: nombre,
             Descripcion: descripcion,
             Localizacion: localizacion,
-            Fecha: fechaHoraFormato,
+            Fecha: fechaHora,
             Aforo: aforo,
             Empresa: userId
         };
@@ -97,6 +96,10 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                 console.log('evento registrada con éxito:', res.data);
                 setNombre("");
                 setDescripcion("");
+                setAforo("");
+                setFecha("");
+                setHora("");
+                setLocalizacion("");
                 handleModalClose();
                 handleCloseModal();
             })
@@ -186,23 +189,34 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                             helperText={aforoError && 'Por favor, ingrese el aforo.'}
                         />
                         <TextField
+                            required
                             name="Fecha"
                             type="date"
                             value={fecha}
                             onChange={(e) => setFecha(e.target.value)}
                             fullWidth
                             margin="normal"
+                            error={fechaError}
+                            helperText={fechaError && 'Por favor, ingrese una fecha.'}
                         />
                         <TextField
+                            required
                             name="Hora"
                             type="text"
                             value={hora}
-                            onChange={handleChangeHora}
+                            onChange={(e) => setHora(e.target.value)}
                             fullWidth
                             label="Hora"
                             margin="normal"
-                            error={!!errorHora}
-                            helperText={errorHora}
+                            onKeyDown={(e) => {
+                                const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ':'];
+                                const isDigit = /^\d$/;
+                                if (!isDigit.test(e.key) && !allowedKeys.includes(e.key)) {
+                                    e.preventDefault();
+                                }
+                            }}
+                            error={horaError}
+                            helperText={horaError && 'Por favor, ingrese una hora'}
                         />
                         <TextField
                             required

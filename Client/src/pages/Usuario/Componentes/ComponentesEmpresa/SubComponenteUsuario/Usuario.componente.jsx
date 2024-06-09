@@ -31,7 +31,7 @@ export const User = () => {
 
 
     const handleShare = () => {
-        const shareUrl = `${window.location.origin}/empresa/${idUsuario}`;
+        const shareUrl = `${window.location.origin}/usuario/${idUsuario}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             alert('Enlace copiado al portapapeles');
         }).catch(err => {

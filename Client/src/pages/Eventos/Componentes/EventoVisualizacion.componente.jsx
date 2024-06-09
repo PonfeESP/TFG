@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Typography, Box, Grid, Dialog, DialogActions, DialogContent, DialogTitle, Chip, Card, CardContent, CardMedia, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
+    Typography, Box, Grid, Avatar, Dialog, DialogActions, DialogContent, DialogTitle, Chip, Card, CardContent, CardMedia, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -24,11 +24,16 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
     const [isRegistered, setIsRegistered] = useState(false);
     const [errorMessageOpen, setErrorMessageOpen] = useState(false);
     const [errorMessageContent, setErrorMessageContent] = useState('');
+    const [datosUsuarios, setDatosUsuarios] = useState([]);
 
     useEffect(() => {
+        const url =
+            userType === 'Desempleado'
+                ? `http://localhost:8000/eventoUnico/${eventoId}`
+                : `http://localhost:8000/eventoUnicoEmpresa/${eventoId}`;
         axios({
             ...axiosConfig,
-            url: `http://localhost:8000/eventoUnico/${eventoId}`,
+            url: url,
             method: 'GET'
         })
             .then(res => {
@@ -50,6 +55,31 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
             setIsRegistered(eventoData.Registrados.includes(userId));
         }
     }, [userType, eventoData, userId]);
+
+    useEffect(() => {
+        if (userType === 'Empresa' && eventoData2) {
+            async function fetchData() {
+                try {
+                    const promesasDatosUsuarios = eventoData2.Interesados.map(async (idUsuario) => {
+                        const respuesta = await axios({
+                            ...axiosConfig,
+                            url: `http://localhost:8000/usuarios/${idUsuario}`,
+                            method: 'GET'
+                        });
+                        return respuesta.data;
+                    });
+
+                    const arregloDatosUsuarios = await Promise.all(promesasDatosUsuarios);
+                    setDatosUsuarios(arregloDatosUsuarios);
+                } catch (error) {
+                    console.error('Error al obtener los datos de usuario:', error);
+                    setErrors('Error al cargar los datos de la oferta');
+                }
+            }
+
+            fetchData();
+        }
+    }, [userType, eventoData2]);
 
     const handleShare = () => {
         const eventoid = eventoData._id;
@@ -182,6 +212,9 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
     if (!eventoData && userType === 'Desempleado') return <div>Loading...</div>;
     if (!eventoData2 && userType === 'Empresa') return <div>Loading...</div>;
+
+    console.log(eventoData2)
+
 
     if (userType === 'Desempleado') {
         return (
@@ -408,7 +441,19 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                         </Typography>
                                     </Box>
                                 </Grid>
-
+                                <Grid item xs={12}>
+                                <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Fecha
+                                    </Typography>
+                                    <Typography variant="body1" align="center">
+                                        {dayjs(eventoData2.Fecha).format("DD/MM/YYYY")}
+                                    </Typography>
+                                    <Typography variant="body1" align="center">
+                                        {dayjs(eventoData2.Fecha).format("HH:mm")}
+                                    </Typography>
+                                </Box>
+                            </Grid>
                                 <Grid container spacing={2} marginTop={'3px'}>
                                     <Grid item xs={6}>
                                         <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
@@ -439,6 +484,39 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                                 {eventoData2.Localizacion}
                                             </Typography>
                                         </Box>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="h5" gutterBottom align="center">
+                                        Usuarios interesados
+                                    </Typography>
+                                    <Grid container spacing={2}>
+                                        {datosUsuarios.map((usuario, index) => (
+                                            <Grid item xs={12} sm={6} key={index}>
+                                                <Box display="flex" alignItems="center" border={1} borderColor="grey.300" borderRadius={4} p={2} mb={2}>
+                                                    {usuario.FotoPerfil ? (
+                                                        <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${usuario.FotoPerfil}`} />
+                                                    ) : (
+                                                        <Avatar aria-label="business">
+                                                            {`${usuario.Nombre.charAt(0).toUpperCase()}`}
+                                                        </Avatar>
+                                                    )}
+                                                    <Box ml={2}>
+                                                        <Typography variant="h6" gutterBottom>
+                                                            <Link to={`/usuario/${usuario._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                {usuario.Nombre}
+                                                            </Link>
+                                                        </Typography>
+                                                        <Typography variant="body2" mt={1}>
+                                                            Tags:
+                                                            {usuario.Tags.map((tag, index) => (
+                                                                <Chip key={index} label={`${tag.Lenguaje}: ${tag.Puntuacion}`} style={{ marginLeft: '5px' }} />
+                                                            ))}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </Grid>
+                                        ))}
                                     </Grid>
                                 </Grid>
                             </Grid>

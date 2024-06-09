@@ -79,21 +79,25 @@ export const Perfil = ({ userId, userType }) => {
             hasErrors = true;
         }
 
-        if (!userData.Edad.toString().trim()) {
-            newErrors.Edad = 'La edad no puede estar vacía.';
-            hasErrors = true;
-        }
+        if (userType === 'Desempleado') {
 
-        if (!userData.Experiencia_Laboral.toString().trim()) {
-            newErrors.Experiencia_Laboral = 'La experiencia laboral no puede estar vacía.';
-            hasErrors = true;
-        }
+            if (!userData.Edad.toString().trim()) {
+                newErrors.Edad = 'La edad no puede estar vacía.';
+                hasErrors = true;
+            }
 
-        if (!userData.Estudios.trim()) {
-            newErrors.Estudios = 'Los estudios no pueden estar vacíos.';
-            hasErrors = true;
-        }
+            if (!userData.Experiencia_Laboral.toString().trim()) {
+                newErrors.Experiencia_Laboral = 'La experiencia laboral no puede estar vacía.';
+                hasErrors = true;
+            }
 
+            if (!userData.Estudios.trim()) {
+                newErrors.Estudios = 'Los estudios no pueden estar vacíos.';
+                hasErrors = true;
+            }
+
+        }
+        
         if (hasErrors) {
             setErrors(newErrors);
             return;
@@ -680,18 +684,18 @@ export const Perfil = ({ userId, userType }) => {
                     Tu Perfil
                 </Typography>
                 <Box mt={4} textAlign="center" display="flex" flexDirection="column" alignItems="center" marginBottom={'30px'}>
-                            <Typography variant="h5" gutterBottom>
-                                Avatar
-                            </Typography>
-                            <Avatar
-                                alt="Profile Picture"
-                                src={userData.FotoPerfil ? `http://localhost:8000/profileImages/${userData.FotoPerfil}` : ''}
-                                sx={{ width: 150, height: 150, cursor: 'pointer' }}
-                                onClick={toggleImageModal}
-                            >
-                                {userData.fotoPerfil ? null : userData.Nombre.charAt(0).toUpperCase()}
-                            </Avatar>
-                        </Box>
+                    <Typography variant="h5" gutterBottom>
+                        Avatar
+                    </Typography>
+                    <Avatar
+                        alt="Profile Picture"
+                        src={userData.FotoPerfil ? `http://localhost:8000/profileImages/${userData.FotoPerfil}` : ''}
+                        sx={{ width: 150, height: 150, cursor: 'pointer' }}
+                        onClick={toggleImageModal}
+                    >
+                        {userData.fotoPerfil ? null : userData.Nombre.charAt(0).toUpperCase()}
+                    </Avatar>
+                </Box>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center">

@@ -73,16 +73,6 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
         }
     }, [userType, ofertaData2]);
 
-    const handleShare = () => {
-        const ofertaid = ofertaData.oferta._id;
-        const shareUrl = `${window.location.origin}/oferta/${ofertaid}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
-        }).catch(err => {
-            console.error('Error al copiar el enlace: ', err);
-        });
-    };
-
     const handleInterest = () => {
         const idOferta = ofertaData.oferta._id;
         if (isInterested) {
@@ -136,7 +126,25 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
             });
     };
 
-    console.log("WAKLS", datosUsuarios)
+    const handleShare = () => {
+        if (userType === 'Desempleado'){
+        const shareUrl = `${window.location.origin}/oferta/${ofertaData._id}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('Enlace copiado al portapapeles');
+        }).catch(err => {
+            console.error('Error al copiar el enlace: ', err);
+        });
+    }else if (userType === 'Empresa'){
+        const shareUrl = `${window.location.origin}/oferta/${ofertaData2._id}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('Enlace copiado al portapapeles');
+        }).catch(err => {
+            console.error('Error al copiar el enlace: ', err);
+        });
+    }
+    };
+
+    console.log("WAKLS", ofertaData2)
 
     if (!ofertaData && userType === 'Desempleado') return <div>Loading...</div>;
     if (!ofertaData2 && userType === 'Empresa') return <div>Loading...</div>;
@@ -320,7 +328,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                                     top: '50%',
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
-                                    width: '80%', // Ajusta esto según sea necesario
+                                    width: '80%',
                                     textAlign: 'center',
                                 }}
                             >

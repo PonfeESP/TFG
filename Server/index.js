@@ -301,6 +301,22 @@ app.get('/eventoUnico/:id', async (req, res) => {
   }
 });
 
+app.get('/eventoUnicoEmpresa/:id', async (req, res) => {
+  try {
+    const evento = await Evento.findById(req.params.id).populate('Interesados', 'Nombre');
+
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento no encontrado' });
+    }
+
+    console.log("QUE", evento)
+
+    res.json(evento);
+  } catch (error) {
+    res.status(500).json({ error: 'Fallo del servidor' });
+  }
+});
+
 
 app.get('/eventos/:id', async (req, res) => {
   if (req.isAuthenticated()) {
