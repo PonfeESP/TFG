@@ -6,58 +6,32 @@ const TagsSchema = new Schema({
 }, { _id: false });
 
 const userSchema = new Schema({
-    Nombre: {
-        type: String,
-        required: true
-    },
-    Email: {
-        type: String,
-        required: true
-    },
-    Contraseña: {
-        type: String,
-        required: true
-    },
-    Rol: {
-        type: String,
-        required: true
-    },
-    Descripcion: {
-        type: String,
+    Nombre: { type: String, required: true },
+    Email: { type: String, required: true },
+    Contraseña: { type: String, required: true },
+    Rol: { type: String, required: true },
+    Descripcion: { type: String,
         required: function () {
             return this.Rol === 'Empresa' || this.Rol === 'Desempleado';
-        }
-    },
-    Edad: {
-        type: Number,
+        }},
+    Edad: { type: Number,
         required: function () {
             return this.Rol === 'Desempleado';
-        }
-    },
-    Experiencia_Laboral: {
-        type: Number,
+        }},
+    Experiencia_Laboral: { type: Number,
         required: function () {
             return this.Rol === 'Desempleado';
-        }
-    },
-    Estudios: {
-        type: String,
+        }},
+    Estudios: { type: String,
         required: function () {
             return this.Rol === 'Desempleado';
-        }
-    },
-    Tags: {
-        type: [TagsSchema],
+        }},
+    Tags: { type: [TagsSchema],
         required: function () {
             return this.Rol === 'Desempleado';
-        }
-    },
-    CurriculumPDF: {
-        type: String,
-    },
-    FotoPerfil: {
-        type: String,
-    }
+        }},
+    CurriculumPDF: { type: String,},
+    FotoPerfil: {type: String,}
 });
 
 const User = mongoose.model('Usuario', userSchema, 'Usuario');

@@ -462,7 +462,7 @@ app.get('/ofertas_empresa/:id', async (req, res) => {
     try {
       const idEmpresa = req.params.id;
 
-      const ofertas = await Oferta.find({ Empresa: idEmpresa }).populate('Empresa', 'FotoPerfil');;
+      const ofertas = await Oferta.find({ Empresa: idEmpresa }).populate('Empresa', 'FotoPerfil Nombre');;
 
       if (ofertas.length === 0) {
         return res.status(404).json({ error: 'No hay ofertas para esta empresa' });
