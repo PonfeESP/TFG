@@ -25,6 +25,10 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
         setOpenModal(false);
     };
 
+    const handleEventoCreado = () => {
+        fetchEventos();
+    };
+
     const handleChange = (event) => {
         const orderValue = event.target.value;
         setOrder(orderValue);
@@ -51,7 +55,7 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
         setEventosFiltrados(newEventos);
     };
 
-    useEffect(() => {
+    const fetchEventos = () => {
         axios({
             ...axiosConfig,
             url: `http://localhost:8000/eventos_empresa/${userId}`,
@@ -62,16 +66,23 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                 applyFilters(res.data, order);
             })
             .catch(err => console.error("Error fetching data:", err));
+    };
+
+    useEffect(() => {
+        fetchEventos();
     }, [userId, order]);
 
     useEffect(() => {
         applyFilters(eventosOriginales, order, searchTerm);
     }, [eventosOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(eventosFiltrados.length / pageSize);
+    let totalPages = Math.ceil(eventosFiltrados.length / pageSize);
+    
+    if (totalPages === 0){
+        totalPages += 1;
+    }
 
     const currentEventos = eventosFiltrados.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
 
     const goToPage = (page) => {
         setCurrentPage(page);
@@ -132,7 +143,8 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
             >
-                <RegistroEvento userId={userId} handleCloseModal={handleCloseModal} />
+                <RegistroEvento userId={userId} handleCloseModal={handleCloseModal} fetchEventos={fetchEventos} onEventoCreado={handleEventoCreado}
+ />
             </Modal>
         </>
     );

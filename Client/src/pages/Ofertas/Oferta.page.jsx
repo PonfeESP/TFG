@@ -6,7 +6,7 @@ import Inicio from '../../components/Inicio.component';
 import OfertaEdicion from './Componentes/OfertaEdicion.componente';
 import OfertaVisualizacion from './Componentes/OfertaVisualizacion.componente';
 import Header from '../../components/Header2.component';
-import { Typography } from '@mui/material';
+import { Snackbar, Alert  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
@@ -17,7 +17,9 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 export const Oferta = () => {
     const { idOferta } = useParams();
+    const [userData, setUserData] = useState({});
     const [userType, setUserType] = useState('');
+    const [isOwner, setIsOwner] = useState(false);
     const [finishLoading, setFinishLoading] = useState(false);
     const [activeComponent, setActiveComponent] = useState('visualizar');
     const [userId, setUserId] = useState('');
@@ -31,6 +33,7 @@ export const Oferta = () => {
             method: 'GET'
         })
             .then(res => {
+                setUserData(res.data);
                 setUserType(res.data.userType);
                 setUserId(res.data.id);
                 setFinishLoading(!!res.data && !!res.data.userType);
@@ -42,6 +45,18 @@ export const Oferta = () => {
             })
             .catch(err => console.log(err));
     }, []);
+
+    useEffect(() => {
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/oferta/${idOferta}`,
+            method: 'GET'
+        })
+            .then(res => {
+                setIsOwner(res.data.Empresa === userId);
+            })
+            .catch(err => console.log(err));
+    }, [userId]);
 
     const handleMostrarOferta = () => setActiveComponent('visualizar');
     const handleEditarOferta = () => setActiveComponent('editar');
@@ -74,7 +89,6 @@ export const Oferta = () => {
     };
 
     const handleToggleComponent = (action, idOferta, userId) => {
-        console.log("QUE", idOferta, userId)
         if (action === 'editar') {
             setActiveComponent('editar');
         } else if (action === 'eliminar') {
@@ -87,11 +101,10 @@ export const Oferta = () => {
         }
     };
 
-    if (!finishLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
+        !!finishLoading ?
+
         <>
             <Header
                 onMostrarOferta={handleMostrarOferta}
@@ -123,7 +136,12 @@ export const Oferta = () => {
                     {activeComponent === 'visualizar' && <OfertaVisualizacion ofertaId={idOferta} userId={userId} userType={userType} />}
                 </>
             )}
-            {userType === 'Empresa' && (
+            {userType === 'Empresa' && !isOwner && (
+                <>
+                    {activeComponent === 'visualizar' && <OfertaVisualizacion ofertaId={idOferta} userId={userId} userType={userType} />}
+                </>
+            )}
+            {userType === 'Empresa' && isOwner && (
                 <div>
                     <div style={{ position: 'fixed', right: '3%', bottom: '3%', zIndex: '1000' }}>
                         <SpeedDial
@@ -157,6 +175,13 @@ export const Oferta = () => {
                 </div>
             )}
         </>
+        :
+        <Snackbar
+            open={!finishLoading}
+            autoHideDuration={2000}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            onClose={() => !!userData && !!userType ? navigate('/usuario') : navigate('/')}>
+            <Alert severity="error">No tienes permiso para acceder a esta página</Alert></Snackbar>
     );
 };
 

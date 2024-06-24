@@ -308,13 +308,6 @@ const Oferta = ({ ofertaId }) => {
                                     </ListItem>
                                 ))}
                             </List>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => setConfirmChangesDialogOpen(true)}
-                            >
-                                Confirmar Cambios
-                            </Button>
                         </Box>
                     </Drawer>
                     <Dialog open={isAddingTagFormOpen} onClose={toggleAddingTagForm}>

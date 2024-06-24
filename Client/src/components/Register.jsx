@@ -89,14 +89,14 @@ export const Register = () => {
         setRegistroErrorMessage("");
         switch (currentStep) {
             case 1:
-                if (nombre === '' || descripcion === '' || edad === '' || experiencia_Laboral === '' || estudios === '' || edad < 16 || experiencia_Laboral >= edad) {
+                const aux = parseInt(edad, 10)
+                const aux2 = parseInt(experiencia_Laboral, 10)
+                if (nombre === '' || descripcion === '' || edad === '' || experiencia_Laboral === '' || estudios === '' || aux < 16 || aux2 >= aux) {
                     setNombreError(nombre === '');
                     setDescripcionError(descripcion === '');
-                    setEdadError(edad === '');
-                    setExperienciaError(experiencia_Laboral === '');
+                    setEdadError(edad === '' || aux < 16);
+                    setExperienciaError(experiencia_Laboral === '' || aux2 >= aux);
                     setEstudiosError(estudios === '');
-                    setEdadError(edad < 16);
-                    setExperienciaError(experiencia_Laboral >= edad);
                     return;
                 }
                 break;

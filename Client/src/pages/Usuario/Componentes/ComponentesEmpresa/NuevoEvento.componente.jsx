@@ -7,7 +7,7 @@ import theme from '../../../../components/Theme.js';
 import Fondo from '../../../../Imagenes/HeaderDefinitivo2.jpg';
 
 
-const RegistroEvento = ({ userId, handleCloseModal }) => {
+const RegistroEvento = ({ userId, handleCloseModal, onEventoCreado }) => {
     const [open, setOpen] = useState(true);
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
@@ -46,29 +46,26 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
     const handleRegistrarNuevaEvento = () => {
 
         const regexHora = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!regexHora.test(hora)) {
+        if (!regexHora.test(hora) || hora === '') {
             setHoraError(true);
-        }
+        } else (setHoraError(false))
         if (nombre === '') {
             setNombreError(true);
-        }
+        } else (setNombreError(false))
         if (descripcion === '') {
             setDescripcionError(true);
-        }
+        } else (setDescripcionError(false))
         if (aforo === '') {
             setAforoError(true);
-        }
+        } else (setAforoError(false))
         if (fecha === '') {
             setFechaError(true);
-        }
-        if (hora === '') {
-            setHoraError(true);
-        }
+        } else (setFechaError(false))
         if (localizacion === '') {
             setLocalizacionError(true);
-        }
+        } else (setLocalizacionError(false))
 
-        if (!nombre || !descripcion || !aforo || !fecha || !hora || !localizacion) {
+        if (!nombre || !descripcion || !aforo || !fecha || !hora || !regexHora.test(hora) || !localizacion) {
             setError("Por favor, completa todos los campos y asigna una experiencia no nula a todos los tags.");
             return;
         }
@@ -82,9 +79,6 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
             Aforo: aforo,
             Empresa: userId
         };
-
-        console.log("why", eventoData)
-
 
         axios({
             ...axiosConfig,
@@ -102,6 +96,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                 setLocalizacion("");
                 handleModalClose();
                 handleCloseModal();
+                onEventoCreado();
             })
             .catch(err => {
                 console.error('Error al registrar la evento:', err);
@@ -216,7 +211,7 @@ const RegistroEvento = ({ userId, handleCloseModal }) => {
                                 }
                             }}
                             error={horaError}
-                            helperText={horaError && 'Por favor, ingrese una hora'}
+                            helperText={horaError && 'Por favor, ingrese una hora valida HH:MM'}
                         />
                         <TextField
                             required

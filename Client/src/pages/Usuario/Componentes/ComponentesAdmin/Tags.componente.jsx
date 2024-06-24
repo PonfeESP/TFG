@@ -12,8 +12,11 @@ const TagsPage = () => {
     const [newTagName, setNewTagName] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
 
-
     useEffect(() => {
+        fetchTags();
+    }, []);
+
+    const fetchTags = () => {
         axios({
             ...axiosConfig,
             url: 'http://localhost:8000/tags',
@@ -21,22 +24,23 @@ const TagsPage = () => {
         })
             .then(res => {
                 setTags(res.data);
+                setErrors(null);
             })
             .catch(err => {
                 console.error("Error fetching tags:", err);
                 setErrors('Error al cargar los tags');
             });
-    }, []);
+    };
 
     const handleDelete = async (Nombre) => {
-        const nombre = Nombre;
         try {
             await axios({
                 ...axiosConfig,
-                url: `http://localhost:8000/tags/${nombre}`,
+                url: `http://localhost:8000/tags/${Nombre}`,
                 method: 'DELETE'
             });
-            console.log("q tal")
+            fetchTags();
+            setErrors(null);
         } catch (error) {
             console.error('Error deleting tag', error);
             setErrors('Error al eliminar el tag');
@@ -58,6 +62,8 @@ const TagsPage = () => {
             .then(res => {
                 setNewTagName('');
                 setModalOpen(false);
+                fetchTags();
+                setErrors(null);
             })
             .catch(err => {
                 console.error('Error adding tag:', err);
@@ -74,7 +80,7 @@ const TagsPage = () => {
     );
 
     return (
-        <Container >
+        <Container>
             <Typography variant="h4" gutterBottom>
                 Tags
             </Typography>
@@ -89,7 +95,7 @@ const TagsPage = () => {
                     variant="contained"
                     color="primary"
                     startIcon={<AddIcon />}
-                    onClick={() => setModalOpen(true)} // Open dialog when button is clicked
+                    onClick={() => setModalOpen(true)}
                 >
                     Añadir Nuevo
                 </Button>

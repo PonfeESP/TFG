@@ -23,9 +23,12 @@ const SubComponenteOfertas = ({ userId, userType }) => {
         setOpenModal(true);
     };
 
-    // Función para cerrar la ventana emergente
     const handleCloseModal = () => {
         setOpenModal(false);
+    };
+
+    const handleOfertaCreada = () => {
+        fetchOfertas();
     };
 
     const handleChange = (event) => {
@@ -64,25 +67,32 @@ const SubComponenteOfertas = ({ userId, userType }) => {
         setOfertasFiltradas(newOfertas);
     };
 
-    useEffect(() => {
+    const fetchOfertas = () => {
         axios({
             ...axiosConfig,
             url: `http://localhost:8000/ofertas_empresa/${userId}`,
             method: 'GET'
         })
-            .then(res => {
-                setOfertas(res.data);
-                setOfertasOriginales(res.data);
-                applyFilters(res.data, order);
-            })
-            .catch(err => console.error("Error fetching data:", err));
+        .then(res => {
+            setOfertasOriginales(res.data);
+            applyFilters(res.data, order);
+        })
+        .catch(err => console.error("Error fetching data:", err));
+    };
+
+    useEffect(() => {
+        fetchOfertas();
     }, [userId, order]);
 
     useEffect(() => {
         applyFilters(ofertasOriginales, order, searchTerm);
     }, [ofertasOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(ofertasFiltradas.length / pageSize);
+    let totalPages = Math.ceil(ofertasFiltradas.length / pageSize);
+
+    if (totalPages === 0){
+        totalPages += 1;
+    }
 
     const currentOfertas = ofertasFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
@@ -145,7 +155,7 @@ const SubComponenteOfertas = ({ userId, userType }) => {
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
             >
-                <RegistroOferta userId={userId} handleCloseModal={handleCloseModal} />
+                <RegistroOferta userId={userId} handleCloseModal={handleCloseModal}  onOfertaCreada={handleOfertaCreada} />
             </Modal>
         </>
     );

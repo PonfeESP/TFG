@@ -144,8 +144,6 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
     }
     };
 
-    console.log("WAKLS", ofertaData2)
-
     if (!ofertaData && userType === 'Desempleado') return <div>Loading...</div>;
     if (!ofertaData2 && userType === 'Empresa') return <div>Loading...</div>;
 

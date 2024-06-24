@@ -86,8 +86,18 @@ export const Perfil = ({ userId, userType }) => {
                 hasErrors = true;
             }
 
+            if (userData.Edad < 16 || userData.Edad < userData.Experiencia_Laboral) {
+                newErrors.Edad = 'La edad mínima es 16 años y no puede ser menor a la experiencia laboral.';
+                hasErrors = true;
+            }
+
             if (!userData.Experiencia_Laboral.toString().trim()) {
                 newErrors.Experiencia_Laboral = 'La experiencia laboral no puede estar vacía.';
+                hasErrors = true;
+            }
+
+            if (userData.Experiencia_Laboral > userData.Edad) {
+                newErrors.Experiencia_Laboral = 'La experiencia laboral no puede ser mayor a la edad.';
                 hasErrors = true;
             }
 
@@ -97,7 +107,7 @@ export const Perfil = ({ userId, userType }) => {
             }
 
         }
-        
+
         if (hasErrors) {
             setErrors(newErrors);
             return;
@@ -257,6 +267,7 @@ export const Perfil = ({ userId, userType }) => {
         const tagExists = userData.Tags.some(tag => tag.Lenguaje === newTag.Lenguaje);
         if (tagExists) {
             setErrors('Este tag ya está registrado para el usuario');
+            setOpenErrorDialog(true);
             return;
         }
         const updatedTags = [...userData.Tags, newTag];
@@ -433,7 +444,7 @@ export const Perfil = ({ userId, userType }) => {
                         <Dialog open={isAddingTagFormOpen} onClose={toggleAddingTagForm}>
                             <Box p={2} width={400}>
                                 <Typography variant="h6" gutterBottom marginBottom={'15px'} textAlign={'center'}>
-                                    Nuevo Tagd
+                                    Nuevo Tag
                                 </Typography>
                                 <Box mb={2}>
                                     <Autocomplete
@@ -466,27 +477,27 @@ export const Perfil = ({ userId, userType }) => {
                                         min={1}
                                         max={5}
                                     />
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleAddNewTag}
-                                        style={{ marginTop: '10px' }}
-                                    >
-                                        Añadir Tag
-                                    </Button>
-
-                                    <Dialog open={openErrorDialog} onClose={handleCloseErrorDialog}>
-                                        <DialogTitle>Error</DialogTitle>
-                                        <DialogContent>
-                                            <Alert severity="error">{'Asegurese de completar los campos y de no repetir los tags'}</Alert>
-                                        </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={handleCloseErrorDialog} color="primary" autoFocus>
-                                                OK
-                                            </Button>
-                                        </DialogActions>
-                                    </Dialog>
                                 </Box>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleAddNewTag}
+                                    style={{ margin: '0' }}
+                                >
+                                    Añadir Tag
+                                </Button>
+
+                                <Dialog open={openErrorDialog} onClose={handleCloseErrorDialog}>
+                                    <DialogTitle>Error</DialogTitle>
+                                    <DialogContent>
+                                        <Alert severity="error">{'Asegurese de completar los campos y de no repetir los tags'}</Alert>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleCloseErrorDialog} color="primary" autoFocus>
+                                            OK
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </Box>
                         </Dialog>
                         <Box mt={4} textAlign="center" marginTop={'60px'}>

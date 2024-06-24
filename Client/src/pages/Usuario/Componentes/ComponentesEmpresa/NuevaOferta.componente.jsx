@@ -6,7 +6,7 @@ import { Button, Autocomplete, Rating, Chip, TextField, Dialog, DialogContent, D
 import theme from '../../../../components/Theme.js';
 import Fondo from '../../../../Imagenes/HeaderDefinitivo2.jpg';
 
-const RegistroOferta = ({ userId, handleCloseModal }) => {
+const RegistroOferta = ({ userId, handleCloseModal, onOfertaCreada }) => {
     const [nuevaOfertaData, setNuevaOfertaData] = useState({
         Nombre: '',
         Descripcion: '',
@@ -107,9 +107,6 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
             Empresa: userId
         };
 
-        console.log("why", ofertaData)
-
-
         axios({
             ...axiosConfig,
             url: `http://localhost:8000/registro_oferta/${userId}`,
@@ -130,6 +127,7 @@ const RegistroOferta = ({ userId, handleCloseModal }) => {
                     Empresa: userId,
                     Interesados: []
                 });
+                onOfertaCreada();
             })
             .catch(err => {
                 console.error('Error al registrar la oferta:', err);

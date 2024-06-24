@@ -126,6 +126,38 @@ app.get('/usuarios/:id', async (req, res) => {
   }
 });
 
+app.get('/evento/:id', async (req, res) => {
+  if (req.isAuthenticated()) {
+    try {
+      const evento = await Evento.findById(req.params.id);
+      if (!evento) {
+        return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+      res.json(evento);
+    } catch (error) {
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
+app.get('/oferta/:id', async (req, res) => {
+  if (req.isAuthenticated()) {
+    try {
+      const oferta = await Oferta.findById(req.params.id);
+      if (!oferta) {
+        return res.status(404).json({ error: 'oferta no encontrado' });
+      }
+      res.json(oferta);
+    } catch (error) {
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  } else {
+    res.status(401).send('Sesión no iniciada!');
+  }
+});
+
 app.get('/tags', async (req, res) => {
   try {
     const tags = await Tags.find().sort({ Nombre: 1 });

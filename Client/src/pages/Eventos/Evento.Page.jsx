@@ -6,7 +6,7 @@ import Inicio from '../../components/Inicio.component';
 import EventoEdicion from './Componentes/EventoEdicion.componente';
 import EventoVisualizacion from './Componentes/EventoVisualizacion.componente';
 import Header from '../../components/Header2.component';
-import { Typography } from '@mui/material';
+import { Snackbar, Alert  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
@@ -16,52 +16,52 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 
 export const Evento = () => {
+    const [userData, setUserData] = useState({});
     const { idEvento } = useParams();
     const [userType, setUserType] = useState('');
+    const [isOwner, setIsOwner] = useState(false);
     const [finishLoading, setFinishLoading] = useState(false);
     const [activeComponent, setActiveComponent] = useState('visualizar');
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
-    const [isOwner, setIsOwner] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const res = await axios({
-                    ...axiosConfig,
-                    url: 'http://localhost:8000/user',
-                    method: 'GET'
-                });
+        axios({
+            ...axiosConfig,
+            url: 'http://localhost:8000/user',
+            method: 'GET'
+        })
+            .then(res => {
+                setUserData(res.data);
                 setUserType(res.data.userType);
                 setUserId(res.data.id);
-            } catch (err) {
-                console.error(err);
-            }
-        };
+                setFinishLoading(!!res.data && !!res.data.userType);
+                if (userType === 'Desempleado') {
+                    setActiveComponent('visualizar');
+                } else if (userType === 'Empresa') {
+                    setActiveComponent('visualizar');
+                }
+            })
+            .catch(err => console.log(err));
+    }, []);
 
-        const fetchEventoData = async () => {
-            try {
-                const res = await axios({
-                    ...axiosConfig,
-                    url: `http://localhost:8000/eventoUnico/${idEvento}`,
-                    method: 'GET'
-                });
-                setIsOwner(res.data.Empresa._id === userId);
-                setFinishLoading(true);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        fetchUserData();
-        fetchEventoData();
-    }, [idEvento, userId]);
+    useEffect(() => {
+        axios({
+            ...axiosConfig,
+            url: `http://localhost:8000/evento/${idEvento}`,
+            method: 'GET'
+        })
+            .then(res => {
+                setIsOwner(res.data.Empresa === userId);
+            })
+            .catch(err => console.log(err));
+    }, [userId]);
 
     const handleMostrarEvento = () => setActiveComponent('visualizar');
     const handleEditarEvento = () => setActiveComponent('editar');
 
-    const deleteEvento = async (idEvento, userId) => {
+    const deleteEvento = (idEvento, userId) => {
         try {
             axios({
                 ...axiosConfig,
@@ -71,28 +71,29 @@ export const Evento = () => {
                     userId: userId,
                 }
             })
-                .then(res => {
-                    console.log('Solicitud enviada con éxito');
-                    navigate(-1);
-                })
-                .catch(err => {
-                    console.log(err);
-                    if (err.response && err.response.status === 400) {
-                        setErrorMessage(err.response.data.error);
-                    } else {
-                        setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
-                    }
-                });
+            .then(res => {
+                console.log('Evento eliminado con éxito');
+                navigate(-1);
+            })
+            .catch(err => {
+                console.error('Error al eliminar el evento:', err);
+                if (err.response && err.response.status === 400) {
+                    setErrorMessage(err.response.data.error);
+                } else {
+                    setErrorMessage('Error al enviar la solicitud. Por favor, inténtelo de nuevo.');
+                }
+            });
         } catch (error) {
-            console.error('Error al eliminar la oferta:', error.message);
+            console.error('Error al eliminar el evento:', error.message);
         }
     };
+    
 
     const handleToggleComponent = (action) => {
         if (action === 'editar') {
             setActiveComponent('editar');
         } else if (action === 'eliminar') {
-            const confirmed = window.confirm('¿Estás seguro de que quieres eliminar esta oferta?');
+            const confirmed = window.confirm('¿Estás seguro de que quieres eliminar este evento?');
             if (confirmed) {
                 deleteEvento(idEvento, userId);
             }
@@ -101,12 +102,8 @@ export const Evento = () => {
         }
     };
 
-    if (!finishLoading) {
-        return <div>Loading...</div>;
-    }
-
-
     return (
+        !!finishLoading ?
         <>
             <Header
                 onMostrarEventoss={handleMostrarEvento}
@@ -177,8 +174,15 @@ export const Evento = () => {
                 </div>
             )}
         </>
+        :
+        <Snackbar
+            open={!finishLoading}
+            autoHideDuration={2000}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            onClose={() => navigate(userData && userType ? '/usuario' : '/')}>
+            <Alert severity="error">No tienes permiso para acceder a esta página</Alert>
+        </Snackbar>
     );
 };
 
 export default Evento;
-
