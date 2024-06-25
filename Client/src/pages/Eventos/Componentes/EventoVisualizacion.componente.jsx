@@ -60,7 +60,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
         if (userType === 'Empresa' && eventoData2) {
             async function fetchData() {
                 try {
-                    const promesasDatosUsuarios = eventoData2.Interesados.map(async (idUsuario) => {
+                    const promesasDatosUsuarios = eventoData2.Registrados.map(async (idUsuario) => {
                         const respuesta = await axios({
                             ...axiosConfig,
                             url: `http://localhost:8000/usuarios/${idUsuario}`,
@@ -212,9 +212,6 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
     if (!eventoData && userType === 'Desempleado') return <div>Loading...</div>;
     if (!eventoData2 && userType === 'Empresa') return <div>Loading...</div>;
-
-    console.log(eventoData2)
-
 
     if (userType === 'Desempleado') {
         return (
@@ -471,7 +468,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                                 Plazas restantes
                                             </Typography>
                                             <Typography variant="body1" align="center">
-                                                {eventoData2.Aforo - eventoData2.Interesados.length}
+                                                {eventoData2.Aforo - eventoData2.Registrados.length}
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -488,7 +485,7 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="h5" gutterBottom align="center">
-                                        Usuarios interesados
+                                        Usuarios registrados
                                     </Typography>
                                     <Grid container spacing={2}>
                                         {datosUsuarios.map((usuario, index) => (
