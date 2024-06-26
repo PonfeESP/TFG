@@ -7,8 +7,9 @@ import Rating from '@mui/material/Rating';
 import { useNavigate } from 'react-router-dom';
 import { axiosConfig } from '../constant/axiosConfig.constant';
 import Fondo from '../Imagenes/HeaderDefinitivo2.jpg';
-import theme from './Theme.js'
+import theme from '../constant/Theme.js'
 import { ThemeProvider } from '@mui/material/styles';
+import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
@@ -129,7 +130,7 @@ export const Register = () => {
         console.log("Hewllo")
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
-    };    
+    };
 
     const handleTagsChange = (event, value) => {
         const uniqueTags = [...new Set(value.map(tag => tag.label))].map(label => {
@@ -343,7 +344,7 @@ export const Register = () => {
         setExperienciaLaboral(nuevaExperiencia);
         localStorage.setItem('experiencia_laboral', nuevaExperiencia); // Guarda el nuevo valor en el almacenamiento
     };
-    const handleEstudiosChange  = (e) => {
+    const handleEstudiosChange = (e) => {
         const nuevoEstudio = e.target.value;
         setEstudios(nuevoEstudio);
         localStorage.setItem('estudios', nuevoEstudio); // Guarda el nuevo valor en el almacenamiento
@@ -633,6 +634,9 @@ export const Register = () => {
                                 {currentStep === 2 && (
                                     <div>
                                         <div style={{ width: '100%', height: 350, margin: '0 auto' }}>
+                                            <Typography color="white" sx={{ fontSize: '1.5rem', marginBottom: '10px' }}>
+                                                Tags: Sirven para evaluar tus habilidades
+                                            </Typography>
                                             <Autocomplete
                                                 multiple
                                                 options={programmingLanguages.map(language => ({ label: language.Nombre, value: language._id }))}
@@ -661,9 +665,22 @@ export const Register = () => {
                                                     <Chip style={{ color: 'white', backgroundColor: 'green', marginRight: '10px' }} label={tag.label} />
                                                     <Rating
                                                         name={`rating-${tag.value}`}
-                                                        value={tagsExperience[tag.value] || 1}
+                                                        value={tagsExperience[tag.value] || 0}
                                                         onChange={(event, value) => handleExperienceChange(event, value, tag.value)}
-                                                        sx={{ '& .MuiRating-icon': { height: '24px', width: '24px' } }} // Ajusta el tamaño de las estrellas
+                                                        emptyIcon={<StarBorderOutlinedIcon fontSize="inherit" style={{ color: "white", borderColor: "blue" }} />}
+                                                        sx={{
+                                                            '& .MuiRating-iconFilled': {
+                                                                color: 'gold',
+                                                                borderColor: 'green',
+                                                            },
+                                                            '& .MuiRating-iconEmpty': {
+                                                                borderColor: 'red',
+                                                            },
+                                                            '& .MuiRating-icon': {
+                                                                height: '24px',
+                                                                width: '24px',
+                                                            },
+                                                        }}
                                                     />
                                                 </Box>
                                             ))}

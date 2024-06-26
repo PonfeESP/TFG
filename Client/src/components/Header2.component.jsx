@@ -8,12 +8,12 @@ import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { axiosConfig } from '../constant/axiosConfig.constant';
-import './Header.css';
+import '../estilos/Header.css';
 import { Login } from './Login';
 import { Register } from './Register';
 import Fondo from '../Imagenes/HeaderDefinitivo2.jpg';
 import Logo from '../Imagenes/LogoTransparente.png';
-import theme from './Theme.js'
+import theme from '../constant/Theme.js'
 import { ThemeProvider } from '@mui/material/styles';
 
 const styles = {

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { CssBaseline, Paper } from '@mui/material';
-import { Header } from './Header.component';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';

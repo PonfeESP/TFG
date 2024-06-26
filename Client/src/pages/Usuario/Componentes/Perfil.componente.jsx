@@ -545,7 +545,7 @@ export const Perfil = ({ userId, userType }) => {
                         </Box>
                         <Box mt={4} textAlign="center" display="flex" flexDirection="column" alignItems="center">
                             <Typography variant="h5" gutterBottom>
-                                Mini Perfil
+                                Foto de Perfil
                             </Typography>
                             <Avatar
                                 alt="Profile Picture"

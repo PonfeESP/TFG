@@ -3,7 +3,7 @@ import axios from 'axios';
 import { axiosConfig } from '../../../../constant/axiosConfig.constant';
 import { ThemeProvider } from '@mui/material/styles';
 import { Button, Autocomplete, Rating, Chip, TextField, Dialog, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box } from '@mui/material';
-import theme from '../../../../components/Theme.js';
+import theme from '../../../../constant/Theme.js';
 import Fondo from '../../../../Imagenes/HeaderDefinitivo2.jpg';
 
 const RegistroOferta = ({ userId, handleCloseModal, onOfertaCreada }) => {

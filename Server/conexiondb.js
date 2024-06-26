@@ -1,7 +1,9 @@
 import { MongoClient } from 'mongodb';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 let conexiondb;
+dotenv.config();
 
 /**
 const enlace = (resultado) => {
@@ -18,7 +20,7 @@ const enlace = (resultado) => {
 **/
 
 const enlace = (resultado) => {
-    mongoose.connect('mongodb+srv://cassergiocanedo:UDhib3bpJQrf1Jq4@itjobfinder.dqcdtv3.mongodb.net/?retryWrites=true&w=majority&appName=ITJobFinder', {
+    mongoose.connect(process.env.MONGODB_STRING, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })

@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import theme from './Theme.js'
+import theme from '../constant/Theme.js'
 import { ThemeProvider } from '@mui/material/styles';
 import Fondo from '../Imagenes/HeaderDefinitivo2.jpg';
 
