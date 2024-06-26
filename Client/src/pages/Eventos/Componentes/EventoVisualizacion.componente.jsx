@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Typography, Box, Grid, Avatar, Dialog, DialogActions, DialogContent, DialogTitle, Chip, Card, CardContent, CardMedia, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
+    Typography, Box, Grid, Avatar, Dialog, DialogActions, DialogContent, DialogTitle, Chip, Card, CardContent, CardMedia, Alert, Snackbar, ListItemText, CircularProgress, LinearProgress, Button
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -15,6 +15,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 const EventoVisualizacion = ({ eventoId, userId, userType }) => {
 
+    const [open, setOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const [eventoData, setEventoData] = useState(null);
     const [eventoData2, setEventoData2] = useState(null);
@@ -81,24 +82,30 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
         }
     }, [userType, eventoData2]);
 
+
     const handleShare = () => {
-        const eventoid = eventoData._id;
-        const shareUrl = `${window.location.origin}/evento/${eventoid}`;
+        const shareUrl = `${window.location.origin}/evento/${eventoId}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
+            setOpen(true);
         }).catch(err => {
             console.error('Error al copiar el enlace: ', err);
         });
     };
 
     const handleShare2 = () => {
-        const eventoid = eventoData2._id;
-        const shareUrl = `${window.location.origin}/evento/${eventoid}`;
+        const shareUrl = `${window.location.origin}/evento/${eventoId}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
+            setOpen(true);
         }).catch(err => {
             console.error('Error al copiar el enlace: ', err);
         });
+    };
+
+    const handleClose2 = (eventoId, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     const handleInterest = () => {
@@ -279,6 +286,11 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                 >
                                     <ShareIcon sx={{ mr: 1 }} />
                                 </Button>
+                                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+                                    <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                                        Enlace copiado al portapapeles.
+                                    </Alert>
+                                </Snackbar>
                                 <Button
                                     sx={{ marginRight: 9 }}
                                     variant="contained"
@@ -423,6 +435,11 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                 >
                                     <ShareIcon sx={{ mr: 1 }} />
                                 </Button>
+                                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+                                    <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                                        Enlace copiado al portapapeles.
+                                    </Alert>
+                                </Snackbar>
                             </div>
                             <Typography variant="h4" gutterBottom align="center">
                                 Detalles
@@ -439,18 +456,18 @@ const EventoVisualizacion = ({ eventoId, userId, userType }) => {
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
-                                <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
-                                    <Typography variant="h5" gutterBottom align="center">
-                                        Fecha
-                                    </Typography>
-                                    <Typography variant="body1" align="center">
-                                        {dayjs(eventoData2.Fecha).format("DD/MM/YYYY")}
-                                    </Typography>
-                                    <Typography variant="body1" align="center">
-                                        {dayjs(eventoData2.Fecha).format("HH:mm")}
-                                    </Typography>
-                                </Box>
-                            </Grid>
+                                    <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">
+                                        <Typography variant="h5" gutterBottom align="center">
+                                            Fecha
+                                        </Typography>
+                                        <Typography variant="body1" align="center">
+                                            {dayjs(eventoData2.Fecha).format("DD/MM/YYYY")}
+                                        </Typography>
+                                        <Typography variant="body1" align="center">
+                                            {dayjs(eventoData2.Fecha).format("HH:mm")}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
                                 <Grid container spacing={2} marginTop={'3px'}>
                                     <Grid item xs={6}>
                                         <Box border={1} borderColor="grey.300" borderRadius={4} p={2} overflow="auto">

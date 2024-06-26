@@ -59,7 +59,11 @@ const ComponenteAdminEmpresas = ({ userId }) => {
         applyFilters(empresasOriginales, order, searchTerm);
     }, [empresasOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(empresasFiltradas.length / pageSize);
+    let totalPages = Math.ceil(empresasFiltradas.length / pageSize);
+
+    if (totalPages === 0){
+        totalPages += 1;
+    }
 
     const currentEmpresas = empresasFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 

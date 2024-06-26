@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Typography, Box, Grid, Chip, Avatar, Card, CardContent, CardMedia, SpeedDial, SpeedDialAction, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
+    Typography, Box, Grid, Chip, Avatar, Card, CardContent, CardMedia, Alert, Snackbar, List, ListItem, ListItemText, CircularProgress, LinearProgress, Button
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -15,6 +15,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
 
+    const [open, setOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const [ofertaData, setOfertaData] = useState(null);
     const [ofertaData2, setOfertaData2] = useState(null);
@@ -127,21 +128,28 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
     };
 
     const handleShare = () => {
-        if (userType === 'Desempleado'){
         const shareUrl = `${window.location.origin}/oferta/${ofertaData._id}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
+            setOpen(true);
         }).catch(err => {
             console.error('Error al copiar el enlace: ', err);
         });
-    }else if (userType === 'Empresa'){
+    };
+
+    const handleShare2 = () => {
         const shareUrl = `${window.location.origin}/oferta/${ofertaData2._id}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
+            setOpen(true);
         }).catch(err => {
             console.error('Error al copiar el enlace: ', err);
         });
-    }
+    };
+
+    const handleClose2 = (eventoId, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     if (!ofertaData && userType === 'Desempleado') return <div>Loading...</div>;
@@ -194,6 +202,11 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                                 >
                                     <ShareIcon sx={{ mr: 1 }} />
                                 </Button>
+                                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+                                    <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                                        Enlace copiado al portapapeles.
+                                    </Alert>
+                                </Snackbar>
                                 <Button
                                     sx={{ marginRight: 9 }}
                                     variant="contained"
@@ -346,11 +359,16 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                             <div style={{ position: 'relative', textAlign: 'right' }}>
                                 <Button
                                     variant="contained"
-                                    onClick={handleShare}
+                                    onClick={handleShare2}
                                     style={{ position: 'absolute', top: 0, right: 0 }}
                                 >
                                     <ShareIcon sx={{ mr: 1 }} />
                                 </Button>
+                                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+                                    <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                                        Enlace copiado al portapapeles.
+                                    </Alert>
+                                </Snackbar>
                             </div>
                             <Typography variant="h4" gutterBottom align="center">
                                 Detalles

@@ -6,7 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Menu, MenuItem, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography, Stack, Chip } from '@mui/material';
+import { Menu, MenuItem, Button, Card, CardHeader, Alert, Snackbar, CardContent, CardActions, Collapse, Avatar, IconButton, Typography, Stack, Chip } from '@mui/material';
 import dayjs from 'dayjs';
 import { blueGrey } from '@mui/material/colors';
 
@@ -22,6 +22,7 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function UsersCard({ user }) {
+    const [open, setOpen] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
@@ -33,12 +34,19 @@ export default function UsersCard({ user }) {
     };
 
     const handleShare = () => {
-        const shareUrl = `${window.location.origin}/desempleado/${business._id}`;
+        const shareUrl = `${window.location.origin}/usuario/${user._id}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
+            setOpen(true);
         }).catch(err => {
             console.error('Error al copiar el enlace: ', err);
         });
+    };
+
+    const handleClose2 = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     const handleClick = (event) => {
@@ -54,18 +62,18 @@ export default function UsersCard({ user }) {
             <CardHeader
                 avatar={
                     user.FotoPerfil ? (
-                      <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${user.FotoPerfil}` } />
+                        <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${user.FotoPerfil}`} />
                     ) : (
-                      <Avatar aria-label="business" >
-                        {`${user.Nombre.charAt(0).toUpperCase()}`}
-                      </Avatar>
+                        <Avatar aria-label="business" >
+                            {`${user.Nombre.charAt(0).toUpperCase()}`}
+                        </Avatar>
                     )
-                  }
-                  action={
+                }
+                action={
                     <IconButton aria-label="settings" onClick={handleClick}>
-                      <MoreVertIcon />
+                        <MoreVertIcon />
                     </IconButton>
-                  }
+                }
                 title={user.Nombre}
                 subheader={`Edad: ${user.Edad}, Experiencia Laboral: ${user.Experiencia_Laboral}`}
             />
@@ -95,6 +103,11 @@ export default function UsersCard({ user }) {
                     <ShareIcon sx={{ mr: 1 }} />
                     Compartir
                 </Button>
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+                    <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                        Enlace copiado al portapapeles.
+                    </Alert>
+                </Snackbar>
                 <ExpandMore
                     expand={expanded}
                     onClick={handleExpandClick}

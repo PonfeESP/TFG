@@ -61,7 +61,11 @@ export const SubComponenteUsuarios = ({ userId }) => {
         applyFilters(usuariosOriginales, order, searchTerm);
     }, [usuariosOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(usuariosFiltradas.length / pageSize);
+    let totalPages = Math.ceil(usuariosFiltradas.length / pageSize);
+
+    if (totalPages === 0){
+        totalPages += 1;
+    }
 
     const currentUsuarios = usuariosFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
@@ -79,12 +83,12 @@ export const SubComponenteUsuarios = ({ userId }) => {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center', paddingTop: 4 }}>
-                <Typography variant="h4" gutterBottom>
+            <Box sx={{ display: 'flex', paddingTop: 4, paddingLeft:3,  paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
+            <Typography variant="h4" gutterBottom>
                     Usuarios
                 </Typography>
             </Box>
-            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, width: '100%', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, paddingLeft:3, paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <SearchComponent handleSearch={handleSearch} sx={{ display: 'flex', justifyContent: 'left' }} />
                 <FormControl sx={{ minWidth: 200, maxWidth: 200, display: 'flex', justifyContent: 'right' }}>
                     <InputLabel id="demo-simple-select-label">Ordenar por</InputLabel>
@@ -107,7 +111,7 @@ export const SubComponenteUsuarios = ({ userId }) => {
                     </Grid>
                 ))}
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+            <Box sx={{ display: 'flex', paddingTop: 4, paddingLeft:3,  paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>
                     <ArrowBackIcon />
                 </Button>

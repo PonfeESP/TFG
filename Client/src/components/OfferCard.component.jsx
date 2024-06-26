@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Tooltip, Menu, MenuItem, Paper, Box, CircularProgress, LinearProgress, Stack, Badge, Chip, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography } from '@mui/material';
+import { Tooltip, Menu, MenuItem, Paper, Box, CircularProgress, Alert, Snackbar, LinearProgress, Stack, Badge, Chip, Button, Card, CardHeader, CardContent, CardActions, Collapse, Avatar, IconButton, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { blueGrey } from '@mui/material/colors';
 
@@ -24,6 +24,7 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function OfferCard({ props, userId, userType }) {
+  const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [isRegistrado, setIsRegistrado] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -43,13 +44,19 @@ export default function OfferCard({ props, userId, userType }) {
   };
 
   const handleShare = () => {
-    const oferta = props;
-    const shareUrl = `${window.location.origin}/oferta/${oferta._id}`;
+    const shareUrl = `${window.location.origin}/oferta/${props._id}`;
     navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('Enlace copiado al portapapeles');
+      setOpen(true);
     }).catch(err => {
       console.error('Error al copiar el enlace: ', err);
     });
+  };
+
+  const handleClose2 = (props, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
   };
 
   const handleInterest = () => {
@@ -195,6 +202,11 @@ export default function OfferCard({ props, userId, userType }) {
               <ShareIcon sx={{ mr: 1 }} />
               Compartir
             </Button>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+              <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                Enlace copiado al portapapeles.
+              </Alert>
+            </Snackbar>
             {isInterested ? (
               <Button variant="contained" onClick={handleDisinterest}>
                 <FavoriteIcon sx={{ mr: 1 }} />
@@ -229,7 +241,7 @@ export default function OfferCard({ props, userId, userType }) {
           <CardHeader
             avatar={
               props.Empresa.FotoPerfil ? (
-                <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${props.Empresa.FotoPerfil}` } />
+                <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${props.Empresa.FotoPerfil}`} />
               ) : (
                 <Avatar aria-label="business" sx={{ bgcolor: 'gray' }}>
                   {`${props.Nombre.charAt(0).toUpperCase()}`}
@@ -270,7 +282,11 @@ export default function OfferCard({ props, userId, userType }) {
               <ShareIcon sx={{ mr: 1 }} />
               Compartir
             </Button>
-
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+              <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                Enlace copiado al portapapeles.
+              </Alert>
+            </Snackbar>
             <ExpandMore
               expand={expanded}
               onClick={handleExpandClick}

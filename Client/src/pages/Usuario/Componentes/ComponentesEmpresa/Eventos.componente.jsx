@@ -98,13 +98,13 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
 
     return (
         <>
-            <Box sx={{ display: 'flex', paddingTop: 4, width: '100%', justifyContent: 'space-between' }}>
-                <Typography variant="h4" gutterBottom>
+            <Box sx={{ display: 'flex', paddingTop: 4, paddingLeft:3,  paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
+            <Typography variant="h4" gutterBottom>
                     Eventos
                 </Typography>
                 <Button variant="contained" onClick={handleOpenModal}>Nuevo Evento</Button>
             </Box>
-            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, width: '100%', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', marginTop: 3, paddingBottom: 10, paddingLeft:3, paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <SearchComponent handleSearch={handleSearch} sx={{ marginRight: 2 }} />
                 <FormControl sx={{ minWidth: 200, maxWidth: 200 }}>
                     <InputLabel id="demo-simple-select-label">Ordenar por</InputLabel>
@@ -128,7 +128,7 @@ const SubComponenteEventosEmpresa = ({ userId, userType }) => {
                     </Grid>
                 ))}
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+            <Box sx={{ display: 'flex', paddingTop: 4, paddingLeft:3,  paddingRight:3, width: '100%', justifyContent: 'space-between' }}>
                 <Button variant="contained" onClick={prevPage} disabled={currentPage === 1}>
                     <ArrowBackIcon />
                 </Button>

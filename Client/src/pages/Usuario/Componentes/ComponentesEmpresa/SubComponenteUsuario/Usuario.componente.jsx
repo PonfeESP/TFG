@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Chip, Button, Card, CardContent, CardMedia, Typography, Grid, Box, List } from '@mui/material';
+import { Container, TextField, Chip, Button, Card, CardContent, CardMedia, Typography, Grid, Box, Alert, Snackbar } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Header from '../../../../../components/Header2.component';
 import { useNavigate } from 'react-router-dom';
@@ -9,11 +9,10 @@ import Fondo from '../../../../../Imagenes/HeaderDefinitivo2.jpg';
 import ShareIcon from '@mui/icons-material/Share';
 
 export const User = () => {
+    const [open, setOpen] = useState(false);
     const { idUsuario } = useParams();
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
-
-    console.log("dAD", idUsuario)
 
     useEffect(() => {
         axios({
@@ -33,10 +32,17 @@ export const User = () => {
     const handleShare = () => {
         const shareUrl = `${window.location.origin}/usuario/${idUsuario}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Enlace copiado al portapapeles');
+            setOpen(true);
         }).catch(err => {
             console.error('Error al copiar el enlace: ', err);
         });
+    };
+
+    const handleClose2 = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     if (!userData) return <div>Loading...</div>;
@@ -99,6 +105,11 @@ export const User = () => {
                             >
                                 <ShareIcon sx={{ mr: 1 }} />
                             </Button>
+                            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+                                <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+                                    Enlace copiado al portapapeles.
+                                </Alert>
+                            </Snackbar>
                         </div>
                         <Typography variant="h4" gutterBottom align="center">
                             Perfil de Usuario

@@ -59,7 +59,11 @@ const SubComponenteEventos = ({ userId, userType }) => {
         applyFilters(eventosOriginales, order, searchTerm);
     }, [eventosOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(eventosFiltrados.length / pageSize);
+    let totalPages = Math.ceil(eventosFiltrados.length / pageSize);
+
+    if (totalPages === 0){
+        totalPages += 1;
+    }
 
     const currentEventos = eventosFiltrados.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 

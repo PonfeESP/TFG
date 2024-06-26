@@ -68,7 +68,11 @@ const ComponenteDesempleado = ({ userId, userType }) => {
         applyFilters(ofertasOriginales, order, searchTerm);
     }, [ofertasOriginales, order, searchTerm]);
 
-    const totalPages = Math.ceil(ofertasFiltradas.length / pageSize);
+    let totalPages = Math.ceil(ofertasFiltradas.length / pageSize);
+
+    if (totalPages === 0){
+        totalPages += 1;
+    }
 
     const currentOfertas = ofertasFiltradas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 

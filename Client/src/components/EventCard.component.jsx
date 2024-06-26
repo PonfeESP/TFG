@@ -7,10 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import {
-  Tooltip, Menu, MenuItem, Paper, Box, Avatar, Stack, Button, Card,
-  CardHeader, CardContent, CardActions, Collapse, Typography, IconButton
-} from '@mui/material';
+import { Tooltip, Menu, MenuItem, Paper, Box, Avatar, Stack, Button, Card, CardHeader, CardContent, CardActions, Collapse, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import dayjs from 'dayjs';
 import { red, green, blue } from '@mui/material/colors';
 
@@ -34,6 +31,7 @@ export default function EventCard({ event, userId, userType }) {
   const [expanded, setExpanded] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [open, setOpen] = useState(false);
   const [isInterested, setIsInterested] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [aforoActual, setAforoActual] = useState();
@@ -57,14 +55,21 @@ export default function EventCard({ event, userId, userType }) {
   const handleShare = () => {
     const shareUrl = `${window.location.origin}/evento/${event._id}`;
     navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('Enlace copiado al portapapeles');
+      setOpen(true);
     }).catch(err => {
       console.error('Error al copiar el enlace: ', err);
     });
   };
 
+  const handleClose2 = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   const handleInterest = () => {
-  console.log("ppp", userId, event._id)
+    console.log("ppp", userId, event._id)
     axios({
       ...axiosConfig,
       url: 'http://localhost:8000/solicitud_evento',
@@ -125,10 +130,11 @@ export default function EventCard({ event, userId, userType }) {
         <CardHeader
           avatar={
             event.Empresa.FotoPerfil ? (
-              <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}` } />
+              <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}`} />
             ) : (
-              <Avatar aria-label="business" sx={{ bgcolor: 'gray'
-               }}>
+              <Avatar aria-label="business" sx={{
+                bgcolor: 'gray'
+              }}>
                 {`${event.Nombre.charAt(0).toUpperCase()}`}
               </Avatar>
             )
@@ -160,6 +166,11 @@ export default function EventCard({ event, userId, userType }) {
             <ShareIcon sx={{ mr: 1 }} />
             Compartir
           </Button>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+            <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+              Enlace copiado al portapapeles.
+            </Alert>
+          </Snackbar>
           <ExpandMore
             expand={expanded}
             onClick={handleExpandClick}
@@ -183,7 +194,7 @@ export default function EventCard({ event, userId, userType }) {
         <CardHeader
           avatar={
             event.Empresa.FotoPerfil ? (
-              <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}` } />
+              <Avatar aria-label="business" src={`http://localhost:8000/profileImages/${event.Empresa.FotoPerfil}`} />
             ) : (
               <Avatar aria-label="business" sx={{ bgcolor: 'gray' }}>
                 {`${event.Nombre.charAt(0).toUpperCase()}`}
@@ -217,6 +228,11 @@ export default function EventCard({ event, userId, userType }) {
             <ShareIcon sx={{ mr: 1 }} />
             Compartir
           </Button>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose2}>
+            <Alert onClose={handleClose2} severity="success" sx={{ width: '100%' }}>
+              Enlace copiado al portapapeles.
+            </Alert>
+          </Snackbar>
           {isInterested ? (
             <Button variant="contained" onClick={handleDisinterest}>
               <FavoriteIcon sx={{ mr: 1 }} />
