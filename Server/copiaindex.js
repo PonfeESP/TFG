@@ -46,7 +46,7 @@ const uploadPDF = multer({ storage: pdfStorage });
 const uploadImage = multer({ storage: imageStorage });
 
 app.use(express.json());
-app.use(cors({ credentials: true, origin: process.env.CLIENT_URL || 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use('/pdfs', express.static('./PDF'));
 app.use('/profileImages', express.static('./FotosPerfil'));
 
@@ -54,23 +54,22 @@ let db;
 
 enlace((error) => {
   if (!error) {
-    const port = process.env.PORT || 8000;
-    app.listen(port, () => {
-      console.log(`Servidor escuchando en el puerto ${port}`);
+    app.listen(8000, () => {
+      console.log(`Servidor escuchando en el puerto 8000`);
     });
     db = llamardb();
   }
 });
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'session-cookie-key',
+  secret: 'ocio-session-cookie-key',
   name: 'SessionCookie.SID',
   resave: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: 3600000 // DURACIÓN DE 1 HORA LA SESIÓN (MILISEGUNDOS)
+    maxAge: 3600000 //DURACIÓN DE 1 HORA LA SESIÓN (MILISEGUNDOS)
   }
-}));
+}))
 app.use(passport.initialize());
 app.use(passport.session());
 strategyInit(passport);

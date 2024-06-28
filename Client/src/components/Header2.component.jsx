@@ -119,100 +119,104 @@ const Header = ({ onMostrarDesempleado, onMostrarPerfil, onMostrarEmpresa, onMos
                             </Paper>
                         </>
                     )}
-                    <Hidden mdDown>
-                        {(isLoggedIn && isDesempleado) && (
-                            <>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarDesempleado}>Ofertas</Button>
-                                </Paper>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarEmpresa}>Empresas</Button>
-                                </Paper>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarEvento}>Eventos</Button>
-                                </Paper>
-                            </>
-                        )}
-                        {(isLoggedIn && isEmpresa) && (
-                            <>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarUsuarios}>Usuarios</Button>
-                                </Paper>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarOfertas}>Ofertas</Button>
-                                </Paper>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarEventos}>Eventos</Button>
-                                </Paper>
-                            </>
-                        )}
-                        {(isLoggedIn && !isDesempleado && !isEmpresa) && (
-                            <>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarEmpresas}>Empresas</Button>
-                                </Paper>
-                                <Paper sx={styles.paper}>
-                                    <Button onClick={onMostrarTags}>Tags</Button>
-                                </Paper>
-                            </>
-                        )}
-                    </Hidden>
-                    <Hidden lgUp>
-                        <IconButton
-                            aria-controls="simple-menu"
-                            aria-haspopup="true"
-                            onClick={handleMenuOpen}
-                            sx={styles.iconButton}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={handleMenuClose}
-                        >
-                            {(isLoggedIn && isDesempleado) && (
-                                <>
-                                    <MenuItem onClick={onMostrarDesempleado}>Ofertas</MenuItem>
-                                    <MenuItem onClick={onMostrarEmpresa}>Empresas</MenuItem>
-                                    <MenuItem onClick={onMostrarEvento}>Eventos</MenuItem>
-                                </>
-                            )}
-                            {(isLoggedIn && isEmpresa) && (
-                                <>
-                                    <MenuItem onClick={onMostrarUsuarios}>Usuarios</MenuItem>
-                                    <MenuItem onClick={onMostrarOfertas}>Ofertas</MenuItem>
-                                    <MenuItem onClick={onMostrarEventos}>Eventos</MenuItem>
-                                </>
-                            )}
-                            {(isLoggedIn && !isEmpresa && !isDesempleado) && (
-                                <>
-                                    <MenuItem onClick={onMostrarEmpresas}>Empresas</MenuItem>
-                                    <MenuItem onClick={onMostrarTags}>Tags</MenuItem>
-                                </>
-                            )}
-                        </Menu>
-                    </Hidden>
                     {isLoggedIn && (
-                        <IconButton
-                            aria-controls="user-menu"
-                            aria-haspopup="true"
-                            onClick={handleUserMenuOpen}
-                            sx={styles.rightIconButton}
-                        >
-                            <PersonIcon />
-                        </IconButton>
+                        <>
+                            <Hidden mdDown>
+                                {(isLoggedIn && isDesempleado) && (
+                                    <>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarDesempleado}>Ofertas</Button>
+                                        </Paper>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarEmpresa}>Empresas</Button>
+                                        </Paper>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarEvento}>Eventos</Button>
+                                        </Paper>
+                                    </>
+                                )}
+                                {(isLoggedIn && isEmpresa) && (
+                                    <>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarUsuarios}>Usuarios</Button>
+                                        </Paper>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarOfertas}>Ofertas</Button>
+                                        </Paper>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarEventos}>Eventos</Button>
+                                        </Paper>
+                                    </>
+                                )}
+                                {(isLoggedIn && !isDesempleado && !isEmpresa) && (
+                                    <>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarEmpresas}>Empresas</Button>
+                                        </Paper>
+                                        <Paper sx={styles.paper}>
+                                            <Button onClick={onMostrarTags}>Tags</Button>
+                                        </Paper>
+                                    </>
+                                )}
+                            </Hidden>
+                            <Hidden lgUp>
+                                <IconButton
+                                    aria-controls="simple-menu"
+                                    aria-haspopup="true"
+                                    onClick={handleMenuOpen}
+                                    sx={styles.iconButton}
+                                >
+                                    <MenuIcon />
+                                </IconButton>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleMenuClose}
+                                >
+                                    {(isLoggedIn && isDesempleado) && (
+                                        <>
+                                            <MenuItem onClick={onMostrarDesempleado}>Ofertas</MenuItem>
+                                            <MenuItem onClick={onMostrarEmpresa}>Empresas</MenuItem>
+                                            <MenuItem onClick={onMostrarEvento}>Eventos</MenuItem>
+                                        </>
+                                    )}
+                                    {(isLoggedIn && isEmpresa) && (
+                                        <>
+                                            <MenuItem onClick={onMostrarUsuarios}>Usuarios</MenuItem>
+                                            <MenuItem onClick={onMostrarOfertas}>Ofertas</MenuItem>
+                                            <MenuItem onClick={onMostrarEventos}>Eventos</MenuItem>
+                                        </>
+                                    )}
+                                    {(isLoggedIn && !isEmpresa && !isDesempleado) && (
+                                        <>
+                                            <MenuItem onClick={onMostrarEmpresas}>Empresas</MenuItem>
+                                            <MenuItem onClick={onMostrarTags}>Tags</MenuItem>
+                                        </>
+                                    )}
+                                </Menu>
+                            </Hidden>
+                            {isLoggedIn && (
+                                <IconButton
+                                    aria-controls="user-menu"
+                                    aria-haspopup="true"
+                                    onClick={handleUserMenuOpen}
+                                    sx={styles.rightIconButton}
+                                >
+                                    <PersonIcon />
+                                </IconButton>
+                            )}
+                            <Menu
+                                id="user-menu"
+                                anchorEl={userMenuAnchorEl}
+                                open={Boolean(userMenuAnchorEl)}
+                                onClose={handleUserMenuClose}
+                            >
+                                <MenuItem onClick={onMostrarPerfil}>Perfil</MenuItem>
+                                <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
+                            </Menu>
+                        </>
                     )}
-                    <Menu
-                        id="user-menu"
-                        anchorEl={userMenuAnchorEl}
-                        open={Boolean(userMenuAnchorEl)}
-                        onClose={handleUserMenuClose}
-                    >
-                        <MenuItem onClick={onMostrarPerfil}>Perfil</MenuItem>
-                        <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
-                    </Menu>
                 </Toolbar>
                 <div className="header-margin" style={styles.appBarMargin}></div>
             </AppBar>

@@ -12,6 +12,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export const Register = () => {
     const [email, setEmail] = useState("");
@@ -70,7 +71,7 @@ export const Register = () => {
         registroError: ""
     });
     const [duplicateTagError, setDuplicateTagError] = useState(false);
-
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
 
     useEffect(() => {
@@ -375,9 +376,18 @@ export const Register = () => {
     return (
         <ThemeProvider theme={theme}>
 
-            <Button onClick={handleClickOpen}>Registrarse</Button>
+            <Button onClick={handleClickOpen}>Registro</Button>
             <Dialog open={open} onClose={handleClose}>
-                <Box sx={{ width: '100%', minWidth: '500px', maxWidth: '500px', maxHeight: '600px', display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{
+                    width: '100%',
+                    minWidth: isSmallScreen ? 'auto' : '500px',
+                    maxWidth: '100%',
+                    maxHeight: '600px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    margin: '0 auto',
+                    boxSizing: 'border-box',
+                }}>
                     <Box
                         sx={{
                             backgroundImage: `url(${Fondo})`,
@@ -510,7 +520,7 @@ export const Register = () => {
                                         onClick={performRegister}
                                         variant="contained"
                                         sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '50%' }}>
-                                        REGISTRARSE
+                                        Registro
                                     </Button>
                                 </DialogActions>
                             </div>
@@ -632,8 +642,8 @@ export const Register = () => {
                                     </div>
                                 )}
                                 {currentStep === 2 && (
-                                    <div>
-                                        <div style={{ width: '100%', height: 350, margin: '0 auto' }}>
+                                    <div style={{ width: '100%' }}>
+                                        <div style={{ width: '100%', height: 280, margin: '0 auto' }}>
                                             <Typography color="white" sx={{ fontSize: '1.5rem', marginBottom: '10px' }}>
                                                 Tags: Sirven para evaluar tus habilidades
                                             </Typography>
@@ -690,15 +700,15 @@ export const Register = () => {
                                                 onClick={handlePreviousStep}
                                                 variant="contained"
                                                 aria-label="Anterior"
-                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px' }}
-                                            >
+                                                sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '40%', marginLeft: '5%', marginRight: '10%'}}>
+                                            
                                                 <ArrowBackIosIcon />
                                             </Button>
                                             <Button
                                                 onClick={handleNextStep}
                                                 variant="contained"
                                                 aria-label="Siguiente"
-                                                sx={{ minWidth: '130px', width: '45%', marginLeft: '15px', marginRight: '15px' }}                                            >
+                                                sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '40%', marginLeft: '10%', marginRight: '5%'}}>
                                                 <ArrowForwardIosIcon />
                                             </Button>
                                         </Box>
@@ -757,7 +767,7 @@ export const Register = () => {
                                         <Button onClick={performRegister}
                                             variant="contained"
                                             sx={{ mt: theme.spacing(3), mb: theme.spacing(2), width: '40%', marginRight: '5%', marginTop: 15 }}>
-                                            Registrarse
+                                            Registro
                                         </Button>
                                     </div>
                                 )}

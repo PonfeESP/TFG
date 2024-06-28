@@ -112,7 +112,7 @@ export const User = () => {
                             </Snackbar>
                         </div>
                         <Typography variant="h4" gutterBottom align="center">
-                            Perfil de Usuario
+                            Perfil
                         </Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>

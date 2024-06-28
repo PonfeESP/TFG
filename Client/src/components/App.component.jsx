@@ -40,7 +40,7 @@ const App = () => {
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundSize: 'cover', // or 'contain' based on your preference
+        backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         zIndex: -1,
     };
