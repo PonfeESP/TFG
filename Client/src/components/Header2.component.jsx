@@ -43,6 +43,7 @@ const styles = {
     iconButton: {
         color: 'white',
     },
+    
     rightIconButton: {
         color: 'white',
     }
