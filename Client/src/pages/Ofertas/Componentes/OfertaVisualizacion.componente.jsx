@@ -128,7 +128,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
     };
 
     const handleShare = () => {
-        const shareUrl = `${window.location.origin}/oferta/${ofertaData._id}`;
+        const shareUrl = `${window.location.origin}/oferta/${ofertaData.oferta._id}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             setOpen(true);
         }).catch(err => {
@@ -137,7 +137,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
     };
 
     const handleShare2 = () => {
-        const shareUrl = `${window.location.origin}/oferta/${ofertaData2._id}`;
+        const shareUrl = `${window.location.origin}/oferta/${ofertaData2.oferta._id}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             setOpen(true);
         }).catch(err => {
@@ -211,7 +211,7 @@ const OfertaVisualizacion = ({ ofertaId, userId, userType }) => {
                                     sx={{ marginRight: 9 }}
                                     variant="contained"
                                     onClick={ofertaData.isInterested ? handleDisinterest : handleInterest}
-                                    style={{ position: 'absolute', top: 0, right: 0 }}
+                                    style={{ position: 'absolute', top: 0, left: 0 }}
                                 >
                                     {isInterested ? <FavoriteIcon sx={{ mr: 1 }} /> : <FavoriteBorderIcon sx={{ mr: 1 }} />}
                                 </Button>

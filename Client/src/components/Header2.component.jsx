@@ -43,7 +43,7 @@ const styles = {
     iconButton: {
         color: 'white',
     },
-    
+
     rightIconButton: {
         color: 'white',
     }
@@ -52,6 +52,7 @@ const styles = {
 const Header = ({ onMostrarDesempleado, onMostrarPerfil, onMostrarEmpresa, onMostrarEmpresas, onMostrarTags, onMostrarEvento, onMostrarUsuarios, onMostrarOfertas, onMostrarEventos }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDesempleado, setIsDesempleado] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [isEmpresa, setIsEmpresa] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
@@ -67,6 +68,7 @@ const Header = ({ onMostrarDesempleado, onMostrarPerfil, onMostrarEmpresa, onMos
                 setIsLoggedIn(true);
                 setIsDesempleado(res.data.userType === 'Desempleado');
                 setIsEmpresa(res.data.userType === 'Empresa');
+                setIsAdmin(res.data.userType === 'Admin');
             })
             .catch(err => console.log(err));
     }, []);
@@ -213,7 +215,7 @@ const Header = ({ onMostrarDesempleado, onMostrarPerfil, onMostrarEmpresa, onMos
                                 open={Boolean(userMenuAnchorEl)}
                                 onClose={handleUserMenuClose}
                             >
-                                <MenuItem onClick={onMostrarPerfil}>Perfil</MenuItem>
+                                {!isAdmin && <MenuItem onClick={onMostrarPerfil}>Perfil</MenuItem>}
                                 <MenuItem onClick={performLogout}>Cerrar Sesión</MenuItem>
                             </Menu>
                         </>
