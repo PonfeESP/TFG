@@ -1,0 +1,406 @@
+[{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a70"
+  },
+  "Nombre": "asdad",
+  "Fecha": {
+    "$date": "2024-06-30T12:20:00.000Z"
+  },
+  "Descripcion": "asdasd",
+  "Aforo": 32,
+  "Localizacion": "daaad",
+  "Fecha_Creacion": {
+    "$date": "2024-06-28T12:58:49.909Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667feceda81cc42f114840c3"
+  },
+  "Nombre": "Reunion de oportunidades",
+  "Fecha": {
+    "$date": "2024-07-18T21:00:00.000Z"
+  },
+  "Descripcion": "Ofrecemos una reunion para dar a conocer nuestra empresa y nuestras ofertas de empleo",
+  "Aforo": 50,
+  "Localizacion": "Segovia, Calle Cantarranas",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:15:57.790Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667fed32a81cc42f114840c9"
+  },
+  "Nombre": "Conferencia IT de Java",
+  "Fecha": {
+    "$date": "2024-08-08T13:15:00.000Z"
+  },
+  "Descripcion": "Conferencia sobre un nuevo proyecto desarrollado en Java para buscar empleados que se sientan interesados",
+  "Aforo": 100,
+  "Localizacion": "Madrid, Avenida Castilla",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:17:06.734Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "Registrados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 2
+},
+{
+  "_id": {
+    "$oid": "667feef6a81cc42f1148413a"
+  },
+  "Nombre": "Conferencia ASCALON",
+  "Fecha": {
+    "$date": "2024-08-01T18:00:00.000Z"
+  },
+  "Descripcion": "Buscamos reunir a jovenes en busca de primeras experiencias en el entorno laboral",
+  "Aforo": 250,
+  "Localizacion": "Barcelona, Calle Inventada",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:24:38.458Z"
+  },
+  "Empresa": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Interesados": [],
+  "Registrados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667fef6fa81cc42f11484140"
+  },
+  "Nombre": "Infg together",
+  "Fecha": {
+    "$date": "2024-07-18T19:20:00.000Z"
+  },
+  "Descripcion": "Conferencia donde esperamos encontrar futuras estrellas con interes en el desarrollo de aplicaciones web",
+  "Aforo": 150,
+  "Localizacion": "Segovia, UVA",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:26:39.586Z"
+  },
+  "Empresa": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "Registrados": [],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667ff018a81cc42f114841a5"
+  },
+  "Nombre": "Reunion de futuros empleados",
+  "Fecha": {
+    "$date": "2024-07-17T19:00:00.000Z"
+  },
+  "Descripcion": "Personas interesadas en el desarrollo web son bienvenidos",
+  "Aforo": 500,
+  "Localizacion": "Segovia, Almeria",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:29:28.605Z"
+  },
+  "Empresa": {
+    "$oid": "667feb20a81cc42f11484078"
+  },
+  "Interesados": [],
+  "Registrados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667ff04ea81cc42f114841ab"
+  },
+  "Nombre": "Evento empleados con experiencia",
+  "Fecha": {
+    "$date": "2024-07-10T21:00:00.000Z"
+  },
+  "Descripcion": "Buscamos empleados con mucha experiencia para un nuevo proyecto",
+  "Aforo": 100,
+  "Localizacion": "Segovia, UAM",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:30:22.602Z"
+  },
+  "Empresa": {
+    "$oid": "667feb20a81cc42f11484078"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "Registrados": [],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "66801713a81cc42f114842e5"
+  },
+  "Nombre": "Evento de Salesforce",
+  "Fecha": {
+    "$date": "2024-07-12T14:21:00.000Z"
+  },
+  "Descripcion": "Descripción de evento de salesforce",
+  "Aforo": 75,
+  "Localizacion": "Segovia, Alicante",
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T14:15:47.754Z"
+  },
+  "Empresa": {
+    "$oid": "668014dda81cc42f114842c3"
+  },
+  "Interesados": [],
+  "Registrados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a75"
+  },
+  "Nombre": "Evento A",
+  "Fecha": {
+    "$date": "2024-07-20T15:00:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento A",
+  "Aforo": 50,
+  "Localizacion": "Ubicación A",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a76"
+  },
+  "Nombre": "Evento B",
+  "Fecha": {
+    "$date": "2024-07-21T10:30:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento B",
+  "Aforo": 45,
+  "Localizacion": "Ubicación B",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a77"
+  },
+  "Nombre": "Evento C",
+  "Fecha": {
+    "$date": "2024-07-22T14:00:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento C",
+  "Aforo": 60,
+  "Localizacion": "Ubicación C",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a78"
+  },
+  "Nombre": "Evento D",
+  "Fecha": {
+    "$date": "2024-07-23T16:45:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento D",
+  "Aforo": 70,
+  "Localizacion": "Ubicación D",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a79"
+  },
+  "Nombre": "Evento E",
+  "Fecha": {
+    "$date": "2024-07-24T18:00:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento E",
+  "Aforo": 80,
+  "Localizacion": "Ubicación E",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a7a"
+  },
+  "Nombre": "Evento F",
+  "Fecha": {
+    "$date": "2024-07-25T10:00:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento F",
+  "Aforo": 55,
+  "Localizacion": "Ubicación F",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a7b"
+  },
+  "Nombre": "Evento G",
+  "Fecha": {
+    "$date": "2024-07-26T11:30:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento G",
+  "Aforo": 65,
+  "Localizacion": "Ubicación G",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a7c"
+  },
+  "Nombre": "Evento H",
+  "Fecha": {
+    "$date": "2024-07-27T13:00:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento H",
+  "Aforo": 75,
+  "Localizacion": "Ubicación H",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a7d"
+  },
+  "Nombre": "Evento I",
+  "Fecha": {
+    "$date": "2024-07-28T14:30:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento I",
+  "Aforo": 85,
+  "Localizacion": "Ubicación I",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb3898933cb21dc345a7e"
+  },
+  "Nombre": "Evento J",
+  "Fecha": {
+    "$date": "2024-07-29T16:00:00.000Z"
+  },
+  "Descripcion": "Descripción del Evento J",
+  "Aforo": 95,
+  "Localizacion": "Ubicación J",
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "Registrados": [],
+  "__v": 0
+}]

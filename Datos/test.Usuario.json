@@ -1,0 +1,223 @@
+[{
+  "_id": {
+    "$oid": "664b662124d76a9e80f4cb53"
+  },
+  "Nombre": "Jamon",
+  "Email": "Admin@gmail.com",
+  "Contraseña": "$2b$10$aQaQYqHoE8VYoYC6pqR.5uL3VHk7TOdFfXNznkYykvh/ImWc3/.IO",
+  "Rol": "Admin"
+},
+{
+  "_id": {
+    "$oid": "667b0a4e1542eec93562e997"
+  },
+  "Nombre": "Pepe",
+  "Email": "pepe@pepe.com",
+  "Contraseña": "$2a$10$uzVIoq.cnNgha.owz9JZheqgCsnWAavC1KDgxd73vPx0f3.Azxdm.",
+  "Rol": "Desempleado",
+  "Descripcion": "pruebas",
+  "Edad": 30,
+  "Experiencia_Laboral": 4,
+  "Estudios": "Grado",
+  "Tags": [
+    {
+      "Lenguaje": "HTML",
+      "Puntuacion": 3
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667c2247360e3aae7be52b89"
+  },
+  "Nombre": "Atlas",
+  "Email": "Atlas@gmail.com",
+  "Contraseña": "$2a$10$MXaBBCVz0kRU95WD2xQwYuJwGc1TKjeUwlfRazUd7mdBd9SikqiNi",
+  "Rol": "Desempleado",
+  "Descripcion": "atklas",
+  "Edad": 32,
+  "Experiencia_Laboral": 1,
+  "Estudios": "sdadad",
+  "Tags": [
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 3
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667c4602b8e5b7b506002cef"
+  },
+  "Nombre": "Atlas",
+  "Email": "Atlas2@gmail.com",
+  "Contraseña": "$2a$10$2VArA2S7P.RegBX7aepcEek4SwNIcK0G9p7q9SoPFq8aKsh4bxhNO",
+  "Rol": "Empresa",
+  "Descripcion": "something",
+  "Tags": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Nombre": "deploy",
+  "Email": "pruebadeploy@gmail.com",
+  "Contraseña": "$2a$10$It2ZWYvfoWQchqY5QCdgNORTE9gPaq.ONgw63GbNlxnbPh4EYPxO2",
+  "Rol": "Empresa",
+  "Descripcion": "prueba",
+  "Tags": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667e922432dd2b4b2e0fdc2d"
+  },
+  "Nombre": "pruebaplease",
+  "Email": "deployuser@gmail.com",
+  "Contraseña": "$2a$10$h8VF3PCvccHJlP8IlnRXZO.eS5qn2JhjNxsTPNAPvT0n33xEtK64a",
+  "Rol": "Desempleado",
+  "Descripcion": "asdadada",
+  "Edad": 32,
+  "Experiencia_Laboral": 1,
+  "Estudios": "asdadad",
+  "Tags": [
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 3
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667eb2d18933cb21dc3459e7"
+  },
+  "Nombre": "Atlas",
+  "Email": "mac@gmail.com",
+  "Contraseña": "$2a$10$Fo59sHu6CxQY.fsWgsaWQO25jcU7ju/x6eKsDsTpLZ.ki6WcJ1Tk2",
+  "Rol": "Desempleado",
+  "Descripcion": "asdsad",
+  "Edad": 32,
+  "Experiencia_Laboral": 1,
+  "Estudios": "asda",
+  "Tags": [
+    {
+      "Lenguaje": "C++",
+      "Puntuacion": 3
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Nombre": "Amazonius",
+  "Email": "Empresa3@gmail.com",
+  "Contraseña": "$2a$10$8dteLlNpE/TXEJfGB9wm1uLlx8h4erfbH.LALK5947mk5/UE14l/.",
+  "Rol": "Empresa",
+  "Descripcion": "Empresa IT desarrolladora de aplicaciones software basadas en Java",
+  "Tags": [],
+  "__v": 0,
+  "FotoPerfil": "1719659864499-imagen_2024-06-29_131743332.png"
+},
+{
+  "_id": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Nombre": "Bugisoft",
+  "Email": "Empresa4@gmail.com",
+  "Contraseña": "$2a$10$Xv9UUkpsmL1yyCmsm3Go7u.MgXgUseshJYaer1xiv9/l.FksiPx0K",
+  "Rol": "Empresa",
+  "Descripcion": "Empresa desarrolladora de videojuegos con muchos bugs",
+  "Tags": [],
+  "__v": 0,
+  "FotoPerfil": "1719660429426-imagen_2024-06-29_132708102.png"
+},
+{
+  "_id": {
+    "$oid": "667feb20a81cc42f11484078"
+  },
+  "Nombre": "Formula Racing",
+  "Email": "Empresa5@gmail.com",
+  "Contraseña": "$2a$10$WZGRJlPbUgFzUN3lATpq2..vCAHNgpw2iEaF/Xe71/OXXnsCh8ROO",
+  "Rol": "Empresa",
+  "Descripcion": "Empresa tecnologica desarrolladora de videojuegos relacionados con Motorsport",
+  "Tags": [],
+  "__v": 0,
+  "FotoPerfil": "1719660639410-imagen_2024-06-29_133038470.png"
+},
+{
+  "_id": {
+    "$oid": "667ffa68a81cc42f114841e1"
+  },
+  "Nombre": "Sergio Canedo",
+  "Email": "Sergiocanedocas@gmail.com",
+  "Contraseña": "$2a$10$qqm3olTRLIc/ym8nxuZVSeWJVVmOD/yg3UcHL45t7pFflmPC3H/zq",
+  "Rol": "Desempleado",
+  "Descripcion": "Busco empleo en IT a ser posible en backend o full stack",
+  "Edad": 23,
+  "Experiencia_Laboral": 0,
+  "Estudios": "Ingenieria Informatica de Servicios y Aplicaciones",
+  "Tags": [
+    {
+      "Lenguaje": "C",
+      "Puntuacion": 3
+    },
+    {
+      "Lenguaje": "HTML",
+      "Puntuacion": 3
+    },
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 2
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Node.js",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "SQL",
+      "Puntuacion": 3
+    },
+    {
+      "Lenguaje": "C++",
+      "Puntuacion": 3
+    }
+  ],
+  "__v": 1,
+  "CurriculumPDF": "1719663647062-CV.pdf",
+  "FotoPerfil": "1719837036359-imagen_2024-07-01_143035520.png"
+},
+{
+  "_id": {
+    "$oid": "66800512a81cc42f1148427e"
+  },
+  "Nombre": "American Normalquests",
+  "Email": "Empresa7@gmail.com",
+  "Contraseña": "$2a$10$ArLuDUlyqYvHO44x7PbhPunslk64p6j86p0jZiIgWssSQEO6G9oii",
+  "Rol": "Empresa",
+  "Descripcion": "Compaia extrangera que busca empleados para trabaja de forma online",
+  "Tags": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668014dda81cc42f114842c3"
+  },
+  "Nombre": "Empresa proxy atmar",
+  "Email": "Empresa10@gmail.com",
+  "Contraseña": "$2a$10$2Qo7RQLUXfub7JPlFDRUcOXZQYIARN5zRiIQyJFU1LM5wq0BAgSTi",
+  "Rol": "Empresa",
+  "Descripcion": "Empresa proxy de Atlas",
+  "Tags": [],
+  "__v": 0,
+  "FotoPerfil": "1719670556756-Empresa.png"
+}]

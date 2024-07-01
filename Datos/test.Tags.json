@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "664b66a224d76a9e80f4cb7c"
+  },
+  "Nombre": "C",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66a624d76a9e80f4cb80"
+  },
+  "Nombre": "C++",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66a924d76a9e80f4cb84"
+  },
+  "Nombre": "Java",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66ae24d76a9e80f4cb88"
+  },
+  "Nombre": "Javascript",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66b224d76a9e80f4cb8c"
+  },
+  "Nombre": "Python",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66b824d76a9e80f4cb90"
+  },
+  "Nombre": "Node.js",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66c224d76a9e80f4cb94"
+  },
+  "Nombre": "Salesforce",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66e024d76a9e80f4cb98"
+  },
+  "Nombre": "HTML",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b66e224d76a9e80f4cb9c"
+  },
+  "Nombre": "SQL",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b670224d76a9e80f4cba0"
+  },
+  "Nombre": "Visual Basic",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "664b670624d76a9e80f4cba4"
+  },
+  "Nombre": "PHP",
+  "__v": 0
+}]

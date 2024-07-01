@@ -1,0 +1,380 @@
+[{
+  "_id": {
+    "$oid": "667eb3668933cb21dc345a34"
+  },
+  "Nombre": "asdasd",
+  "Descripcion": "asddad",
+  "Tags": [
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 2
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-28T12:58:14.977Z"
+  },
+  "Empresa": {
+    "$oid": "667d595abc0c73d437582680"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667feb5da81cc42f114840a5"
+  },
+  "Nombre": "Tecnico informatico",
+  "Descripcion": "Necesiatmos empleados con al menos  aos de experiencia en Java",
+  "Tags": [
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 4
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:09:17.944Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667fec67a81cc42f114840af"
+  },
+  "Nombre": "Desarrollador Software",
+  "Descripcion": "Necesitamos empelados con habilidades en Java y JavaScript",
+  "Tags": [
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 3
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:13:43.653Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667fec96a81cc42f114840b9"
+  },
+  "Nombre": "Empleado de becario ",
+  "Descripcion": "No se necesita experiencia, y se requiere de un conocimiento en Java minimo",
+  "Tags": [
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 1
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:14:30.472Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667fede4a81cc42f11484112"
+  },
+  "Nombre": "Oferta de empleo para desarrollador de paginas web",
+  "Descripcion": "Buscamos personas con experiencia en desarrollo web",
+  "Tags": [
+    {
+      "Lenguaje": "HTML",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 2
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:20:04.284Z"
+  },
+  "Empresa": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667fee1da81cc42f1148411c"
+  },
+  "Nombre": "Desarrollo backend",
+  "Descripcion": "buscamos empleados que tengan experiencia en desarrollo backend de aplicaciones web",
+  "Tags": [
+    {
+      "Lenguaje": "Node.js",
+      "Puntuacion": 2
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "PHP",
+      "Puntuacion": 3
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:21:01.912Z"
+  },
+  "Empresa": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667fee5ea81cc42f11484126"
+  },
+  "Nombre": "Gestor de bases de datos",
+  "Descripcion": "Necesiatmos empleados que puedan desarrollar, estructurar y actualizar bases de datos",
+  "Tags": [
+    {
+      "Lenguaje": "SQL",
+      "Puntuacion": 5
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:22:06.435Z"
+  },
+  "Empresa": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "667feea0a81cc42f11484130"
+  },
+  "Nombre": "Tecnico del software relacionado con viejas tecnologias",
+  "Descripcion": "Necesitamos un equipo con conocimientos en lenguajes antiguos para adaptarnos a nuevas tecnologias",
+  "Tags": [
+    {
+      "Lenguaje": "C",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "C++",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Node.js",
+      "Puntuacion": 4
+    },
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 4
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:23:12.245Z"
+  },
+  "Empresa": {
+    "$oid": "667feae2a81cc42f11484075"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667fefc8a81cc42f11484191"
+  },
+  "Nombre": "Equipo de Javascript",
+  "Descripcion": "Buscamos personas que esten interesadas en formar parte de nuestra empresa, con conocimientos de Java y JavaScript",
+  "Tags": [
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 2
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 5
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:28:08.273Z"
+  },
+  "Empresa": {
+    "$oid": "667feb20a81cc42f11484078"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "667fefeca81cc42f1148419b"
+  },
+  "Nombre": "Equipo de desarrollo web frontends",
+  "Descripcion": "Buscamos desarrolladores con experiencia en HTML y JavaScript",
+  "Tags": [
+    {
+      "Lenguaje": "HTML",
+      "Puntuacion": 5
+    },
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 2
+    },
+    {
+      "Lenguaje": "Java",
+      "Puntuacion": 1
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T11:28:44.264Z"
+  },
+  "Empresa": {
+    "$oid": "667feb20a81cc42f11484078"
+  },
+  "Interesados": [],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "6680055ca81cc42f11484297"
+  },
+  "Nombre": "Proyectos online de Salesforce",
+  "Descripcion": "Buscamos empleados para desarrollo salesforce de forma online",
+  "Tags": [
+    {
+      "Lenguaje": "Salesforce",
+      "Puntuacion": 4
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T13:00:12.084Z"
+  },
+  "Empresa": {
+    "$oid": "66800512a81cc42f1148427e"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668005b9a81cc42f114842a1"
+  },
+  "Nombre": "Pruebas de becario Javascript online",
+  "Descripcion": "Busamos becarios para adquirir experiencia en Javascript y Salesforce",
+  "Tags": [
+    {
+      "Lenguaje": "Javascript",
+      "Puntuacion": 1
+    },
+    {
+      "Lenguaje": "Salesforce",
+      "Puntuacion": 1
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T13:01:45.084Z"
+  },
+  "Empresa": {
+    "$oid": "66800512a81cc42f1148427e"
+  },
+  "Interesados": [
+    {
+      "$oid": "667ffa68a81cc42f114841e1"
+    }
+  ],
+  "__v": 5
+},
+{
+  "_id": {
+    "$oid": "668016dea81cc42f114842db"
+  },
+  "Nombre": "Nueva oferta para empleados de Salesforce",
+  "Descripcion": "Una descripcin de prueba",
+  "Tags": [
+    {
+      "Lenguaje": "Salesforce",
+      "Puntuacion": 4
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-06-29T14:14:54.991Z"
+  },
+  "Empresa": {
+    "$oid": "668014dda81cc42f114842c3"
+  },
+  "Interesados": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6682a6ee4379c0ff8ad458f8"
+  },
+  "Nombre": "Oferta Finalmente probada",
+  "Descripcion": "Oferta de prueba final",
+  "Tags": [
+    {
+      "Lenguaje": "PHP",
+      "Puntuacion": 5
+    },
+    {
+      "Lenguaje": "Salesforce",
+      "Puntuacion": 4
+    }
+  ],
+  "Disponible": true,
+  "Fecha_Creacion": {
+    "$date": "2024-07-01T12:54:06.993Z"
+  },
+  "Empresa": {
+    "$oid": "667fea71a81cc42f11484072"
+  },
+  "Interesados": [],
+  "__v": 0
+}]
